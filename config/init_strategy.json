@@ -1,0 +1,26 @@
+{
+  "subject_symbol" : "GC",
+  "strategy" : {
+    "full_para" : {
+      "drible_tick" : [0, 5, 20]
+    }
+  },
+  "charts" : [
+    {
+      "type" : "tick",
+      "time_unit" : 60,
+      "indicators" : {
+        "ma" : [
+          {"length": 30},
+          {"length" : 120}
+        ],
+        "para" : [
+          {
+            "init_af" : 0.0004,
+            "max_af": 0.001
+          }
+        ]
+      }
+    }
+  ]
+}
