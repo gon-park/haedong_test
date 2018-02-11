@@ -6,7 +6,7 @@ import multiprocessing as mp
 from pprint import *
 
 
-def simulate(stv, common_data, result):
+def simulate(strategy_var, common_data, result):
 
     #try:
     print("%s common data id : %s" % (os.getpid(), id(common_data)))
@@ -19,20 +19,20 @@ def simulate(stv, common_data, result):
     return result
     record = {}
 #     profit = 0
-
-    tester = kiwoom_tester.KiwoomTester(stv, common_data)
-
-    for subject_code in common_data.keys():
-        log = tester.log
-        log.info("pid : %s 시작" % os.getpid())
-        stv_info = tester.stv.info
-        sbv_info = tester.sbv.info
-        log.info("pid : %s, stv : %s" %(os.getpid(), stv_info))
-        chart_type = stv_info[subject_code][sbv_info[subject_code][전략]][차트][0][0]
-        time_unit = stv_info[subject_code][sbv_info[subject_code][전략]][차트][0][1]
-
-        log.info('pid : %s, 차트타입 : %s, 시간단위 : %s' % (os.getpid(), chart_type, time_unit))
-        tester.run(subject_code, chart_type, time_unit)
+#
+#     tester = kiwoom_tester.KiwoomTester(stv, common_data)
+#
+#     for subject_code in common_data.keys():
+#         log = tester.log
+#         log.info("pid : %s 시작" % os.getpid())
+#         stv_info = tester.stv.info
+#         sbv_info = tester.sbv.info
+#         log.info("pid : %s, stv : %s" %(os.getpid(), stv_info))
+#         chart_type = stv_info[subject_code][sbv_info[subject_code][전략]][차트][0][0]
+#         time_unit = stv_info[subject_code][sbv_info[subject_code][전략]][차트][0][1]
+#
+#         log.info('pid : %s, 차트타입 : %s, 시간단위 : %s' % (os.getpid(), chart_type, time_unit))
+#         tester.run(subject_code, chart_type, time_unit)
         # log = kiwoom_tester.log
         # kiwoom_tester.chart.init_data(subject_code, common_data)
         #
@@ -134,40 +134,19 @@ if __name__ == '__main__':
     '''
 
     with mp.Manager() as manager:
-
         common_candles = manager.dict(tmp_candles)
+        result = manager.list()
 
-        # chart_candles 변환
-        for chart_id in chart_candles.keys():
-            common_candles[chart_id] = manager.dict()
-            common_candles[chart_id][시가] = manager.list()
-            common_candles[chart_id][현재가] = manager.list()
-            common_candles[chart_id][고가] = manager.list()
-            common_candles[chart_id][저가] = manager.list()
-            common_candles[chart_id][체결시간] = manager.list()
-            common_candles[chart_id][거래량] = manager.list()
-
-            for candle in chart_candles[chart_id]:
-                common_candles[chart_id][시가].append(candle[시가])
-                common_candles[chart_id][현재가].append(candle[현재가])
-                common_candles[chart_id][고가].append(candle[고가])
-                common_candles[chart_id][저가].append(candle[저가])
-                common_candles[chart_id][체결시간].append(candle[체결시간])
-                # common_candles[chart_id][거래량].append(candle[거래량])
-        print(common_candles)
-        # result = manager.list()
-        # # proc
-        #
-        # max_array, cur_array = StrategyVarManager.get_strategy_var_array()  # 전략변수 횟수 테이블 계산
-        # total_count = 1
-        # for cnt in max_array:
-        #     total_count *= (cnt + 1)
-        # log.info("총 테스트 횟수: " + str(total_count))
-        # # pprint(max_array)
-        # # pprint(cur_array)
+        max_array, cur_array = StrategyVarManager.get_strategy_var_array()  # 전략변수 횟수 테이블 계산
+        total_count = 1
+        for cnt in max_array:
+            total_count *= (cnt + 1)
+        log.info("총 테스트 횟수: " + str(total_count))
+        # pprint(max_array)
+        # pprint(cur_array)
 
         procs = []
-
+        cnt = 0
         while True:
             config = StrategyVarManager.get_speific_startegy_var(cur_array)
             # pprint(config)
@@ -177,20 +156,23 @@ if __name__ == '__main__':
             procs.append(process)
 
             process.start()
+            cnt = cnt + 1
+
+            if cnt == 15: break
 
             if StrategyVarManager.increase_the_number_of_digits(max_array, cur_array) == False: break
 
         for process in procs:
             process.join()
 
-    log.info("[테스트 결과]")
+        log.info("[테스트 결과]")
 
-    ''' 이 부분에 result를 수익별로 sorting '''
-    ''' 상위 N개의 결과 보여 줌 '''
+        ''' 이 부분에 result를 수익별로 sorting '''
+        ''' 상위 N개의 결과 보여 줌 '''
 
-    print(len(result))
-    for i in range(0, min(len(result), 10)):
-        log.info(result[i])  # 더 디테일하게 변경
+        print(len(result))
+        for i in range(0, min(len(result), 10)):
+            log.info(result[i])  # 더 디테일하게 변경
 
 
     # log.info("해당 코드의 Git Hash : %s" % label)
