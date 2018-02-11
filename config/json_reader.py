@@ -16,12 +16,6 @@ class Reader :
         return data
 
     @staticmethod
-    def read_init_strategy_config():
-        data = json.load(open('config\\init_strategy.json'))
-        return data
-
-
-    @staticmethod
     def read_test_config():
         data = json.load(open('config\\test.json'))
         return data[START_DATE], data[END_DATE]
