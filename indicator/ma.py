@@ -1,5 +1,5 @@
 from variable.constant import *
-
+from pprint import pprint
 
 class Variable():
     candles = {}
@@ -8,6 +8,7 @@ class Variable():
     MA = []
 
     def __init__(self, candles, indicator_info):
+        pprint(indicator_info)
         self.candles = candles
         self.LENGTH = indicator_info[LENGTH]
 

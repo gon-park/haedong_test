@@ -7,19 +7,21 @@ from variable.chart import Chart
 class ChartManger(__manager.ManagerClass):
 
     @staticmethod
-    def create_charts(strategy_var, candles):
+    def create_charts(subject_code, strategy_var, candles):
         charts = {}
 
-        for chart_id in candles:
+        for chart_id in candles.keys():
             for chart_info in strategy_var[CHARTS]:
-                subject_code, type, time_unit = chart_id.split('_')
-                if chart_info[TYPE] == type and chart_info[TIME_UNIT] == time_unit:
+                _subject_code, type, time_unit = chart_id.split('_')
+                if subject_code == _subject_code:
                     charts[chart_id] = Chart(chart_id, chart_info[INDICATORS], candles[chart_id])
 
         return charts
 
     @staticmethod
     def candle_push(chart, index):
+
+        chart.index += 1
         pass
 
     

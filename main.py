@@ -4,20 +4,33 @@ from config import json_reader
 from variable.constant import *
 import multiprocessing as mp
 from pprint import *
+from simulate.trader import Trader
 
-
-def simulate(strategy_var, common_data, result):
+def simulate(strategy_var, common_candles, result):
 
     #try:
-    print("%s common data id : %s" % (os.getpid(), id(common_data)))
+    print("%s common candles id : %s" % (os.getpid(), id(common_candles)))
     print("%s result id : %s" % (os.getpid(), id(result)))
 
     # print(common_data)
     # print(stv.info)
     print('%s simulate start.' % os.getpid())
     # print('common_data keys() : %s' % common_data.keys())
-    return result
-    record = {}
+
+    subject_codes = []
+    for chart_id in common_candles.keys():
+        subject_code, type, time_unit = chart_id.split('_')
+        print(subject_code)
+        if subject_code not in subject_codes:
+            subject_codes.append(subject_code)
+
+    pprint("테스트 월물[%s]" % subject_codes)
+
+    for subject_code in subject_codes:
+        # 한개 월물씩 테스트
+        trader = Trader(subject_code, strategy_var, common_candles)
+        result.append(trader.run(subject_code))
+
 #     profit = 0
 #
 #     tester = kiwoom_tester.KiwoomTester(stv, common_data)
@@ -51,13 +64,6 @@ def simulate(strategy_var, common_data, result):
         #
         # profit = profit + kiwoom_tester.누적수익
 
-    record['전략변수'] = tester.stv
-    record['누적수익'] = tester.누적수익
-
-    record['전략변수'] = os.getpid()
-    record['누적수익'] = os.getpid()
-
-    result.append(record)
     print(result)
 
     #except Exception as err:
@@ -158,7 +164,7 @@ if __name__ == '__main__':
             process.start()
             cnt = cnt + 1
 
-            if cnt == 15: break
+            break
 
             if StrategyVarManager.increase_the_number_of_digits(max_array, cur_array) == False: break
 

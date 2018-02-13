@@ -5,13 +5,14 @@ from strategy import full_para
 class Trader():
     charts = {}     # key값은 chart_id(GCZ17_tick_60)로 되어있음
     strategy = []
-    results = [] # 원본 result list 마지막에 한번만 append
-    result = [] # 월물별 수익 저장
     contracts = []
+    result = []
+    subject_code = ''
 
-    def __init__(self, strategy_var, candles, results):
+    def __init__(self, subject_code, strategy_var, candles):
+        self.subject_code = subject_code
         # 차트 생성
-        self.charts = ChartManger.create_charts(strategy_var, candles)
+        self.charts = ChartManger.create_charts(subject_code, strategy_var, candles)
 
         # 매매 전략 설정
         for strategy_name in strategy_var[STRATEGY]:
@@ -22,9 +23,11 @@ class Trader():
         pass
 
     def run(self, 종목코드):
+        self.result = []
+
         # 한개 월물씩 테스트
         while True:
-            체결시간 = None
+            _체결시간 = None
             체결차트 = None
             for chart_id in self.charts:
                 subject_code, type, time_unit = chart_id.split('_')
@@ -33,8 +36,12 @@ class Trader():
                 chart = self.charts[chart_id]
                 if (chart.index + 1) < len(chart.candles[현재가]) and \
                     (chart.candles[체결시간][chart.index + 1] < 체결시간 or 체결시간 is None):
-                    체결시간 = chart.candles[체결시간][chart.index + 1]
+                    _체결시간 = chart.candles[체결시간][chart.index + 1]
                     체결차트 = chart
+
+            if _체결시간 is None:
+                # 모든 차트 테스트 종료
+                break
 
             ChartManger.candle_push(체결차트, 체결차트.index + 1)
 
@@ -43,6 +50,5 @@ class Trader():
                 if order is not None:
                     self.send_order(order)
 
-            if 체결시간 is None:
-                # 모든 차트 테스트 종료
-                break
+
+        return self.result

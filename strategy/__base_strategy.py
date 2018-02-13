@@ -22,7 +22,7 @@ class BaseStrategy(metaclass=abc.ABCMeta):
         raise NotImplementedError(inspect.stack()[0][3] + ' is not impplemented.')
 
     @abc.abstractmethod
-    def check_contract_in_candle(self, subject_code, current_price):
+    def check_contract_in_candle(self, subject_code):
         raise NotImplementedError(inspect.stack()[0][3] + ' is not impplemented.')
 
     @abc.abstractmethod
