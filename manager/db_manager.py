@@ -42,14 +42,14 @@ class DBManager(__manager.ManagerClass):
             return result
 
     def exist_table(self, table_name):
-        query = "show tables in haedong4 like '%s'"
+        query = "show tables in haedong4 like '%s'" % table_name
 
         row = self.exec_query(query, FETCH_ONE)
 
-        if len(row) > 0:
-            return True
+        if row is None:
+            return False
 
-        return False
+        return True
 
     def drop_table(self, table_name):
         query = "drop table %s" % table_name
@@ -82,7 +82,7 @@ class DBManager(__manager.ManagerClass):
         return str(self.__class__.__name__)
 
     def request_tick_candle(self, subject_code, tick_unit, start_date='20170101', end_date='20201231'):
-        if self.exist_table(subject_code + '_tick_' + str(tick_unit)) and tick_unit % 10 == 0:
+        if self.exist_table(subject_code + '_tick_10') and tick_unit % 10 == 0:
             tick_unit /= 10
             subject_code = subject_code + '_tick_10'
             query = '''

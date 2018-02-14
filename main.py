@@ -31,6 +31,7 @@ def simulate(strategy_var, common_candles, result):
         trader = Trader(subject_code, strategy_var, common_candles)
         result.append(trader.run(subject_code))
 
+        print(trader.charts['GCJ17_tick_60'].indicators[PARA][0].SARS)
     print(result)
 
 
