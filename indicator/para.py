@@ -2,20 +2,17 @@ from variable.constant import *
 
 
 class Variable():
-    candles = {}
-    INIT_AF = 0.0
-    MAX_AF = 0.0
-
-    SARS = []
-    FLOWS = []
-    EP = 0.0
-    AF = 0.0
-    INDEX = 0
 
     def __init__(self, candles, indicator_info):
         self.candles = candles
         self.INIT_AF = indicator_info[INIT_AF]
         self.MAX_AF = indicator_info[MAX_AF]
+
+        self.SARS = []
+        self.FLOWS = []
+        self.EP = 0.0
+        self.AF = 0.0
+        self.INDEX = 0
 
 
 class Calc():

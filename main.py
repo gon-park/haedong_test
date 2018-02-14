@@ -24,69 +24,18 @@ def simulate(strategy_var, common_candles, result):
         if subject_code not in subject_codes:
             subject_codes.append(subject_code)
 
-    pprint("테스트 월물[%s]" % subject_codes)
+    pprint("테스트 월물%s" % subject_codes)
 
     for subject_code in subject_codes:
         # 한개 월물씩 테스트
         trader = Trader(subject_code, strategy_var, common_candles)
         result.append(trader.run(subject_code))
 
-#     profit = 0
-#
-#     tester = kiwoom_tester.KiwoomTester(stv, common_data)
-#
-#     for subject_code in common_data.keys():
-#         log = tester.log
-#         log.info("pid : %s 시작" % os.getpid())
-#         stv_info = tester.stv.info
-#         sbv_info = tester.sbv.info
-#         log.info("pid : %s, stv : %s" %(os.getpid(), stv_info))
-#         chart_type = stv_info[subject_code][sbv_info[subject_code][전략]][차트][0][0]
-#         time_unit = stv_info[subject_code][sbv_info[subject_code][전략]][차트][0][1]
-#
-#         log.info('pid : %s, 차트타입 : %s, 시간단위 : %s' % (os.getpid(), chart_type, time_unit))
-#         tester.run(subject_code, chart_type, time_unit)
-        # log = kiwoom_tester.log
-        # kiwoom_tester.chart.init_data(subject_code, common_data)
-        #
-        # stv_info = kiwoom_tester.stv.info
-        # sbv_info = kiwoom_tester.sbv.info
-        # chart_type = stv_info[subject_code][sbv_info[subject_code]][차트][0][0]
-        # time_unit = stv_info[subject_code][sbv_info[subject_code]][차트][0][1]
-        # for i in range(0, len(common_data[subject_code][chart_type][time_unit])):
-        #     kiwoom_tester.chart.calc(subject_code, chart_type, 60)
-        #     kiwoom_tester.chart.data[subject_code][chart_type][time_unit]['인덱스'] += 1
-        #     print('process id : %s, candle index : %s' % (os.getpid(), i))
-        #     order_info = kiwoom_tester.check_contract_in_candle(subject_code, chart_type, time_unit)
-        #
-        #     if order_info[신규매매]:
-        #         kiwoom_tester.send_order(order_info[매도수구분], subject_code, order_info[수량])
-        #
-        # profit = profit + kiwoom_tester.누적수익
-
     print(result)
-
-    #except Exception as err:
-    #    log.error(err)
 
 
 if __name__ == '__main__':
     log, res, err_log = log_manager.LogManager.__call__().get_logger()
-    # read config
-    ## test.json
-    ## strategy.json (범위)
-
-    # strategy_config = {}
-    # strategy_config = read_config();
-
-    # tick36, 60, 90 read (candle) data from DB
-    # 캔들을 가진 charts를 만듬
-
-    # while
-    ## tester_var 읽고 Loop
-    ## tester_var 경우의 수 만큼 charts 를 만들고
-    ## charts의 candle을 위에 chart.candle 에서 copy해서 사용
-    ## simulate() 시작
 
     ''' 해당 종목 코드, 테스트 날짜 읽어옴 '''
     strategy_var = json_reader.Reader.read_strategy_config()
@@ -101,10 +50,10 @@ if __name__ == '__main__':
     tables = []
     for table_name in temp_tables:
         # print(table_name[0], start_date, end_date)
-        if dbm.is_matched_table(table_name[0], start_date, end_date):
+        if '_' not in table_name[0] and dbm.is_matched_table(table_name[0], start_date, end_date):
             tables.append(table_name[0])
 
-    # pprint(tables)
+    pprint(tables)
 
     chart_candles = {}
     for chart in strategy_var[CHARTS]:
@@ -112,6 +61,7 @@ if __name__ == '__main__':
             chart_id = '%s_%s_%s' % (subject_code, chart[TYPE], chart[TIME_UNIT])
             if chart[TYPE] == TICK:
                 chart_candles[chart_id] = dbm.request_tick_candle(subject_code, chart[TIME_UNIT], start_date, end_date)
+                print('캔들 수 : %s' % len(chart_candles[chart_id]))
             else :
                 err_log("TODO")
                 exit()
@@ -133,7 +83,7 @@ if __name__ == '__main__':
             tmp_candles[chart_id][고가].append(candle[고가])
             tmp_candles[chart_id][저가].append(candle[저가])
             tmp_candles[chart_id][체결시간].append(candle[체결시간])
-            #tmp_candles[chart_id][거래량].append(candle[거래량])
+            tmp_candles[chart_id][거래량].append(candle[거래량])
 
     '''
     상단까지가 우리가 입력한 날짜에 맞는 테이블을 틱_60으로만 가져오는 코드
@@ -151,6 +101,8 @@ if __name__ == '__main__':
         # pprint(max_array)
         # pprint(cur_array)
 
+        import time
+        s = time.time()
         procs = []
         cnt = 0
         while True:
@@ -171,12 +123,14 @@ if __name__ == '__main__':
         for process in procs:
             process.join()
 
+        e = time.time()
+
+        print("처리시간 : %s seconds" % (e-s))
         log.info("[테스트 결과]")
 
         ''' 이 부분에 result를 수익별로 sorting '''
         ''' 상위 N개의 결과 보여 줌 '''
 
-        print(len(result))
         for i in range(0, min(len(result), 10)):
             log.info(result[i])  # 더 디테일하게 변경
 

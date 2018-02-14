@@ -16,9 +16,14 @@ class Chart():
             self.indicators[indicator_name] = {}
 
             if indicator_name == MA:
-                self.indicators[indicator_name] = ma.Variable(candles, indicator_info[indicator_name][0])
+                self.indicators[indicator_name] = []
+                for info in indicator_info[indicator_name]:
+                    self.indicators[indicator_name].append(ma.Variable(candles, info))
+
             elif indicator_name == PARA:
-                self.indicators[indicator_name] = para.Variable(candles, indicator_info[indicator_name][0])
+                self.indicators[indicator_name] = []
+                for info in indicator_info[indicator_name]:
+                    self.indicators[indicator_name].append(para.Variable(candles, info))
 
 
     def __str__(self) -> str:

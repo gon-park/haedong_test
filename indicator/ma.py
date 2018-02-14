@@ -1,23 +1,27 @@
 from variable.constant import *
 from pprint import pprint
 
+
 class Variable():
-    candles = {}
-    TYPE = None # 추후에 단순종가이동평균선을 제외한 다른 이동평균선도 같이 구할때 개발하기 위해 남겨놓음
-    LENGTH = 0
-    MA = []
 
     def __init__(self, candles, indicator_info):
-        pprint(indicator_info)
         self.candles = candles
         self.LENGTH = indicator_info[LENGTH]
+        self.MA = []
+
+        # 계산에 사용되는 임시변수
+        self.tmp_sum = 0
 
 
 class Calc():
+
     @staticmethod
     def calc(var, index):
         if index < var.LENGTH - 1:
             var.MA.append(None)
-
+        elif index == var.LENGTH - 1:
+            var.tmp_sum = sum(var.candles[현재가][index - var.LENGTH + 1:index + 1])
+            var.MA.append(float(var.tmp_sum) / float(var.LENGTH))
         else:
-            var.MA.append(float(sum(var.candles[현재가][index - var.LENGTH + 1:index + 1])) / float(var.LENGTH))
+            var.tmp_sum += (var.candles[현재가][index] - var.candles[현재가][index - var.LENGTH])
+            var.MA.append(float(var.tmp_sum) / float(var.LENGTH))

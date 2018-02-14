@@ -41,8 +41,8 @@ class DBManager(__manager.ManagerClass):
         else:
             return result
 
-    def exist_table(self, subject_code, date):
-        query = "show tables in haedong like '%s_%s'" % (subject_code, date)
+    def exist_table(self, table_name):
+        query = "show tables in haedong4 like '%s'"
 
         row = self.exec_query(query, FETCH_ONE)
 
@@ -82,41 +82,85 @@ class DBManager(__manager.ManagerClass):
         return str(self.__class__.__name__)
 
     def request_tick_candle(self, subject_code, tick_unit, start_date='20170101', end_date='20201231'):
-        query = '''
-        select t1.id
-             , t1.date
-             , t1.high
-             , t1.low
-             , t2.price as open
-             , t3.price as close
-          from (
-                select Floor((result.row-1) / '%s') + 1 as id
-                     , min(date_format(result.date, '%%Y%%m%%d%%H%%i%%s')) as date
-                     , max(result.id) as max_id
-                     , min(result.id) as min_id
-                     , max(result.price) as high
-                     , min(result.price) as low
-                  from (
-                        select @rownum:=@rownum+1 as row
-                             , id
-                             , price
-                             , date
-                          from %s s1
-                         inner join (
-                                    select @rownum:=0
-                                      from dual
-                                    ) s2
-                        
-                        where s1.date between Date('%s-%s-%s') and Date('%s-%s-%s')
-                       ) result
-                 group by Floor((result.row-1) / '%s')
-               ) t1
-         inner join %s t2
-            on t1.min_id = t2.id
-         inner join %s t3
-            on t1.max_id = t3.id
-        ;
-        ''' % (tick_unit, subject_code, start_date[:4], start_date[4:6], start_date[6:], end_date[:4], end_date[4:6], end_date[6:], tick_unit, subject_code, subject_code)
+        if self.exist_table(subject_code + '_tick_' + str(tick_unit)) and tick_unit % 10 == 0:
+            tick_unit /= 10
+            subject_code = subject_code + '_tick_10'
+            query = '''
+            select t1.id
+                    , t1.date
+                    , t2.open as open
+                    , t1.high
+                    , t1.low
+                    , t3.close as close
+                    , t1.volume
+                    , t1.working_day
+             from (
+                   select Floor((result.row-1) / %s) + 1 as id
+                        , date
+                        , max(result.id) as max_id
+                        , min(result.id) as min_id
+                        , max(result.high) as high
+                        , min(result.close) as low
+                        , sum(result.volume) as volume
+                        , working_day
+                     from (
+                               select @rownum:=if(@working_day = s1.working_day, @rownum+1, if(@rownum=1, 1, ((truncate((@rownum-1) / %s, 0) + 1) * %s + 1))) as row,
+                                    @working_day:= s1.working_day,
+                                      s1.*
+                                     
+                                 from %s s1
+                                inner join (
+                                           select @rownum:=1, @working_day:=Date('2000-01-01')
+                                             from dual
+                                           ) s2
+                                where working_day between Date('%s') and Date('%s')          
+                          ) result
+                    group by working_day, Floor((result.row-1) / %s)
+                  ) t1
+            inner join %s t2
+               on t1.min_id = t2.id
+            inner join %s t3
+               on t1.max_id = t3.id
+            ''' % (tick_unit, tick_unit, tick_unit, subject_code, start_date, end_date, tick_unit, subject_code, subject_code)
+        else:
+            query = '''
+            select t1.id
+                    , t1.date
+                    , t2.price as open
+                    , t1.high
+                    , t1.low
+                    , t3.price as close
+                    , t1.volume
+                    , t1.working_day
+             from (
+                   select Floor((result.row-1) / %s) + 1 as id
+                        , date
+                        , max(result.id) as max_id
+                        , min(result.id) as min_id
+                        , max(result.price) as high
+                        , min(result.price) as low
+                        , sum(result.volume) as volume
+                        , working_day
+                     from (
+                               select @rownum:=if(@working_day = s1.working_day, @rownum+1, if(@rownum=1, 1, ((truncate((@rownum-1) / %s, 0) + 1) * %s + 1))) as row,
+                                    @working_day:= s1.working_day,
+                                      s1.*
+                                     
+                                 from %s s1
+                                inner join (
+                                           select @rownum:=1, @working_day:=Date('2000-01-01')
+                                             from dual
+                                           ) s2     
+                                where working_day between Date('%s') and Date('%s')             
+                          ) result
+                    group by working_day, Floor((result.row-1) / %s)
+                  ) t1
+            inner join %s t2
+               on t1.min_id = t2.id
+            inner join %s t3
+               on t1.max_id = t3.id
+            ;
+            ''' % (tick_unit, tick_unit, tick_unit, subject_code, start_date, end_date, tick_unit, subject_code, subject_code)
 
         return self.exec_query(query, fetch_type=FETCH_ALL, cursor_type=CURSOR_DICT)
 

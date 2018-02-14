@@ -2,7 +2,7 @@
 from variable.constant import *
 from manager import __manager
 from variable.chart import Chart
-
+from indicator import ma, para
 
 class ChartManger(__manager.ManagerClass):
 
@@ -20,9 +20,15 @@ class ChartManger(__manager.ManagerClass):
 
     @staticmethod
     def candle_push(chart, index):
-
         chart.index += 1
-        pass
+
+        for indicator_name in chart.indicators:
+            if indicator_name == MA:
+                for indicator in chart.indicators[indicator_name]:
+                    ma.Calc.calc(indicator, chart.index)
+            elif indicator_name == PARA:
+                for indicator in chart.indicators[indicator_name]:
+                    para.Calc.calc(indicator, chart.index)
 
     
     def get_name(self):
