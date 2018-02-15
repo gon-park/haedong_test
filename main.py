@@ -6,7 +6,8 @@ import multiprocessing as mp
 from pprint import *
 from simulate.trader import Trader
 
-def simulate(strategy_var, common_candles, result):
+
+def simulate(main_chart, strategy_var, common_candles, result):
 
     #try:
     print("%s common candles id : %s" % (os.getpid(), id(common_candles)))
@@ -28,7 +29,7 @@ def simulate(strategy_var, common_candles, result):
 
     for subject_code in subject_codes:
         # 한개 월물씩 테스트
-        trader = Trader(subject_code, strategy_var, common_candles)
+        trader = Trader(main_chart, subject_code, strategy_var, common_candles)
         result.append(trader.run(subject_code))
 
     print(result)
@@ -56,7 +57,10 @@ if __name__ == '__main__':
     pprint(tables)
 
     chart_candles = {}
+    main_chart = None
     for chart in strategy_var[CHARTS]:
+        if main_chart is None: main_chart = '%s_%s' % (chart[TYPE], chart[TIME_UNIT]) # 주거래 차트, charts 의 0번째 인덱스에 있는 차트로 선택
+
         for subject_code in tables:
             chart_id = '%s_%s_%s' % (subject_code, chart[TYPE], chart[TIME_UNIT])
             if chart[TYPE] == TICK:
@@ -110,7 +114,7 @@ if __name__ == '__main__':
             # pprint(config)
 
             ''' 해당 부분에서 Multiprocessing으로 테스트 시작 '''
-            process = mp.Process(target=simulate, args=(config, common_candles, result,))
+            process = mp.Process(target=simulate, args=(main_chart, config, common_candles, result,))
             procs.append(process)
 
             process.start()

@@ -3,28 +3,30 @@ from variable.constant import *
 from strategy import full_para
 from datetime import datetime
 
-class Trader():
-    charts = {}     # key값은 chart_id(GCZ17_tick_60)로 되어있음
-    strategy = []
-    contracts = []
-    result = []
-    subject_code = ''
-    state = '매매가능'
 
-    def __init__(self, subject_code, strategy_var, candles):
+class Trader:
+    def __init__(self, main_chart, subject_code, strategy_var, candles):
+        self.charts = {}  # key 값은 chart_id(GCZ17_tick_60)로 되어있음
+        self.strategy = []
+        self.contracts = []
+        self.result = []
         self.subject_code = subject_code
+        self.state = '매매가능'
+        self.main_chart = main_chart
+
         # 차트 생성
         self.charts = ChartManger.create_charts(subject_code, strategy_var, candles)
 
         # 매매 전략 설정
         for strategy_name in strategy_var[STRATEGY]:
             if strategy_name == 풀파라:
-                self.strategy.append(full_para.Full_Para(self.charts))
+                self.strategy.append(full_para.Full_Para(self))
 
     def send_order(self, order):
         pass
 
     def run(self, 종목코드):
+        print('trader : %s run()' % 종목코드)
         self.result = []
 
         # 한개 월물씩 테스트
