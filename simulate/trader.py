@@ -1,19 +1,22 @@
 from manager.chart_manager import ChartManger
+from manager.contract_manager import ContractManager
 from variable.constant import *
 from strategy import full_para
 from datetime import datetime
+from pprint import pprint
 
 
 class Trader:
     def __init__(self, main_chart, subject_code, strategy_var, candles):
+        pprint(strategy_var)
         self.charts = {}  # key 값은 chart_id(GCZ17_tick_60)로 되어있음
         self.strategy = []
         self.contracts = []
-        self.result = []
+        self.result = {}
         self.subject_code = subject_code
         self.state = '매매가능'
         self.main_chart = main_chart
-
+        self.contract_manager = ContractManager(self)
         # 차트 생성
         self.charts = ChartManger.create_charts(subject_code, strategy_var, candles)
 
@@ -22,12 +25,9 @@ class Trader:
             if strategy_name == 풀파라:
                 self.strategy.append(full_para.Full_Para(self))
 
-    def send_order(self, order):
-        pass
-
     def run(self, 종목코드):
         print('trader : %s run()' % 종목코드)
-        self.result = []
+        self.result[종목코드] = 0  # 수익
 
         # 한개 월물씩 테스트
         while True:
@@ -51,7 +51,7 @@ class Trader:
             for strategy in self.strategy:
                 order = strategy.check_contract_in_candle(subject_code)
                 if order is not None:
-                    self.send_order(order)
+                    self.contract_manager.send_order(order)
 
             ChartManger.candle_push(체결차트, 체결차트.index + 1)
 

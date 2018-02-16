@@ -7,11 +7,11 @@ from pprint import *
 from simulate.trader import Trader
 
 
-def simulate(main_chart, strategy_var, common_candles, result):
+def simulate(main_chart, strategy_var, common_candles, results):
 
     #try:
     print("%s common candles id : %s" % (os.getpid(), id(common_candles)))
-    print("%s result id : %s" % (os.getpid(), id(result)))
+    print("%s result id : %s" % (os.getpid(), id(results)))
 
     # print(common_data)
     # print(stv.info)
@@ -27,11 +27,13 @@ def simulate(main_chart, strategy_var, common_candles, result):
 
     pprint("테스트 월물%s" % subject_codes)
 
+    result = []
     for subject_code in subject_codes:
         # 한개 월물씩 테스트
         trader = Trader(main_chart, subject_code, strategy_var, common_candles)
         result.append(trader.run(subject_code))
 
+    results.append(result)
     print(result)
 
 
