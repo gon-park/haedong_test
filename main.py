@@ -41,12 +41,14 @@ if __name__ == '__main__':
     log, res, err_log = log_manager.LogManager.__call__().get_logger()
 
     ''' 해당 종목 코드, 테스트 날짜 읽어옴 '''
+    print('strategy.json, test.json 파일 읽어오는 중...')
     strategy_var = json_reader.Reader.read_strategy_config()
     start_date, end_date = json_reader.Reader.read_test_config()
     # pprint(strategy_var)
 
     subject_symbol = strategy_var[SUBJECT_SYMBOL]
 
+    print('DB에서 데이터 읽어오는 중...')
     ''' 해당 종목 테이블 읽어옴 '''
     dbm = db_manager.DBManager()
     temp_tables = dbm.get_table_list(subject_symbol)
@@ -67,11 +69,12 @@ if __name__ == '__main__':
             chart_id = '%s_%s_%s' % (subject_code, chart[TYPE], chart[TIME_UNIT])
             if chart[TYPE] == TICK:
                 chart_candles[chart_id] = dbm.request_tick_candle(subject_code, chart[TIME_UNIT], start_date, end_date)
-                print('캔들 수 : %s' % len(chart_candles[chart_id]))
+                print('%s 캔들 수 : %s' % (subject_code, len(chart_candles[chart_id])))
             else :
                 err_log("TODO")
                 exit()
 
+    print('읽어온 데이터 캔들 형식 변환...')
     tmp_candles = {}
     # chart_candles 변환
     for chart_id in chart_candles.keys():
@@ -95,6 +98,7 @@ if __name__ == '__main__':
     상단까지가 우리가 입력한 날짜에 맞는 테이블을 틱_60으로만 가져오는 코드
     '''
 
+    print('테스트 시작.')
     with mp.Manager() as manager:
         common_candles = manager.dict(tmp_candles)
         result = manager.list()
@@ -122,7 +126,7 @@ if __name__ == '__main__':
             process.start()
             cnt = cnt + 1
 
-            break
+            if cnt == 1: break
 
             if StrategyVarManager.increase_the_number_of_digits(max_array, cur_array) == False: break
 
