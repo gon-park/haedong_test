@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from variable.constant import *
 from manager import __manager
 from config.json_reader import Reader

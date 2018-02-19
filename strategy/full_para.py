@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from variable.constant import *
 from strategy import __base_strategy
 import math
@@ -6,14 +7,16 @@ from variable import subject
 
 
 class FullPara(__base_strategy.BaseStrategy):
+    trader = None
+    chart = None
+    main_chart_id = None
 
-    def __init__(self, trader):
+    def __init__(self, trader_obj):
         super(FullPara, self).__init__()
-        self.charts = trader.charts
-        self.trader = trader
-        type, time_unit = trader.main_chart.split('_')
-        subject_code = trader.subject_code
-
+        self.trader = trader_obj
+        self.charts = self.trader.charts
+        type, time_unit = self.trader.main_chart.split('_')
+        subject_code = self.trader.subject_code
         self.main_chart_id = subject_code + '_' + type + '_' + time_unit
 
     def check_contract_in_candle(self, subject_code):

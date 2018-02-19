@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 info = {
     "GC": {
         "종목명": "GOLD",

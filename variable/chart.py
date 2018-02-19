@@ -1,30 +1,41 @@
+# -*- coding: utf-8 -*-
+
+from pywin.mfc.object import Object
+
+from variable.candles import CandleList
 from variable.constant import *
 from indicator import ma, para
 
-class Chart():
+
+class Chart(Object):
     subject_code = None
     type = None
     time_unit = 0
-    candles = {}
+    candles = CandleList()
     indicators = {}
     index = -1
 
-    def __init__(self, chart_id, indicator_info, candles):
+    def __init__(self, chart_id, indicator_info, candles_dict):
         self.subject_code, self.type, self.time_unit = chart_id.split('_')
-        self.candles = candles
+        self.candles.시가 = candles_dict[시가]
+        self.candles.현재가 = candles_dict[현재가]
+        self.candles.고가 = candles_dict[고가]
+        self.candles.저가 = candles_dict[저가]
+        self.candles.체결시간 = candles_dict[체결시간]
+        self.candles.거래량 = candles_dict[거래량]
+
         for indicator_name in indicator_info:
             self.indicators[indicator_name] = {}
 
             if indicator_name == MA:
                 self.indicators[indicator_name] = []
                 for info in indicator_info[indicator_name]:
-                    self.indicators[indicator_name].append(ma.Variable(candles, info))
+                    self.indicators[indicator_name].append(ma.Variable(self.candles, info))
 
             elif indicator_name == PARA:
                 self.indicators[indicator_name] = []
                 for info in indicator_info[indicator_name]:
-                    self.indicators[indicator_name].append(para.Variable(candles, info))
-
+                    self.indicators[indicator_name].append(para.Variable(self.candles, info))
 
     def __str__(self) -> str:
         return "subject_code=" + str(self.subject_code) + " type=" + str(self.type) + " time_unit=" + str(self.time_unit) + " candles=" + str(self.candles)

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import itertools
 
 from manager import db_manager, log_manager
@@ -9,8 +11,8 @@ from pprint import *
 from simulate import simulator
 import time
 
-# TEST_MAIN_LOG = False
-TEST_MAIN_LOG = True
+TEST_MAIN_LOG = False
+# TEST_MAIN_LOG = True
 
 if __name__ == '__main__':
     # log, res, err_log = log_manager.LogManager.__call__().get_logger()
@@ -38,10 +40,11 @@ if __name__ == '__main__':
             tables.append(table_name[0])
 
     chart_candles = {}
+    '''주거래 차트, charts 의 0번째 인덱스에 있는 차트로 선택'''
     main_chart = None
     for chart in strategy_var[CHARTS]:
-        if main_chart is None: main_chart = '%s_%s' % (
-            chart[TYPE], chart[TIME_UNIT])  # 주거래 차트, charts 의 0번째 인덱스에 있는 차트로 선택
+        if main_chart is None:
+            main_chart = '%s_%s' % (chart[TYPE], chart[TIME_UNIT])
 
         for subject_code in tables:
             chart_id = '%s_%s_%s' % (subject_code, chart[TYPE], chart[TIME_UNIT])

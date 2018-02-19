@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from pickle import OBJ
 
 from pywin.mfc.object import Object

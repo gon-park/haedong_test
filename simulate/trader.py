@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from pywin.mfc.object import Object
 
 from manager.chart_manager import ChartManger
@@ -10,8 +12,11 @@ from pprint import pprint
 
 class Trader(Object):
 
-    def __init__(self, main_chart, subject_code, strategy_var, candles):
-        # pprint(strategy_var)
+    def __init__(self, main_chart, subject_code, strategy_var, common_candles):
+        print("pprint(main_chart)")
+        pprint(main_chart)
+        print("pprint(strategy_var)")
+        pprint(strategy_var)
         self.charts = {}  # key 값은 chart_id(GCZ17_tick_60)로 되어있음
         self.strategy = []
         self.contracts = []
@@ -21,16 +26,16 @@ class Trader(Object):
         self.main_chart = main_chart
         self.contract_manager = ContractManager(self)
         # 차트 생성
-        self.charts = ChartManger.create_charts(subject_code, strategy_var, candles)
+        self.charts = ChartManger.create_charts(subject_code, strategy_var, common_candles)
 
         # 매매 전략 설정
         for strategy_name in strategy_var[STRATEGY]:
             if strategy_name == 풀파라:
                 self.strategy.append(full_para.FullPara(self))
 
-    def run(self, 종목코드):
+    def run(self):
         # print('trader : %s run()' % 종목코드)
-        self.result[종목코드] = 0  # 수익
+        self.result[self.subject_code] = 0  # 수익
 
         # 한개 월물씩 테스트
         while True:
@@ -38,7 +43,7 @@ class Trader(Object):
             체결차트 = None
             for chart_id in self.charts:
                 subject_code, type, time_unit = chart_id.split('_')
-                if 종목코드 != subject_code: continue
+                if self.subject_code != subject_code: continue
 
                 chart = self.charts[chart_id]
 
@@ -58,4 +63,5 @@ class Trader(Object):
 
             ChartManger.candle_push(체결차트, 체결차트.index + 1)
 
+    def get_result(self):
         return self.result

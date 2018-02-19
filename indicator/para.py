@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from pywin.mfc.object import Object
 
 from variable.constant import *

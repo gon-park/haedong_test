@@ -1,32 +1,42 @@
+# -*- coding: utf-8 -*-
+
 from variable.constant import *
 from pprint import pprint
 from simulate.trader import Trader
 
-TEST_SIM_LOG=True
+TEST_SIM_LOG = True
+# TEST_SIM_LOG = False
 
+
+# function simulate()
+#
+# main_chart : 거래를 할지 정하는(?) 차트
+# strategy_var : 해당 Simulate 함수에서 테스트 할 전략 변수 (1개)
+# common_candles : 모든 chart 에 대한 캔들을 가지고 있는 dictionary
+# result : 테스트 결과를 작성할 dictionary
 
 def simulate(main_chart, strategy_var, common_candles, results):
     if TEST_SIM_LOG:
         print("==================================================")
         print('Simulate process(pid=%d) Start.' % os.getpid())
-
-
+    print(common_candles)
 
     '''월물 List 뽑기'''
-    subject_codes = []
+    _월물_list_in_common_candles = []
     for chart_id in common_candles.keys():
-        subject_code, type, time_unit = chart_id.split('_')
-        if subject_code not in subject_codes:
-            subject_codes.append(subject_code)
+        _월물, type, time_unit = chart_id.split('_')
+        if _월물 not in _월물_list_in_common_candles:
+            _월물_list_in_common_candles.append(_월물)
 
     if TEST_SIM_LOG:
-        print("Target Subjects : %s" % subject_codes)
+        print("월물 List : %s" % _월물_list_in_common_candles)
 
     result = []
-    for subject_code in subject_codes:
+    for _월물 in _월물_list_in_common_candles:
         '''한개 월물씩 테스트'''
-        trader = Trader(main_chart, subject_code, strategy_var, common_candles)
-        result.append(trader.run(subject_code))
+        trader = Trader(main_chart, _월물, strategy_var, common_candles)
+        trader.run()
+        result.append(trader.get_result())
 
     results.append(result)
 

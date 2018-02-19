@@ -39,8 +39,6 @@ class ContractManager(__manager.ManagerClass):
 
             self.contracts[info[종목코드]].append(contract)
 
-
-
     def get_name(self):
         return str(self.__class__.__name__)
 

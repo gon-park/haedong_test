@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
+from pywin.mfc.object import Object
+
 from variable.constant import *
 from datetime import datetime
 
 
-class Contract():
+class Contract(Object):
     def __init__(self):
         self.주문번호 = 0
         self.원주문번호 = 0
