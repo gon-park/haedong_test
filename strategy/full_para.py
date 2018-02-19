@@ -5,9 +5,10 @@ import math
 from variable import subject
 
 
-class Full_Para(__base_strategy.BaseStrategy):
+class FullPara(__base_strategy.BaseStrategy):
+
     def __init__(self, trader):
-        super(Full_Para, self).__init__()
+        super(FullPara, self).__init__()
         self.charts = trader.charts
         self.trader = trader
         type, time_unit = trader.main_chart.split('_')

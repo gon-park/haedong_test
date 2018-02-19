@@ -4,13 +4,15 @@ import logging
 import os
 import time
 
+from pywin.mfc.object import Object
+
 from variable.constant import *
 from util.singleton import Singleton
 
 
 # Singleton class --> there is only one log manager
 
-class LogManager(metaclass=Singleton):
+class LogManager(Object, metaclass=Singleton):
     res_logger, info_logger, err_logger = None, None, None
     
     def __init__(self):
@@ -59,7 +61,7 @@ class LogManager(metaclass=Singleton):
         self.info_logger.setLevel(logging.DEBUG)
         # self.info_logger.setLevel(logging.INFO)
         self.res_logger.setLevel(logging.INFO)
-        print("Initialize Log Manager")
+        self.info_logger.info('Initialize Log Manager Instance(pid = % d)' % os.getpid())
 
     def get_logger(self):
         return self.info_logger, self.res_logger, self.err_logger

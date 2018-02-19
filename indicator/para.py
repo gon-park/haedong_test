@@ -1,8 +1,10 @@
+from pywin.mfc.object import Object
+
 from variable.constant import *
 from variable import subject
 
 
-class Variable():
+class Variable(Object):
 
     def __init__(self, candles, indicator_info):
         self.candles = candles
@@ -19,7 +21,7 @@ class Variable():
         self.FLOW = 알수없음
 
 
-class Calc():
+class Calc(Object):
     @staticmethod
     def calc(var, index):
         if var.INDEX < 5:

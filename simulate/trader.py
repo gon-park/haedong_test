@@ -1,3 +1,5 @@
+from pywin.mfc.object import Object
+
 from manager.chart_manager import ChartManger
 from manager.contract_manager import ContractManager
 from variable.constant import *
@@ -6,9 +8,10 @@ from datetime import datetime
 from pprint import pprint
 
 
-class Trader:
+class Trader(Object):
+
     def __init__(self, main_chart, subject_code, strategy_var, candles):
-        pprint(strategy_var)
+        # pprint(strategy_var)
         self.charts = {}  # key 값은 chart_id(GCZ17_tick_60)로 되어있음
         self.strategy = []
         self.contracts = []
@@ -23,10 +26,10 @@ class Trader:
         # 매매 전략 설정
         for strategy_name in strategy_var[STRATEGY]:
             if strategy_name == 풀파라:
-                self.strategy.append(full_para.Full_Para(self))
+                self.strategy.append(full_para.FullPara(self))
 
     def run(self, 종목코드):
-        print('trader : %s run()' % 종목코드)
+        # print('trader : %s run()' % 종목코드)
         self.result[종목코드] = 0  # 수익
 
         # 한개 월물씩 테스트

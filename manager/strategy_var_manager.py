@@ -23,7 +23,7 @@ class StrategyVarManager(__manager.ManagerClass):
         # 전략 변수 Config 불러오기
         config = Reader.read_strategy_config()
 
-        pprint(config)
+        # pprint(config)
         for strategy_name in sorted(config[STRATEGY].keys()):
             for strategy_var in sorted(config[STRATEGY][strategy_name].keys()):
                 if type(config[STRATEGY][strategy_name][strategy_var]) is list:

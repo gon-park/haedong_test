@@ -1,11 +1,15 @@
 import json
+
+from pywin.mfc.object import Object
+
 from manager import log_manager
 from variable.constant import *
 from pprint import pprint
 from util import util
 import collections
 
-class Reader :
+
+class Reader(Object):
 
     def __init__(self):
         pass

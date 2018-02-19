@@ -4,6 +4,7 @@ from manager import __manager
 from variable.chart import Chart
 from indicator import ma, para
 
+
 class ChartManger(__manager.ManagerClass):
 
     @staticmethod
