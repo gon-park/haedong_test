@@ -44,8 +44,8 @@ class Calc(Object):
         temp_low_price_list = []
 
         for i in range(index):
-            temp_high_price_list.append(var.candles[고가][i])
-            temp_low_price_list.append(var.candles[저가][i])
+            temp_high_price_list.append(var.candles.고가[i])
+            temp_low_price_list.append(var.candles.저가[i])
 
         score = 0
 
@@ -94,28 +94,28 @@ class Calc(Object):
         next_sar = temp_sar
 
         if temp_flow == 상향:
-            if var.candles[저가][index] >= next_sar:  # 상승추세에서 저가가 내일의 SAR보다 높으면 하락이 유효
+            if var.candles.저가[index] >= next_sar:  # 상승추세에서 저가가 내일의 SAR보다 높으면 하락이 유효
                 today_sar = next_sar
                 temp_flow = 상향
                 the_lowest_price = 0
-                if var.candles[고가][index] > ep:  # 신고가 발생
-                    the_highest_price = var.candles[고가][index]
-                    ep = var.candles[고가][index]
+                if var.candles.고가[index] > ep:  # 신고가 발생
+                    the_highest_price = var.candles.고가[index]
+                    ep = var.candles.고가[index]
                     af = af + init_af
                     if af > max_af:
                         af = max_af
 
-            elif var.candles[저가][index] < next_sar:  # 상승추세에서 저가가 내일의 SAR보다 낮으면 하향 반전
+            elif var.candles.저가[index] < next_sar:  # 상승추세에서 저가가 내일의 SAR보다 낮으면 하향 반전
                 temp_flow = 하향
                 af = init_af
                 today_sar = ep
                 the_highest_price = 0
-                the_lowest_price = var.candles[저가][index]
+                the_lowest_price = var.candles.저가[index]
 
                 ep = the_lowest_price
 
                 var.SARS.append(next_sar)
-                var.SAR_TIMES.append(var.candles[체결시간][index])
+                var.SAR_TIMES.append(var.candles.체결시간[index])
 
                 if var.SARS[-2] - next_sar > 0:
                     var.맞틀리스트.append(틀)
@@ -123,28 +123,28 @@ class Calc(Object):
                     var.맞틀리스트.append(맞)
                     
         elif temp_flow == 하향:
-            if var.candles[고가][index] <= next_sar:  # 하락추세에서 고가가 내일의 SAR보다 낮으면 하락이 유효
+            if var.candles.고가[index] <= next_sar:  # 하락추세에서 고가가 내일의 SAR보다 낮으면 하락이 유효
                 today_sar = next_sar
                 temp_flow = 하향
                 the_highest_price = 0
-                if var.candles[저가][index] < ep:  # 신저가 발생
-                    the_lowest_price = var.candles[저가][index]
-                    ep = var.candles[저가][index]
+                if var.candles.저가[index] < ep:  # 신저가 발생
+                    the_lowest_price = var.candles.저가[index]
+                    ep = var.candles.저가[index]
                     af = af + init_af
                     if af > max_af:
                         af = max_af
 
-            elif var.candles[고가][index] > next_sar:  # 하락추세에서 고가가 내일의 SAR보다 높으면 상향 반전
+            elif var.candles.고가[index] > next_sar:  # 하락추세에서 고가가 내일의 SAR보다 높으면 상향 반전
                 temp_flow = 상향
                 af = init_af
                 today_sar = ep
                 the_lowest_price = 0
-                the_highest_price = var.candles[고가][index]
+                the_highest_price = var.candles.고가[index]
 
                 ep = the_highest_price
 
                 var.SARS.append(next_sar)
-                var.SAR_TIMES.append(var.candles[체결시간][index])
+                var.SAR_TIMES.append(var.candles.체결시간[index])
 
                 if var.SARS[-2] - next_sar > 0:
                     var.맞틀리스트.append(맞)

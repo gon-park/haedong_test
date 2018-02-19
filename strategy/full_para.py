@@ -33,14 +33,14 @@ class FullPara(__base_strategy.BaseStrategy):
         else:
             # 계약이 없을 때
             if para.FLOW is 상향:
-                if main_chart.candles[저가][main_chart.index + 1] < para.SAR:
+                if main_chart.candles.저가[main_chart.index + 1] < para.SAR:
                     # 하향 반전
                     current_price = math.floor(para.SAR * (1 / subject.info[subject_code[:2]][단위])) / (
                     1 / subject.info[subject_code[:2]][단위])
                     order_info = self.is_it_ok(subject_code, current_price)
                     print('하향 반전, SAR : %s, current_price : %s' % (para.SAR, current_price))
             elif para.FLOW is 하향:
-                if para.SAR < main_chart.candles[고가][main_chart.index + 1]:
+                if para.SAR < main_chart.candles.고가[main_chart.index + 1]:
                     # 상향 반전
                     current_price = math.ceil(para.SAR * (1 / subject.info[subject_code[:2]][단위])) / (1 / subject.info[subject_code[:2]][단위])
                     order_info = self.is_it_ok(subject_code, current_price)

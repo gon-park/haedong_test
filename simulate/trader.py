@@ -46,10 +46,11 @@ class Trader(Object):
                 if self.subject_code != subject_code: continue
 
                 chart = self.charts[chart_id]
+                candles = chart.candles
 
-                if (chart.index + 1) < len(chart.candles[현재가]) and \
-                    (chart.candles[체결시간][chart.index + 1] < _체결시간):
-                    _체결시간 = chart.candles[체결시간][chart.index + 1]
+                if (chart.index + 1) < len(candles.현재가) and \
+                    (chart.candles.체결시간[chart.index + 1] < _체결시간):
+                    _체결시간 = chart.candles.체결시간[chart.index + 1]
                     체결차트 = chart
 
             if _체결시간 == datetime(2099, 1, 1):
