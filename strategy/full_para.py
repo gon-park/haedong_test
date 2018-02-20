@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from variable.constant import *
 from strategy import __base_strategy
 import math
@@ -7,19 +6,15 @@ from variable import subject
 
 
 class FullPara(__base_strategy.BaseStrategy):
-    trader = None
-    chart = None
+    charts = None
     main_chart_id = None
 
-    def __init__(self, trader_obj):
+    def __init__(self, charts: dict, subject_code: str, main_chart: str):
         super(FullPara, self).__init__()
-        self.trader = trader_obj
-        self.charts = self.trader.charts
-        type, time_unit = self.trader.main_chart.split('_')
-        subject_code = self.trader.subject_code
-        self.main_chart_id = subject_code + '_' + type + '_' + time_unit
+        self.charts = charts
+        self.main_chart_id = subject_code + '_' + main_chart
 
-    def check_contract_in_candle(self, subject_code):
+    def check_contract_in_candle(self, subject_code: str, contracts: dict):
         # 메인차트 Index가 부족 할 때 거래 안함
         if self.charts[self.main_chart_id].index < 3000:
             return None
@@ -27,7 +22,7 @@ class FullPara(__base_strategy.BaseStrategy):
         main_chart = self.charts[self.main_chart_id]
         para = main_chart.indicators[PARA][0]
         order_info = None
-        if subject_code in self.trader.contracts and len(self.trader.contracts[self.trader.subject_code]) > 0:
+        if subject_code in contracts and len(contracts[subject_code]) > 0:
             # 계약이 있을 때
             pass
         else:

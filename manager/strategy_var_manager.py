@@ -41,7 +41,7 @@ class StrategyVarManager(__manager.ManagerClass):
         return max_array, cur_array
 
     @staticmethod
-    def get_speific_startegy_var(cur_array):
+    def get_speific_startegy_var(cur_array: list):
         # 전략 변수 Config 불러오기
         config = Reader.read_strategy_config()
         idx = 0
@@ -69,7 +69,7 @@ class StrategyVarManager(__manager.ManagerClass):
 
 
     @staticmethod
-    def increase_the_number_of_digits(max_array, cur_array):
+    def increase_the_number_of_digits(max_array: list, cur_array: list):
         cur_array[-1] += 1
         for i in range(len(cur_array) - 1, -1, -1):
             if cur_array[i] > max_array[i]:

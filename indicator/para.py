@@ -2,13 +2,14 @@
 
 from pywin.mfc.object import Object
 
+from variable.candles import CandleList
 from variable.constant import *
 from variable import subject
 
 
 class Variable(Object):
 
-    def __init__(self, candles, indicator_info):
+    def __init__(self, candles: CandleList, indicator_info: dict):
         self.candles = candles
         self.INIT_AF = indicator_info[INIT_AF]
         self.MAX_AF = indicator_info[MAX_AF]
@@ -24,8 +25,9 @@ class Variable(Object):
 
 
 class Calc(Object):
+
     @staticmethod
-    def calc(var, index):
+    def calc(var: Variable, index: int):
         if var.INDEX < 5:
             var.FLOWS.append(None)
         elif var.INDEX == 5:
@@ -36,7 +38,7 @@ class Calc(Object):
         var.INDEX = index
 
     @staticmethod
-    def init_sar(var, index):
+    def init_sar(var: Variable, index: int):
         ep = var.EP
         af = var.AF
 
@@ -75,7 +77,7 @@ class Calc(Object):
         Calc.calc_sar(var, index)
 
     @staticmethod
-    def calc_sar(var, index):
+    def calc_sar(var: Variable, index: int):
         af = var.AF
         init_af = var.INIT_AF
         max_af = var.MAX_AF

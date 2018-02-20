@@ -10,7 +10,7 @@ class ContractManager(__manager.ManagerClass):
         self.trader = trader
         self.contracts = {}
 
-    def send_order(self, info):
+    def send_order(self, info: dict):
         if info[종목코드] not in self.contracts:
             self.contracts[종목코드] = []
 

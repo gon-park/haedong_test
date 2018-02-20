@@ -8,7 +8,8 @@ from indicator import ma, para
 class ChartManger(__manager.ManagerClass):
 
     @staticmethod
-    def create_charts(subject_code, strategy_var, candles):
+    def create_charts(subject_code: str, strategy_var: dict, candles: dict):
+        print("=======================")
         charts = {}
 
         for chart_id in candles.keys():
@@ -20,7 +21,7 @@ class ChartManger(__manager.ManagerClass):
         return charts
 
     @staticmethod
-    def candle_push(chart, index):
+    def candle_push(chart: Chart, index: int):
         chart.index += 1
 
         for indicator_name in chart.indicators:
@@ -31,7 +32,6 @@ class ChartManger(__manager.ManagerClass):
                 for indicator in chart.indicators[indicator_name]:
                     para.Calc.calc(indicator, chart.index)
 
-    
     def get_name(self):
         return str(self.__class__.__name__)
 

@@ -10,10 +10,12 @@ from pprint import pprint
 
 
 class Variable(Object):
+    candles = None
+    LENGTH = 0
+    MA = []
 
-    def __init__(self, candles, indicator_info):
+    def __init__(self,  candles: CandleList, indicator_info: dict):
         self.candles = candles
-        self.candles.__class__ = CandleList
         self.LENGTH = indicator_info[LENGTH]
         self.MA = []
 
@@ -24,7 +26,7 @@ class Variable(Object):
 class Calc(Object):
 
     @staticmethod
-    def calc(var, index):
+    def calc(var: Variable, index: int):
         if index < var.LENGTH - 1:
             var.MA.append(None)
         elif index == var.LENGTH - 1:

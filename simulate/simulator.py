@@ -15,26 +15,26 @@ TEST_SIM_LOG = True
 # common_candles : 모든 chart 에 대한 캔들을 가지고 있는 dictionary
 # result : 테스트 결과를 작성할 dictionary
 
-def simulate(main_chart, strategy_var, common_candles, results):
+def simulate(main_chart: str, strategy_var: dict, common_candles: dict, results: dict):
     if TEST_SIM_LOG:
         print("==================================================")
         print('Simulate process(pid=%d) Start.' % os.getpid())
     print(common_candles)
 
     '''월물 List 뽑기'''
-    _월물_list_in_common_candles = []
+    subject_code_list_in_common_candles = []
     for chart_id in common_candles.keys():
-        _월물, type, time_unit = chart_id.split('_')
-        if _월물 not in _월물_list_in_common_candles:
-            _월물_list_in_common_candles.append(_월물)
+        subject_code, type, time_unit = chart_id.split('_')
+        if subject_code not in subject_code_list_in_common_candles:
+            subject_code_list_in_common_candles.append(subject_code)
 
     if TEST_SIM_LOG:
-        print("월물 List : %s" % _월물_list_in_common_candles)
+        print("월물 List : %s" % subject_code_list_in_common_candles)
 
     result = []
-    for _월물 in _월물_list_in_common_candles:
+    for _월물 in subject_code_list_in_common_candles:
         '''한개 월물씩 테스트'''
-        trader = Trader(main_chart, _월물, strategy_var, common_candles)
+        trader = Trader(main_chart, subject_code, strategy_var, common_candles)
         trader.run()
         result.append(trader.get_result())
 

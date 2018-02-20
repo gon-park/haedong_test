@@ -15,7 +15,7 @@ class Chart(Object):
     indicators = {}
     index = -1
 
-    def __init__(self, chart_id, indicator_info, candles_dict):
+    def __init__(self, chart_id: str, indicator_info: dict, candles_dict: dict):
         self.subject_code, self.type, self.time_unit = chart_id.split('_')
         self.candles = CandleList()
         self.candles.시가 = candles_dict[시가]

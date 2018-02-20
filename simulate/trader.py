@@ -11,16 +11,16 @@ from pprint import pprint
 
 
 class Trader(Object):
+    charts = {}  # key 값은 chart_id(GCZ17_tick_60)로 되어있음
+    strategy = []
+    contracts = []
+    result = {}
+    subject_code = ''
+    state = ''
+    main_chart = ''
+    contract_manager = None
 
-    def __init__(self, main_chart, subject_code, strategy_var, common_candles):
-        print("pprint(main_chart)")
-        pprint(main_chart)
-        print("pprint(strategy_var)")
-        pprint(strategy_var)
-        self.charts = {}  # key 값은 chart_id(GCZ17_tick_60)로 되어있음
-        self.strategy = []
-        self.contracts = []
-        self.result = {}
+    def __init__(self, main_chart: str, subject_code: str, strategy_var: dict, common_candles: dict):
         self.subject_code = subject_code
         self.state = '매매가능'
         self.main_chart = main_chart
@@ -31,7 +31,9 @@ class Trader(Object):
         # 매매 전략 설정
         for strategy_name in strategy_var[STRATEGY]:
             if strategy_name == 풀파라:
-                self.strategy.append(full_para.FullPara(self))
+                self.strategy.append(full_para.FullPara(self.charts, self.subject_code, self.main_chart))
+            else:
+                raise NotImplementedError
 
     def run(self):
         # print('trader : %s run()' % 종목코드)
@@ -58,7 +60,7 @@ class Trader(Object):
                 break
 
             for strategy in self.strategy:
-                order = strategy.check_contract_in_candle(subject_code)
+                order = strategy.check_contract_in_candle(subject_code, self.contracts)
                 if order is not None:
                     self.contract_manager.send_order(order)
 
