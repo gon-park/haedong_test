@@ -10,9 +10,6 @@ from pprint import pprint
 
 
 class Variable(Object):
-    candles = None
-    LENGTH = 0
-    MA = []
 
     def __init__(self,  candles: CandleList, indicator_info: dict):
         self.candles = candles

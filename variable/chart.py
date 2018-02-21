@@ -8,15 +8,10 @@ from indicator import ma, para
 
 
 class Chart(Object):
-    subject_code = None
-    type = None
-    time_unit = 0
-    candles = None
-    indicators = {}
-    index = -1
-
     def __init__(self, chart_id: str, indicator_info: dict, candles_dict: dict):
         self.subject_code, self.type, self.time_unit = chart_id.split('_')
+        self.indicators = {}
+        self.index = -1
         self.candles = CandleList()
         self.candles.시가 = candles_dict[시가]
         self.candles.현재가 = candles_dict[현재가]

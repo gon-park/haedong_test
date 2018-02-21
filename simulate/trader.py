@@ -11,16 +11,12 @@ from pprint import pprint
 
 
 class Trader(Object):
-    charts = {}  # key 값은 chart_id(GCZ17_tick_60)로 되어있음
-    strategy = []
-    contracts = []
-    result = {}
-    subject_code = ''
-    state = ''
-    main_chart = ''
-    contract_manager = None
 
     def __init__(self, main_chart: str, subject_code: str, strategy_var: dict, common_candles: dict):
+        self.charts = {}  # key 값은 chart_id(GCZ17_tick_60)로 되어있음
+        self.strategy = []
+        self.contracts = []
+        self.result = {}
         self.subject_code = subject_code
         self.state = '매매가능'
         self.main_chart = main_chart

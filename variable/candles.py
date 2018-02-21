@@ -3,12 +3,10 @@ from pywin.mfc.object import Object
 
 
 class CandleList(Object):
-    시가 = []
-    현재가 = []
-    고가 = []
-    저가 = []
-    체결시간 = []
-    거래량 = []
-
     def __init__(self):
-        pass
+        self.시가 = []
+        self.현재가 = []
+        self.고가 = []
+        self.저가 = []
+        self.체결시간 = []
+        self.거래량 = []
