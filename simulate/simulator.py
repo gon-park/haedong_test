@@ -19,7 +19,7 @@ def simulate(main_chart: str, strategy_var: dict, common_candles: dict, results:
     if TEST_SIM_LOG:
         print("==================================================")
         print('Simulate process(pid=%d) Start.' % os.getpid())
-    print(common_candles)
+        # print(common_candles)
 
     '''월물 List 뽑기'''
     subject_code_list_in_common_candles = []

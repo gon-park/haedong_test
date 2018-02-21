@@ -11,8 +11,8 @@ from pprint import *
 from simulate import simulator
 import time
 
-TEST_MAIN_LOG = False
-# TEST_MAIN_LOG = True
+#TEST_MAIN_LOG = False
+TEST_MAIN_LOG = True
 
 if __name__ == '__main__':
     # log, res, err_log = log_manager.LogManager.__call__().get_logger()

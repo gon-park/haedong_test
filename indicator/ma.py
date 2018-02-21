@@ -32,3 +32,24 @@ class Calc(Object):
         else:
             var.tmp_sum += (var.candles.현재가[index] - var.candles.현재가[index - var.LENGTH])
             var.MA.append(float(var.tmp_sum) / float(var.LENGTH))
+
+    @staticmethod
+    def is_sorted(ma_list: list):
+        if len(ma_list) < 2:
+            return 알수없음
+
+        ma = []
+        for i in range(0, len(ma_list)):
+            ma.append(ma_list[i].MA[-1])
+
+        asc = ma[:]
+        asc.sort()
+        desc = asc[:]
+        desc.reverse()
+
+        if ma == asc:
+            return 상승세
+        if ma == desc:
+            return 하락세
+
+        return 알수없음
