@@ -27,7 +27,8 @@ DAY = "day"
 SUBJECT_SYMBOL = "subject_symbol"
 CHARTS = "charts"
 풀파라 = "full_para"
-드리블틱 = "drible_tick"
+수익드리블틱 = "profit_dribble_tick"
+손절드리블틱 = "sonjul_dribble_tick"
 TYPE = "type"
 TIME_UNIT = "time_unit"
 INDICATORS = "indicators"
@@ -75,6 +76,7 @@ ZERO = 0
 수수료 = 15
 가격 = "가격"
 수량 = "수량"
+매매전략 = "매매전략"
 
 # 지표
 상향 = "상향"
@@ -88,8 +90,7 @@ ZERO = 0
 # 종목정보
 단위 = "단위"
 틱가치 = "틱가치"
+자릿수 = "자릿수"
 
 # 파라
 반대매매틱 = "reverse_tick"
-드리블틱 = "drible_tick"
-

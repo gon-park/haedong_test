@@ -27,7 +27,7 @@ class Trader(Object):
         # 매매 전략 설정
         for strategy_name in strategy_var[STRATEGY]:
             if strategy_name == 풀파라:
-                self.strategy.append(full_para.FullPara(self.charts, self.subject_code, self.main_chart, strategy_var[STRATEGY][strategy_name]))
+                self.strategy.append(full_para.FullPara(self.charts, self.subject_code, self.main_chart, strategy_var[STRATEGY][strategy_name], self.contracts))
             else:
                 raise NotImplementedError
 
@@ -56,7 +56,7 @@ class Trader(Object):
                 break
 
             for strategy in self.strategy:
-                order = strategy.check_contract_in_candle(subject_code, self.contracts)
+                order = strategy.check_contract_in_candle(subject_code)
                 if order is not None:
                     self.contract_manager.send_order(order)
 

@@ -100,6 +100,7 @@ class Calc(Object):
                 today_sar = next_sar
                 temp_flow = 상향
                 the_lowest_price = 0
+
                 if var.candles.고가[index] > ep:  # 신고가 발생
                     the_highest_price = var.candles.고가[index]
                     ep = var.candles.고가[index]
