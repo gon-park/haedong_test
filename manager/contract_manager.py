@@ -29,6 +29,7 @@ class ContractManager(__manager.ManagerClass):
                 del self.contracts[info[종목코드]][idx]
 
                 self.trader.result[info[종목코드]] += (profit - (2 * 수수료)) # 수익계산
+                self.log.info("누적수익[%s] : %s" % (info[종목코드], self.trader.result[info[종목코드]]))
             else: idx += 1
 
         # 신규

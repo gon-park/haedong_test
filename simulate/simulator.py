@@ -34,7 +34,7 @@ def simulate(main_chart: str, strategy_var: dict, common_candles: dict, results:
     result = []
     for _월물 in subject_code_list_in_common_candles:
         '''한개 월물씩 테스트'''
-        trader = Trader(main_chart, subject_code, strategy_var, common_candles)
+        trader = Trader(main_chart, _월물, strategy_var, common_candles)
         trader.run()
         result.append(trader.get_result())
 
