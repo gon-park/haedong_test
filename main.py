@@ -119,7 +119,7 @@ if __name__ == '__main__':
         if TEST_MAIN_LOG:
             print('#%d.\t\t 병렬 테스트 수행 (Core 수=%d, 횟수=%d)' % (step.__next__(), (mp.cpu_count() - 1), total_count))
 
-        pool = mp.Pool(processes=mp.cpu_count() - 1)
+        pool = mp.Pool(processes=mp.cpu_count())
         # pool = mp.Pool(1)
 
         while True:
