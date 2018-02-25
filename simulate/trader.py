@@ -6,7 +6,7 @@ from variable.constant import *
 from strategy import full_para
 from datetime import datetime
 from pprint import pprint
-
+from strategy.full_para import FullPara
 
 class Trader():
 
@@ -58,8 +58,13 @@ class Trader():
                 order = strategy.check_contract_in_candle(subject_code)
                 if order is not None:
                     self.contract_manager.send_order(order)
+                    if FullPara.get_contract_count(subject_code, self.contracts, 풀파라) == 0:
+                        order = strategy.check_contract_in_candle(subject_code)
+                        if order is not None:
+                            self.contract_manager.send_order(order)
 
             ChartManger.candle_push(체결차트, 체결차트.index + 1)
 
+        #print(self.charts['GCJ18_tick_60'].indicators[PARA][0].SARS)
     def get_result(self):
         return self.result

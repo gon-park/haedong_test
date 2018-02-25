@@ -46,8 +46,8 @@ class Calc():
         desc.reverse()
 
         if ma == asc:
-            return 상승세
-        if ma == desc:
             return 하락세
+        if ma == desc:
+            return 상승세
 
         return 알수없음
