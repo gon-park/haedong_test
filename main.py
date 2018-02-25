@@ -128,7 +128,7 @@ if __name__ == '__main__':
             ''' 해당 부분에서 Multiprocessing 으로 테스트 시작 '''
             procs_results.append(pool.apply_async(func=simulator.simulate, args=(main_chart, config, common_candles,),
                                                   callback=end_simulate))
-
+            break
             if StrategyVarManager.increase_the_number_of_digits(max_array, cur_array) is False:
                 break
 
@@ -158,7 +158,8 @@ if __name__ == '__main__':
             # TODO
             # if TEST_MAIN_LOG:
             print('\t\t #%d 테스트 결과 : %s' % (i, simulation_report[i].__dict__))  # 더 디테일하게 변경
-
+            for report in simulation_report[i].월물:
+                print('\t\t %s: %s' % (report.종목코드, report.수익))
             # log.info("해당 코드의 Git Hash : %s" % label)
             # while True:
             #     log.info("Database에 넣을 결과 Index를 입력해주세요.(종료 : -1)")
