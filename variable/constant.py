@@ -95,3 +95,7 @@ ZERO = 0
 # 파라
 반대매매틱 = "reverse_tick"
 갱신손절틱 = "update_sonjul_tick"
+
+# 결과
+TOTAL = "TOTAL"
+전략변수 = "전략변수"

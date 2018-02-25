@@ -9,7 +9,6 @@ class ChartManger(__manager.ManagerClass):
 
     @staticmethod
     def create_charts(subject_code: str, strategy_var: dict, candles: dict):
-        print("=======================")
         charts = {}
 
         for chart_id in candles.keys():
