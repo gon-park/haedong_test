@@ -6,7 +6,8 @@
       "profit_dribble_tick" : [[5, 5, 0], [15, 15, 0]],
       "sonjul_tick" : [[[80, 80, 0], [1, 1, 0]]],
       "sonjul_dribble_tick" : [[0, 0, 0]],
-      "reverse_tick" : 40
+      "reverse_tick" : 40,
+      "update_sonjul_tick" : 50
     }
   },
   "charts" : [
