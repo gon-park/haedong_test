@@ -157,7 +157,7 @@ class Calc(Object):
         next_sar = today_sar + af * (max(the_highest_price, the_lowest_price) - today_sar)
 
         var.SAR = next_sar
-        print('%s, %s, %s' % (index, var.candles.체결시간[index], round(var.SAR, 2)))
+        #print('%s, %s, %s' % (index, var.candles.체결시간[index], round(var.SAR, 2)))
         var.EP = ep
         var.AF = af
         var.FLOW = temp_flow

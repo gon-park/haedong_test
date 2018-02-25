@@ -218,7 +218,7 @@ class FullPara(__base_strategy.BaseStrategy):
             수량: 2,
             가격: current_price
         }
-        log.info("FullPara.is_it_ok(): %s 진입.(pid = %s)" % (self.order_contents, self.pid))
+        log.info("FullPara.is_it_ok(): %s, %s 진입.(pid = %s)" % (메인차트.candles.체결시간[메인차트.index], self.order_contents, self.pid))
         # 익절, 손절틱 복사
         self.profit_tick = self.strategy_var[익절틱][:]
         self.sonjul_tick = self.strategy_var[손절틱][:]

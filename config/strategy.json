@@ -2,7 +2,7 @@
   "subject_symbol" : "GC",
   "strategy" : {
     "full_para" : {
-      "profit_tick" : [[[77, 77, 0], [0.5, 0.5, 0]], [[250, 250, 0], [1, 1, 0]]],
+      "profit_tick" : [[[77, 77, 0], [0.5, 0.5, 0]], [[200, 200, 0], [1, 1, 0]]],
       "profit_dribble_tick" : [[5, 5, 0], [15, 15, 0]],
       "sonjul_tick" : [[[80, 80, 0], [1, 1, 0]]],
       "sonjul_dribble_tick" : [[0, 0, 0]],

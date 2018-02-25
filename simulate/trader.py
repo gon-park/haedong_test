@@ -49,6 +49,7 @@ class Trader(Object):
                 if (chart.index + 1) < len(candles.현재가) and \
                     (chart.candles.체결시간[chart.index + 1] < _체결시간):
                     _체결시간 = chart.candles.체결시간[chart.index + 1]
+                    # 체결시간은 차트 다음캔들의 체결시간으로 비교해야함. 체결시간은 끝시간이 아니고 시작시간이기 때문에
                     체결차트 = chart
 
             if _체결시간 == datetime(2099, 1, 1):

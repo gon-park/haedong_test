@@ -104,6 +104,10 @@ if __name__ == '__main__':
             config = StrategyVarManager.get_speific_startegy_var(cur_array)
 
             ''' 해당 부분에서 Multiprocessing 으로 테스트 시작 '''
+            from pprint import pprint
+            pprint('main_chart : %s' % main_chart)
+            pprint(config)
+            #print('common_candles : %s' % common_candles)
             process = mp.Process(target=simulator.simulate, args=(main_chart, config, common_candles, result,))
             procs.append(process)
 

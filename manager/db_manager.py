@@ -162,6 +162,7 @@ class DBManager(__manager.ManagerClass):
             ;
             ''' % (tick_unit, tick_unit, tick_unit, subject_code, start_date, end_date, tick_unit, subject_code, subject_code)
 
+        #print(query)
         return self.exec_query(query, fetch_type=FETCH_ALL, cursor_type=CURSOR_DICT)
 
     def print_status(self):
