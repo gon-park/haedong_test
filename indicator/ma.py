@@ -2,14 +2,12 @@
 
 from pickle import OBJ
 
-from pywin.mfc.object import Object
-
 from variable.candles import CandleList
 from variable.constant import *
 from pprint import pprint
 
 
-class Variable(Object):
+class Variable():
 
     def __init__(self,  candles: CandleList, indicator_info: dict):
         self.candles = candles
@@ -20,7 +18,7 @@ class Variable(Object):
         self.tmp_sum = 0
 
 
-class Calc(Object):
+class Calc():
 
     @staticmethod
     def calc(var: Variable, index: int):

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-from pywin.mfc.object import Object
 
-
-class CandleList(Object):
+class CandleList():
     def __init__(self):
         self.시가 = []
         self.현재가 = []
