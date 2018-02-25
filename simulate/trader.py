@@ -61,6 +61,5 @@ class Trader():
 
             ChartManger.candle_push(체결차트, 체결차트.index + 1)
 
-        print(self.charts['GCJ18_tick_60'].indicators[PARA][0].SARS)
     def get_result(self):
         return self.result

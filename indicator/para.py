@@ -22,7 +22,7 @@ class Variable():
         self.FLOW = 알수없음
 
 
-class Calc(Object):
+class Calc():
 
     @staticmethod
     def calc(var: Variable, index: int):
@@ -120,7 +120,7 @@ class Calc(Object):
                     var.맞틀리스트.append(틀)
                 else:
                     var.맞틀리스트.append(맞)
-                print("하향 반전, 수익 = %s, %s" % ((var.SARS[-1] - var.SARS[-2]), var.candles.체결시간[index]))
+                # print("하향 반전, 수익 = %s, %s" % ((var.SARS[-1] - var.SARS[-2]), var.candles.체결시간[index]))
                     
         elif temp_flow == 하향:
             if var.candles.고가[index] <= next_sar:  # 하락추세에서 고가가 내일의 SAR보다 낮으면 하락이 유효
@@ -150,7 +150,7 @@ class Calc(Object):
                     var.맞틀리스트.append(맞)
                 else:
                     var.맞틀리스트.append(틀)
-                print("상향 반전, 수익 = %s, %s" % ((var.SARS[-2] - var.SARS[-1]), var.candles.체결시간[index]))
+                # print("상향 반전, 수익 = %s, %s" % ((var.SARS[-2] - var.SARS[-1]), var.candles.체결시간[index]))
 
         next_sar = today_sar + af * (max(the_highest_price, the_lowest_price) - today_sar)
 

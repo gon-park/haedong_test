@@ -5,6 +5,7 @@ import itertools
 from manager import db_manager, log_manager
 from manager.strategy_var_manager import StrategyVarManager
 from config import json_reader
+from util.util import callback
 from variable.constant import *
 import multiprocessing as mp
 from pprint import *
@@ -94,34 +95,23 @@ if __name__ == '__main__':
             total_count *= (cnt + 1)
 
         s = time.time()
-        procs = []
-        cnt = 0
+        procs_results = []
 
         if TEST_MAIN_LOG:
-            print('#%d.\t\t 병렬 테스트 수행 (%d회)' % (step.__next__(), total_count))
+            print('#%d.\t\t 병렬 테스트 수행 (Core 수=%d, 횟수=%d)' % (step.__next__(), (mp.cpu_count() - 1), total_count))
 
+        pool = mp.Pool(processes=mp.cpu_count() - 1)
         while True:
             config = StrategyVarManager.get_speific_startegy_var(cur_array)
 
             ''' 해당 부분에서 Multiprocessing 으로 테스트 시작 '''
-            from pprint import pprint
-            pprint('main_chart : %s' % main_chart)
-            pprint(config)
-            #print('common_candles : %s' % common_candles)
-            process = mp.Process(target=simulator.simulate, args=(main_chart, config, common_candles, result,))
-            procs.append(process)
-
-            process.start()
-            cnt = cnt + 1
-
-            if cnt == 1:
-                break
+            procs_results.append(pool.apply_async(func=simulator.simulate, args=(main_chart, config, common_candles, result,), callback=callback))
 
             if StrategyVarManager.increase_the_number_of_digits(max_array, cur_array) is False:
                 break
 
-        for process in procs:
-            process.join()
+        pool.close()
+        pool.join()
 
         e = time.time()
 
@@ -132,11 +122,15 @@ if __name__ == '__main__':
             print('#Fin\t 시뮬레이션 종료')
             print("\t\t 처리시간 : %s s" % (e - s))
 
+        if TEST_MAIN_LOG:
+            for procs_result in procs_results:
+                if not procs_result.successful():
+                    print(procs_result.get())
+
         for i in range(0, min(len(result), 10)):
             # TODO
             # if TEST_MAIN_LOG:
                 print('\t\t #%d 테스트 결과 : %s' % (i, result[i]))  # 더 디테일하게 변경
-
 
             # log.info("해당 코드의 Git Hash : %s" % label)
             # while True:

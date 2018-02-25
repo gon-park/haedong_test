@@ -1,3 +1,6 @@
+import time
+
+
 def increase_the_number_of_digits(max_array, cur_array):
     cur_array[-1] += 1
     for i in range(len(cur_array) - 1, -1, -1):
@@ -48,3 +51,24 @@ def get_strategy_var(cur_array, idx, params):
 
     else:
         return 1, get_divide_value(params, cur_array[idx])
+
+
+def print_proc_time(method):
+    def timed(*args, **kw):
+        import time, os
+        ts = time.time()
+        result = method(*args, **kw)
+        te = time.time()
+        # if 'log_time' in kw:
+        #     name = kw.get('log_name', method.__name__.upper())
+        #     kw['log_time'][name] = int((te - ts) * 1000)
+        # else:
+        print('%r(pid=%s)  %2.2f ms' % \
+              (method.__name__, os.getpid, (te - ts) * 1000))
+        return result
+    return timed
+
+
+def callback(x):
+    import multiprocessing as mp
+    print('{} running callback with arg {}'.format(mp.current_process().name, x))
