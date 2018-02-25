@@ -4,6 +4,8 @@ from pprint import pprint
 from simulate.trader import Trader
 import time
 
+from variable.reports import Reports
+
 TEST_SIM_LOG = True
 # TEST_SIM_LOG = False
 
@@ -16,10 +18,9 @@ TEST_SIM_LOG = True
 # result : 테스트 결과를 작성할 dictionary
 
 
-def simulate(main_chart: str, strategy_var: dict, common_candles: dict, results: dict):
-
-    if TEST_SIM_LOG:
-        print('[Start] Simulate process(ppid=%d, pid=%d) ' % (os.getppid(), os.getpid()))
+def simulate(main_chart: str, strategy_var: dict, common_candles: dict):
+    # if TEST_SIM_LOG:
+    #     print('[Start] Simulate process(ppid=%d, pid=%d) ' % (os.getppid(), os.getpid()))
 
     '''월물 List 뽑기'''
     subject_code_list_in_common_candles = []
@@ -31,17 +32,14 @@ def simulate(main_chart: str, strategy_var: dict, common_candles: dict, results:
     # if TEST_SIM_LOG:
     #     print("월물 List : %s" % subject_code_list_in_common_candles)
 
-    result = []
+    reports = Reports()
     for _월물 in subject_code_list_in_common_candles:
         '''한개 월물씩 테스트'''
         trader = Trader(main_chart, _월물, strategy_var, common_candles)
         trader.run()
-        result.append(trader.get_result())
+        reports.월물.append(trader.get_result())
 
-    results.append(result)
+    reports.pid = os.getpid()
+    reports.전략변수 = strategy_var
 
-    if TEST_SIM_LOG:
-        print('[End] Simulate process(pid=%d)' % os.getpid())
-
-    return "test"
-    pass
+    return reports

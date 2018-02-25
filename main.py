@@ -1,19 +1,38 @@
 # -*- coding: utf-8 -*-
 
 import itertools
+from random import random, randint
 
 from manager import db_manager, log_manager
 from manager.strategy_var_manager import StrategyVarManager
 from config import json_reader
-from util.util import callback
+from util.util import print_proc_time
 from variable.constant import *
 import multiprocessing as mp
 from pprint import *
 from simulate import simulator
 import time
 
-#TEST_MAIN_LOG = False
+# TEST_MAIN_LOG = False
+from variable.reports import Reports
+
 TEST_MAIN_LOG = True
+
+simulation_report = []
+total_count = 0
+current_count = 0
+
+def end_simulate(reports: Reports):
+    global current_count, total_count
+    # 총 수익 계산
+    for report in reports.월물:
+        reports.총수익 += report.수익
+
+    simulation_report.append(reports)
+    current_count += 1
+    print('[End] Simulate process(pid=%d) %s/%s (%s%%)' % (reports.pid, current_count, total_count, round(float(current_count) * 100 / float(total_count))))
+    pass
+
 
 if __name__ == '__main__':
     # log, res, err_log = log_manager.LogManager.__call__().get_logger()
@@ -87,7 +106,7 @@ if __name__ == '__main__':
 
     with mp.Manager() as manager:
         common_candles = manager.dict(tmp_candles)
-        result = manager.list()
+        # result = manager.list()
 
         max_array, cur_array = StrategyVarManager.get_strategy_var_array()  # 전략변수 횟수 테이블 계산
         total_count = 1
@@ -101,11 +120,14 @@ if __name__ == '__main__':
             print('#%d.\t\t 병렬 테스트 수행 (Core 수=%d, 횟수=%d)' % (step.__next__(), (mp.cpu_count() - 1), total_count))
 
         pool = mp.Pool(processes=mp.cpu_count() - 1)
+        # pool = mp.Pool(1)
+
         while True:
             config = StrategyVarManager.get_speific_startegy_var(cur_array)
 
             ''' 해당 부분에서 Multiprocessing 으로 테스트 시작 '''
-            procs_results.append(pool.apply_async(func=simulator.simulate, args=(main_chart, config, common_candles, result,), callback=callback))
+            procs_results.append(pool.apply_async(func=simulator.simulate, args=(main_chart, config, common_candles,),
+                                                  callback=end_simulate))
 
             if StrategyVarManager.increase_the_number_of_digits(max_array, cur_array) is False:
                 break
@@ -119,18 +141,23 @@ if __name__ == '__main__':
         ''' 상위 N개의 결과 보여 줌 '''
 
         if TEST_MAIN_LOG:
-            print('#Fin\t 시뮬레이션 종료')
-            print("\t\t 처리시간 : %s s" % (e - s))
+            print('#Fin\t 시뮬레이션 종료 처리시간 : %s s' % (e - s))
 
         if TEST_MAIN_LOG:
             for procs_result in procs_results:
                 if not procs_result.successful():
                     print(procs_result.get())
 
-        for i in range(0, min(len(result), 10)):
+        # 정렬
+        for i in range(0, len(simulation_report)):
+            for j in range(i + 1, len(simulation_report)):
+                if simulation_report[i].총수익 < simulation_report[j].총수익:
+                    simulation_report[i], simulation_report[j] = simulation_report[j], simulation_report[i]
+
+        for i in range(0, min(len(simulation_report), 10)):
             # TODO
             # if TEST_MAIN_LOG:
-                print('\t\t #%d 테스트 결과 : %s' % (i, result[i]))  # 더 디테일하게 변경
+            print('\t\t #%d 테스트 결과 : %s' % (i, simulation_report[i].__dict__))  # 더 디테일하게 변경
 
             # log.info("해당 코드의 Git Hash : %s" % label)
             # while True:

@@ -67,8 +67,3 @@ def print_proc_time(method):
               (method.__name__, os.getpid, (te - ts) * 1000))
         return result
     return timed
-
-
-def callback(x):
-    import multiprocessing as mp
-    print('{} running callback with arg {}'.format(mp.current_process().name, x))

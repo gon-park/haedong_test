@@ -7,6 +7,8 @@ from strategy import full_para
 from datetime import datetime
 from pprint import pprint
 from strategy.full_para import FullPara
+from variable.report import Report
+
 
 class Trader():
 
@@ -14,7 +16,7 @@ class Trader():
         self.charts = {}  # key 값은 chart_id(GCZ17_tick_60)로 되어있음
         self.strategy = []
         self.contracts = {}
-        self.result = {}
+        self.result = Report(subject_code)
         self.subject_code = subject_code
         self.state = '매매가능'
         self.main_chart = main_chart
@@ -31,7 +33,7 @@ class Trader():
 
     def run(self):
         # print('trader : %s run()' % 종목코드)
-        self.result[self.subject_code] = 0  # 수익
+        self.result.수익 = 0  # 수익
 
         # 한개 월물씩 테스트
         while True:
@@ -65,6 +67,5 @@ class Trader():
 
             ChartManger.candle_push(체결차트, 체결차트.index + 1)
 
-        #print(self.charts['GCJ18_tick_60'].indicators[PARA][0].SARS)
     def get_result(self):
         return self.result
