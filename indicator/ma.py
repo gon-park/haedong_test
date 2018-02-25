@@ -2,8 +2,6 @@
 
 from pickle import OBJ
 
-from pywin.mfc.object import Object
-
 from variable.candles import CandleList
 from variable.constant import *
 from pprint import pprint

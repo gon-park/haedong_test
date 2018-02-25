@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from pywin.mfc.object import Object
-
 from variable.candles import CandleList
 from variable.constant import *
 from indicator import ma, para
 
 
-class Chart(Object):
+class Chart():
     def __init__(self, chart_id: str, indicator_info: dict, candles_dict: dict):
         self.subject_code, self.type, self.time_unit = chart_id.split('_')
         self.indicators = {}

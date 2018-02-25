@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from pywin.mfc.object import Object
-
 from manager.chart_manager import ChartManger
 from manager.contract_manager import ContractManager
 from variable.constant import *
@@ -10,7 +8,7 @@ from datetime import datetime
 from pprint import pprint
 
 
-class Trader(Object):
+class Trader():
 
     def __init__(self, main_chart: str, subject_code: str, strategy_var: dict, common_candles: dict):
         self.charts = {}  # key 값은 chart_id(GCZ17_tick_60)로 되어있음

@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from pywin.mfc.object import Object
-
 from variable.candles import CandleList
 from variable.constant import *
 from variable import subject
 
 
-class Variable(Object):
+class Variable():
 
     def __init__(self, candles: CandleList, indicator_info: dict):
         self.candles = candles

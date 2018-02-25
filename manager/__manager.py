@@ -3,12 +3,10 @@
 import abc
 import inspect
 
-from pywin.mfc.object import Object
-
 from manager.log_manager import LogManager
 
 
-class ManagerClass(Object, metaclass=abc.ABCMeta):
+class ManagerClass(metaclass=abc.ABCMeta):
     log, res, err_log = None, None, None
 
     def __init__(self):
