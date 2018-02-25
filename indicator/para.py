@@ -22,7 +22,7 @@ class Variable():
         self.FLOW = 알수없음
 
 
-class Calc(Object):
+class Calc():
 
     @staticmethod
     def calc(var: Variable, index: int):
