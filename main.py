@@ -22,15 +22,39 @@ simulation_report = []
 total_count = 0
 current_count = 0
 
+start_time = None
+
 def end_simulate(reports: Reports):
-    global current_count, total_count
+    global current_count, total_count, start_time
     # 총 수익 계산
     for report in reports.월물:
         reports.총수익 += report.수익
 
-    simulation_report.append(reports)
+    if len(simulation_report) == 0:
+        simulation_report.append(reports)
+        print("새로운 수익 갱신 : %s" % reports.__dict__)
+    else:
+        if reports.총수익 > simulation_report[0].총수익:
+            print("새로운 수익 갱신 : %s" % reports.__dict__)
+
+        for i in range(0, 10):
+            if i > len(simulation_report) - 1:
+                simulation_report.append(reports)
+                break
+
+            if reports.총수익 > simulation_report[i].총수익:
+                simulation_report.insert(i, reports)
+                break
+
     current_count += 1
-    print('[End] Simulate process(pid=%d) %s/%s (%s%%)' % (reports.pid, current_count, total_count, round(float(current_count) * 100 / float(total_count))))
+    current_time = time.time()
+    running_time = current_time - start_time
+    seconds = round(running_time * float(total_count - current_count) / float(current_count))
+    days = int(seconds / 86400)
+
+    remain_time = time.strftime('%H:%M:%S', time.gmtime(seconds))
+    if days > 0: remain_time = '%s일 %s' % (days, remain_time)
+    print('[End] Simulate process(pid=%d) %s/%s (%s%%), 남은시간 : %s' % (reports.pid, current_count, total_count, round(float(current_count) * 100 / float(total_count)), remain_time))
     pass
 
 
@@ -104,6 +128,7 @@ if __name__ == '__main__':
 
     '''상단까지가 우리가 입력한 날짜에 맞는 테이블을 Tick_60 으로만 가져오는 코드'''
 
+    start_time = time.time()
     with mp.Manager() as manager:
         common_candles = manager.dict(tmp_candles)
         # result = manager.list()
@@ -128,7 +153,7 @@ if __name__ == '__main__':
             ''' 해당 부분에서 Multiprocessing 으로 테스트 시작 '''
             procs_results.append(pool.apply_async(func=simulator.simulate, args=(main_chart, config, common_candles,),
                                                   callback=end_simulate))
-            break
+
             if StrategyVarManager.increase_the_number_of_digits(max_array, cur_array) is False:
                 break
 
@@ -147,12 +172,12 @@ if __name__ == '__main__':
             for procs_result in procs_results:
                 if not procs_result.successful():
                     print(procs_result.get())
-
-        # 정렬
-        for i in range(0, len(simulation_report)):
-            for j in range(i + 1, len(simulation_report)):
-                if simulation_report[i].총수익 < simulation_report[j].총수익:
-                    simulation_report[i], simulation_report[j] = simulation_report[j], simulation_report[i]
+        #
+        # # 정렬
+        # for i in range(0, len(simulation_report)):
+        #     for j in range(i + 1, len(simulation_report)):
+        #         if simulation_report[i].총수익 < simulation_report[j].총수익:
+        #             simulation_report[i], simulation_report[j] = simulation_report[j], simulation_report[i]
 
         for i in range(0, min(len(simulation_report), 10)):
             # TODO
