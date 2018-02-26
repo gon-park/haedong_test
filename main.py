@@ -63,6 +63,10 @@ def end_simulate(reports: Reports):
     print('[End] Simulate process(pid=%d) %s/%s (%s%%), 남은시간 : %s' % (reports.pid, current_count, total_count, round(float(current_count) * 100 / float(total_count)), remain_time), end = "\r")
     pass
 
+def fprint(params):
+    output = open('output.txt', 'a+')
+    print(params, file=output)
+    output.close()
 
 if __name__ == '__main__':
     # log, res, err_log = log_manager.LogManager.__call__().get_logger()
@@ -150,7 +154,7 @@ if __name__ == '__main__':
         if TEST_MAIN_LOG:
             print('#%d.\t\t 병렬 테스트 수행 (Core 수=%d, 횟수=%d)' % (step.__next__(), (mp.cpu_count() - 1), total_count))
 
-        pool = mp.Pool(processes=mp.cpu_count())
+        pool = mp.Pool(processes=mp.cpu_count() * 2)
         # pool = mp.Pool(1)
 
         while True:
@@ -207,8 +211,3 @@ if __name__ == '__main__':
             # if cmd == 'exit': break
             #
             # log.info('테스트 종료.')
-
-def fprint(params):
-    output = open('output.txt', 'a+')
-    print(params, file=output)
-    output.close()
