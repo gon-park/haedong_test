@@ -23,6 +23,8 @@ total_count = 0
 current_count = 0
 
 start_time = None
+output = None
+
 
 def end_simulate(reports: Reports):
     global current_count, total_count, start_time
@@ -32,10 +34,14 @@ def end_simulate(reports: Reports):
 
     if len(simulation_report) == 0:
         simulation_report.append(reports)
-        print("새로운 수익 갱신 : %s" % reports.__dict__, end = "\r")
+        print("새로운 수익 갱신 : %s" % reports.총수익)
+        fprint("새로운 수익 갱신 : %s" % reports.총수익)
+        fprint(reports.__dict__)
     else:
         if reports.총수익 > simulation_report[0].총수익:
-            print("새로운 수익 갱신 : %s" % reports.__dict__, end = "\r")
+            print("새로운 수익 갱신 : %s" % reports.총수익)
+            fprint("새로운 수익 갱신 : %s" % reports.총수익)
+            fprint(reports.__dict__)
 
         for i in range(0, 10):
             if i > len(simulation_report) - 1:
@@ -183,8 +189,10 @@ if __name__ == '__main__':
             # TODO
             # if TEST_MAIN_LOG:
             print('\t\t #%d 테스트 결과 : %s' % (i, simulation_report[i].__dict__))  # 더 디테일하게 변경
+            fprint('\t\t #%d 테스트 결과 : %s' % (i, simulation_report[i].__dict__))
             for report in simulation_report[i].월물:
                 print('\t\t %s: %s' % (report.종목코드, report.수익))
+                fprint('\t\t %s: %s' % (report.종목코드, report.수익))
             # log.info("해당 코드의 Git Hash : %s" % label)
             # while True:
             #     log.info("Database에 넣을 결과 Index를 입력해주세요.(종료 : -1)")
@@ -199,3 +207,8 @@ if __name__ == '__main__':
             # if cmd == 'exit': break
             #
             # log.info('테스트 종료.')
+
+def fprint(params):
+    output = open('output.txt', 'a+')
+    print(params, file=output)
+    output.close()
