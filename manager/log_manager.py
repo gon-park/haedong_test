@@ -4,15 +4,13 @@ import logging
 import os
 import time
 
-from pywin.mfc.object import Object
-
 from variable.constant import *
 from util.singleton import Singleton
 
 
 # Singleton class --> there is only one log manager
 
-class LogManager(Object, metaclass=Singleton):
+class LogManager(metaclass=Singleton):
     res_logger, info_logger, err_logger = None, None, None
     
     def __init__(self):
