@@ -32,10 +32,10 @@ def end_simulate(reports: Reports):
 
     if len(simulation_report) == 0:
         simulation_report.append(reports)
-        print("새로운 수익 갱신 : %s" % reports.__dict__)
+        print("새로운 수익 갱신 : %s" % reports.__dict__, end = "\r")
     else:
         if reports.총수익 > simulation_report[0].총수익:
-            print("새로운 수익 갱신 : %s" % reports.__dict__)
+            print("새로운 수익 갱신 : %s" % reports.__dict__, end = "\r")
 
         for i in range(0, 10):
             if i > len(simulation_report) - 1:
@@ -54,7 +54,7 @@ def end_simulate(reports: Reports):
 
     remain_time = time.strftime('%H:%M:%S', time.gmtime(seconds))
     if days > 0: remain_time = '%s일 %s' % (days, remain_time)
-    print('[End] Simulate process(pid=%d) %s/%s (%s%%), 남은시간 : %s' % (reports.pid, current_count, total_count, round(float(current_count) * 100 / float(total_count)), remain_time))
+    print('[End] Simulate process(pid=%d) %s/%s (%s%%), 남은시간 : %s' % (reports.pid, current_count, total_count, round(float(current_count) * 100 / float(total_count)), remain_time), end = "\r")
     pass
 
 
