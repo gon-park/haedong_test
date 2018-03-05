@@ -26,6 +26,7 @@ class FullPara(__base_strategy.BaseStrategy):
         if self.charts[self.main_chart_id].index < 3000:
             return None
 
+        메인차트 = self.charts[self.main_chart_id]
         main_chart = self.charts[self.main_chart_id]
         para = main_chart.indicators[PARA][0]
         order_info = None
@@ -39,6 +40,7 @@ class FullPara(__base_strategy.BaseStrategy):
                 if main_chart.candles.저가[main_chart.index + 1] < para.SAR:
                     # 반전시
                     price = math.floor(para.SAR * (1 / subject.info[subject_code[:2]][단위])) / (1 / subject.info[subject_code[:2]][단위])
+                    price = price - subject.info[subject_code[:2]][단위]
                     self.log.debug('하향 반전으로 is_it_sell() 콜, SAR : %s, current_price : %s' % (para.SAR, price))
                     order_info = self.is_it_sell(subject_code, price)
 
@@ -53,19 +55,20 @@ class FullPara(__base_strategy.BaseStrategy):
                     para.EP - main_chart.candles.저가[main_chart.index + 1] >= self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]:
                     # 익절 수익 이후 익절드리블틱 이하로 가격이 떨어졌을 때
                     price = para.EP - self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]
-                    self.log.debug("익절수익 이후 익절드리블 틱 이하로 가격이 떨어져 is_it_sell() 콜, 직전SAR: %s, 최고가 : %s, 현재가 : %s" % (
-                    para.SARS[-1], para.EP, price))
+                    price = price - subject.info[subject_code[:2]][단위]
+                    self.log.debug("익절수익 이후 익절드리블 틱(%s) 이하로 가격이 떨어져 is_it_sell() 콜, %s, 직전SAR: %s, 최고가 : %s, 현재가 : %s" % (self.profit_dribble_tick[0],메인차트.candles.체결시간[메인차트.index+1], para.SARS[-1], para.EP, price))
                     order_info = self.is_it_sell(subject_code, price)
 
                 elif len(self.sonjul_tick) > 0 and 최고가대비손절틱 >= self.sonjul_tick[0][0] * subject.info[subject_code[:2]][단위]:
                     # 손절틱
                     price = para.EP - self.sonjul_tick[0][0] * subject.info[subject_code[:2]][단위]
-                    self.log.debug("손절틱 이상 떨어져 is_it_sell() 콜")
+                    price = price - subject.info[subject_code[:2]][단위]
+                    self.log.debug("손절틱(%s) 이상 떨어져 is_it_sell() 콜, 시간:%s" % (self.sonjul_tick[0][0],메인차트.candles.체결시간[메인차트.index+1]))
                     order_info = self.is_it_sell(subject_code, price)
 
-                if main_chart.candles.고가[main_chart.index + 1] >= math.ceil(para.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위] + self.strategy_var[갱신손절틱] * subject.info[subject_code[:2]][단위]:
-                    if len(self.sonjul_tick) > 0:
-                        self.sonjul_tick[0][0] = self.strategy_var[갱신손절틱]
+                #if main_chart.candles.고가[main_chart.index + 1] >= math.ceil(para.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위] + self.strategy_var[갱신손절틱] * subject.info[subject_code[:2]][단위]:
+                #    if len(self.sonjul_tick) > 0:
+                #        self.sonjul_tick[0][0] = self.strategy_var[갱신손절틱]
 
             elif para.FLOW == 하향:
                 최고가대비손절틱 = main_chart.candles.저가[main_chart.index + 1] - para.EP
@@ -74,6 +77,7 @@ class FullPara(__base_strategy.BaseStrategy):
                 if main_chart.candles.고가[main_chart.index + 1] > para.SAR:
                     # 반전시
                     price = math.ceil(para.SAR * (1 / subject.info[subject_code[:2]][단위])) / (1 / subject.info[subject_code[:2]][단위])
+                    price = price + subject.info[subject_code[:2]][단위]
                     self.log.debug('상향 반전으로 is_it_sell() 콜, SAR : %s, current_price : %s' % (para.SAR, price))
                     order_info = self.is_it_sell(subject_code, price)
 
@@ -88,30 +92,33 @@ class FullPara(__base_strategy.BaseStrategy):
                     main_chart.candles.고가[main_chart.index + 1] - para.EP >= self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]:
                     # 익절 수익 이후 익절드리블틱 이하로 가격이 떨어졌을 때
                     price = para.EP + self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]
-                    self.log.debug("익절수익 이후 익절드리블 틱 이하로 가격이 떨어져 is_it_sell() 콜, 직전SAR: %s, 최저가 : %s, 현재가 : %s" % (para.SARS[-1], para.EP, price))
+                    price = price + subject.info[subject_code[:2]][단위]
+                    self.log.debug("익절수익 이후 익절드리블 틱(%s) 이하로 가격이 떨어져 is_it_sell() 콜. %s, 직전SAR: %s, 최저가 : %s, 현재가 : %s" % (self.profit_dribble_tick[0],메인차트.candles.체결시간[메인차트.index+1], para.SARS[-1], para.EP, price))
                     order_info = self.is_it_sell(subject_code, price)
                 elif len(self.sonjul_tick) > 0 and 최고가대비손절틱 >= self.sonjul_tick[0][0] * subject.info[subject_code[:2]][단위]:
                     # 손절틱
                     price = para.EP + self.sonjul_tick[0][0] * subject.info[subject_code[:2]][단위]
-                    self.log.debug("손절틱 이상 떨어져 is_it_sell() 콜")
+                    price = price + subject.info[subject_code[:2]][단위]
+                    self.log.debug("손절틱(%s) 이상 떨어져 is_it_sell() 콜, 시간:%s" % (self.sonjul_tick[0][0],메인차트.candles.체결시간[메인차트.index+1]))
                     order_info = self.is_it_sell(subject_code, price)
 
-                if main_chart.candles.저가[main_chart.index + 1] <= math.ceil(para.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위] - self.strategy_var[갱신손절틱] * subject.info[subject_code[:2]][단위]:
-                    if len(self.sonjul_tick) > 0:
-                        self.sonjul_tick[0][0] = self.strategy_var[갱신손절틱]
+                #if main_chart.candles.저가[main_chart.index + 1] <= math.ceil(para.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위] - self.strategy_var[갱신손절틱] * subject.info[subject_code[:2]][단위]:
+                #    if len(self.sonjul_tick) > 0:
+                #        self.sonjul_tick[0][0] = self.strategy_var[갱신손절틱]
         else:
             # 계약이 없을 때
             if para.FLOW is 상향:
                 if main_chart.candles.저가[main_chart.index + 1] < para.SAR:
                     # 하향 반전
-                    current_price = math.floor(para.SAR * (1 / subject.info[subject_code[:2]][단위])) / (
-                    1 / subject.info[subject_code[:2]][단위])
+                    current_price = math.floor(para.SAR * (1 / subject.info[subject_code[:2]][단위])) / ( 1 / subject.info[subject_code[:2]][단위])
+                    current_price = current_price - subject.info[subject_code[:2]][단위]
                     order_info = self.is_it_ok(subject_code, current_price)
                     self.log.debug('하향 반전, SAR : %s, current_price : %s' % (para.SAR, current_price))
             elif para.FLOW is 하향:
                 if para.SAR < main_chart.candles.고가[main_chart.index + 1]:
                     # 상향 반전
                     current_price = math.ceil(para.SAR * (1 / subject.info[subject_code[:2]][단위])) / (1 / subject.info[subject_code[:2]][단위])
+                    current_price = current_price + subject.info[subject_code[:2]][단위]
                     order_info = self.is_it_ok(subject_code, current_price)
                     self.log.debug('상향 반전, SAR : %s, current_price : %s' % (para.SAR, current_price))
 
@@ -274,7 +281,7 @@ class FullPara(__base_strategy.BaseStrategy):
             log.info("EP:"+str(파라.EP))
             log.info("현재가:"+str(current_price))
             if len(self.sonjul_tick) > 0 and 최고가대비손절틱 >= self.sonjul_tick[0][0] * subject.info[subject_code[:2]][단위]:
-                log.info("손절가가 되어 매수계약 청산 요청, 체결시간 : %s, 현재가 : %s(pid = %s)" % (메인차트.candles.체결시간[메인차트.index+1], current_price, self.pid))
+                log.info("손절가가 되어 매수계약(%s계약) 청산 요청, 체결시간 : %s, 현재가 : %s(pid = %s)" % (int(len(보유계약) * self.sonjul_tick[0][1]),메인차트.candles.체결시간[메인차트.index+1], current_price, self.pid))
                 self.order_contents = {
                     신규주문: True,
                     종목코드: subject_code,
@@ -291,7 +298,7 @@ class FullPara(__base_strategy.BaseStrategy):
 
             if 파라.EP - math.ceil(파라.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위] >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
                                     파라.EP - 메인차트.candles.저가[메인차트.index + 1] >= self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]:
-                log.info("익절드리블 후(%s틱) 손절가가 되어 매수계약 청산 요청, 체결시간 : %s, 현재가 : %s(pid = %s)" % ((current_price - math.ceil(파라.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위]) / subject.info[subject_code[:2]][단위], 메인차트.candles.체결시간[메인차트.index+1], current_price, self.pid))
+                log.info("익절드리블 후(%s틱) 손절가가 되어 매수계약(%s계약) 청산 요청, 체결시간 : %s, 현재가 : %s(pid = %s)" % ((current_price - math.ceil(파라.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위]) / subject.info[subject_code[:2]][단위], int(len(보유계약) * self.profit_tick[0][1]), 메인차트.candles.체결시간[메인차트.index+1], current_price, self.pid))
 
                 self.order_contents = {
                     신규주문: True,
@@ -309,7 +316,7 @@ class FullPara(__base_strategy.BaseStrategy):
                 return self.order_contents
 
             if current_price < 파라.SAR:
-                log.info("하향 반전으로 매수계약 청산 요청, 체결시간 : %s, 현재가 : %s(pid = %s)" % (메인차트.candles.체결시간[메인차트.index+1], current_price, self.pid))
+                log.info("하향 반전으로 모든 매수계약 청산 요청, 체결시간 : %s, 현재가 : %s(pid = %s)" % (메인차트.candles.체결시간[메인차트.index+1], current_price, self.pid))
                 self.order_contents = {
                     신규주문: True,
                     종목코드: subject_code,
@@ -327,7 +334,7 @@ class FullPara(__base_strategy.BaseStrategy):
             log.info("현재가:"+str(current_price))
 
             if len(self.sonjul_tick) > 0 and 최고가대비손절틱 >= self.sonjul_tick[0][0] * subject.info[subject_code[:2]][단위]:
-                log.info("손절가가 되어 매도계약 청산 요청, 체결시간 : %s, 현재가 : %s(pid = %s)" % (메인차트.candles.체결시간[메인차트.index+1], current_price, self.pid))
+                log.info("손절가가 되어 매도계약(%s계약) 청산 요청, 체결시간 : %s, 현재가 : %s(pid = %s)" % (int(len(보유계약) * self.sonjul_tick[0][1]),메인차트.candles.체결시간[메인차트.index+1], current_price, self.pid))
                 self.order_contents = {
                     신규주문: True,
                     종목코드: subject_code,
@@ -346,7 +353,7 @@ class FullPara(__base_strategy.BaseStrategy):
             if math.floor(파라.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위] - 파라.EP >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
                                     메인차트.candles.고가[메인차트.index + 1] - 파라.EP >= self.profit_dribble_tick[0] * \
                             subject.info[subject_code[:2]][단위]:
-                log.info("익절드리블 후(%s틱) 손절가가 되어 매도계약 청산 요청, 체결시간 : %s, 현재가 : %s(pid = %s)" % ((math.floor(파라.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위] - current_price) / subject.info[subject_code[:2]][단위], 메인차트.candles.체결시간[메인차트.index+1], current_price, self.pid))
+                log.info("익절드리블 후(%s틱) 손절가가 되어 매도계약(%s계약) 청산 요청, 체결시간 : %s, 현재가 : %s(pid = %s)" % ((math.floor(파라.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위] - current_price) / subject.info[subject_code[:2]][단위], 메인차트.candles.체결시간[메인차트.index+1], int(len(보유계약) * self.profit_tick[0][1]),current_price, self.pid))
                 self.order_contents = {
                     신규주문: True,
                     종목코드: subject_code,
@@ -363,7 +370,7 @@ class FullPara(__base_strategy.BaseStrategy):
                 return self.order_contents
 
             if current_price > 파라.SAR:
-                log.info("상향 반전으로 매도계약 청산 요청, 체결시간 : %s, 현재가 : %s(pid = %s)" % (메인차트.candles.체결시간[메인차트.index+1], current_price, self.pid))
+                log.info("상향 반전으로 모든 매도계약 청산 요청, 체결시간 : %s, 현재가 : %s(pid = %s)" % (메인차트.candles.체결시간[메인차트.index+1], current_price, self.pid))
                 self.order_contents = {
                     신규주문: True,
                     종목코드: subject_code,
