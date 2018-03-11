@@ -2,6 +2,9 @@
 import pymysql
 from variable.constant import *
 from manager import __manager
+from variable.report import Report
+from variable.reports import Reports
+import subprocess
 
 
 class DBManager(__manager.ManagerClass):
@@ -188,6 +191,27 @@ class DBManager(__manager.ManagerClass):
             print(err)
         if c <= a <= d <= b or c <= a <= b <= d or a <= c <= d <= b or a <= c <= b <= d: return True
         return False
+
+    def insert_test_result(self, report_obj: Reports, start_date: str, end_date: str):
+        print(type(report_obj))
+        print(report_obj.__dict__)
+
+        label = subprocess.check_output(["git", "describe", "--always"]) # current git hash
+        print('git Hash tag : %s' % (label))
+
+        query = '''
+        insert
+            into 
+        TEST_RESULT (subject_symbol, total_profit, start_date, end_date, git_hash, strategy, result)
+        values ('%s', %d, date('%s'), date('%s'), "%s", "%s", "%s")
+        ;
+        ''' % (report_obj.전략변수[SUBJECT_SYMBOL], report_obj.총수익, start_date, end_date, label, str(report_obj.전략변수), str(report_obj.__dict__))
+
+        try:
+            result = self.exec_query(query, cursor_type=CURSOR_DICT)
+            print(result)
+        except Exception as err:
+            print(err)
 
 if __name__ == '__main__':
     dbm = DBManager()
