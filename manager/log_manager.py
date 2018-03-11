@@ -56,7 +56,7 @@ class LogManager(metaclass=Singleton):
         self.res_logger.addHandler(all_file_handler)
         self.res_logger.addHandler(res_stream_handler)
 
-        self.info_logger.setLevel(logging.ERROR)
+        self.info_logger.setLevel(logging.DEBUG)
         # self.info_logger.setLevel(logging.INFO)
         self.res_logger.setLevel(logging.INFO)
         self.info_logger.info('Initialize Log Manager Instance(pid = % d)' % os.getpid())
