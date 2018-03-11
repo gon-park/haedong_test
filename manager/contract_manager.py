@@ -23,12 +23,15 @@ class ContractManager(__manager.ManagerClass):
 
             contract = self.contracts[info[종목코드]][idx]
             if contract.매도수구분 != info[매도수구분]:
-                profit = (contract.체결표시가격 - info[가격]) / subject.info[info[종목코드][:2]][단위] * subject.info[info[종목코드][:2]][틱가치] if contract.매도수구분 is 신규매도 else (info[가격] - contract.체결표시가격) / subject.info[info[종목코드][:2]][단위] * subject.info[info[종목코드][:2]][틱가치]
+                self.log.info("넘어온 info : %s" % info)
+                체결가 = info[가격] - subject.info[contract.종목코드[:2]][단위] if info[매도수구분] is 신규매도 else info[가격] + subject.info[contract.종목코드[:2]][단위] # 슬리피지
+                profit = (contract.체결표시가격 - 체결가) / subject.info[info[종목코드][:2]][단위] * subject.info[info[종목코드][:2]][틱가치] if contract.매도수구분 is 신규매도 else (체결가 - contract.체결표시가격) / subject.info[info[종목코드][:2]][단위] * subject.info[info[종목코드][:2]][틱가치]
                 profit = round(profit)
                 info[수량] -= 1
                 del self.contracts[info[종목코드]][idx]
 
                 self.trader.result.수익 += (profit - (수수료)) # 수익계산
+                self.log.info("청산 체결 : %s" % 체결가)
                 self.log.info("누적수익[%s] : %s" % (info[종목코드], self.trader.result.수익))
             else: idx += 1
 
@@ -38,10 +41,12 @@ class ContractManager(__manager.ManagerClass):
             contract.매도수구분 = info[매도수구분]
             contract.수량 = 1
             contract.종목코드 = info[종목코드]
-            contract.체결표시가격 = info[가격] + subject.info[contract.종목코드[:2]][단위] if contract.매도수구분 is 신규매수 else info[가격] - subject.info[contract.종목코드[:2]][단위]
+            contract.체결표시가격 = info[가격] - subject.info[contract.종목코드[:2]][단위] if contract.매도수구분 is 신규매도 else info[가격] + subject.info[contract.종목코드[:2]][단위]
             contract.체결표시가격 = round(contract.체결표시가격, subject.info[contract.종목코드[:2]][자릿수])
             contract.매매전략 = info[매매전략]
             self.contracts[info[종목코드]].append(contract)
+            self.log.info("신규 체결 : %s" % contract.__dict__)
+
 
     def get_name(self):
         return str(self.__class__.__name__)

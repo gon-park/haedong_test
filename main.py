@@ -29,40 +29,42 @@ output = None
 
 def end_simulate(reports: Reports):
     global current_count, total_count, start_time
-    # 총 수익 계산
-    for report in reports.월물:
-        reports.총수익 += report.수익
+    try:
+        # 총 수익 계산
+        for report in reports.월물:
+            reports.총수익 += report.수익
 
-    if len(simulation_report) == 0:
-        simulation_report.append(reports)
-        print("새로운 수익 갱신 : %s" % reports.총수익)
-        fprint("새로운 수익 갱신 : %s" % reports.총수익)
-        fprint(reports.__dict__)
-    else:
-        if reports.총수익 > simulation_report[0].총수익:
-            print("새로운 수익 갱신 : %s" % reports.총수익)
+        if len(simulation_report) == 0:
+            simulation_report.append(reports)
+            print("\r새로운 수익 갱신 : %s" % reports.총수익)
             fprint("새로운 수익 갱신 : %s" % reports.총수익)
             fprint(reports.__dict__)
+        else:
+            if reports.총수익 > simulation_report[0].총수익:
+                print("\r새로운 수익 갱신 : %s" % reports.총수익)
+                fprint("새로운 수익 갱신 : %s" % reports.총수익)
+                fprint(reports.__dict__)
 
-        for i in range(0, 10):
-            if i > len(simulation_report) - 1:
-                simulation_report.append(reports)
-                break
+            for i in range(0, 10):
+                if i > len(simulation_report) - 1:
+                    simulation_report.append(reports)
+                    break
 
-            if reports.총수익 > simulation_report[i].총수익:
-                simulation_report.insert(i, reports)
-                break
+                if reports.총수익 > simulation_report[i].총수익:
+                    simulation_report.insert(i, reports)
+                    break
 
-    current_count += 1
-    current_time = time.time()
-    running_time = current_time - start_time
-    seconds = round(running_time * float(total_count - current_count) / float(current_count))
-    days = int(seconds / 86400)
+        current_count += 1
+        current_time = time.time()
+        running_time = current_time - start_time
+        seconds = round(running_time * float(total_count - current_count) / float(current_count))
+        days = int(seconds / 86400)
 
-    remain_time = time.strftime('%H:%M:%S', time.gmtime(seconds))
-    if days > 0: remain_time = '%s일 %s' % (days, remain_time)
-    print('[End] Simulate process(pid=%d) %s/%s (%s%%), 남은시간 : %s' % (reports.pid, current_count, total_count, round(float(current_count) * 100 / float(total_count)), remain_time), end = "\r")
-    pass
+        remain_time = time.strftime('%H:%M:%S', time.gmtime(seconds))
+        if days > 0: remain_time = '%s일 %s' % (days, remain_time)
+        print('\r', '[End] Simulate process(pid=%d) %s/%s (%s%%), 남은시간 : %s' % (reports.pid, current_count, total_count, round(float(current_count) * 100 / float(total_count)), remain_time), end='', flush=True)
+    except Exception as err:
+        print(err)
 
 def fprint(params):
     output = open('output.txt', 'a+')
@@ -81,6 +83,12 @@ if __name__ == '__main__':
     start_date, end_date = json_reader.Reader.read_test_config()
 
     subject_symbol = strategy_var[SUBJECT_SYMBOL]
+
+    _max_array, _cur_array = StrategyVarManager.get_strategy_var_array()  # 전략변수 횟수 테이블 계산
+    tc = 1
+    for cnt in _max_array:
+        tc *= (cnt + 1)
+    print('\t\t 총 TestCase : %s회' % tc)
 
     ''' 해당 종목 테이블 읽어옴 '''
     if TEST_MAIN_LOG:

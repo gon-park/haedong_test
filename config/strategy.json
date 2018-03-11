@@ -2,12 +2,12 @@
   "subject_symbol" : "GC",
   "strategy" : {
     "full_para" : {
-      "profit_tick" : [[[60, 90, 5], [0.5, 0.5, 0]], [[120, 200, 10], [1, 1, 0]]],
-      "profit_dribble_tick" : [[5, 5, 0], [10, 20, 10]],
-      "sonjul_tick" : [[[50, 80, 10], [1, 1, 0]]],
+      "profit_tick" : [[[70, 70, 5], [1, 1, 0]]],
+      "profit_dribble_tick" : [[11, 11, 5]],
+      "sonjul_tick" : [[[65, 65, 10], [1, 1, 0]]],
       "sonjul_dribble_tick" : [[0, 0, 0]],
       "reverse_tick" : 40,
-      "update_sonjul_tick" : [50, 50, 0]
+      "update_sonjul_tick" : [65, 65, 10]
     }
   },
   "charts" : [
@@ -16,13 +16,13 @@
       "time_unit" : 60,
       "indicators" : {
         "ma" : [
-          {"length": [45, 60, 5]},
-          {"length" : [160, 180, 10]}
+          {"length": [23, 23, 0]},
+          {"length" : [122, 122, 0]}
         ],
         "para" : [
           {
-            "init_af" : [0.0006, 0.0010, 0.0001],
-            "max_af": [0.001, 0.003, 0.0005]
+            "init_af" : [0.0007, 0.0007, 0],
+            "max_af": [0.002, 0.002, 0]
           }
         ]
       }
