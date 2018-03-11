@@ -117,7 +117,7 @@ if __name__ == '__main__':
             chart_id = '%s_%s_%s' % (subject_code, chart[TYPE], chart[TIME_UNIT])
             if chart_id in cache_dir:
                 chart_candles[chart_id] = json_reader.Reader.read_data(chart_id)
-                print('         LOAD 월물별 CANDLE DATA [%s]' % chart_id)
+                print('         LOAD 월물별 CANDLE DATA [%s] : %s개' % (chart_id, len(chart_candles[chart_id])))
 
             else:
                 if chart[TYPE] == TICK:
@@ -127,7 +127,7 @@ if __name__ == '__main__':
 
                     # save cached dir
                     json_reader.Reader.dump_data(chart_candles[chart_id], chart_id)
-                    print('         DUMP 월물별 CANDLE DATA [%s]' % chart_id)
+                    print('         DUMP 월물별 CANDLE DATA [%s] : %s개' % (chart_id, len(chart_candles[chart_id])))
 
                 else:
                     # TODO
