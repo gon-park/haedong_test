@@ -50,6 +50,7 @@ END_DATE = "end_date"
 저가 = "low"
 체결시간 = "date"
 거래량 = "volume"
+영업일 = "working_day"
 
 # 숫자
 INFINITY = 99999999

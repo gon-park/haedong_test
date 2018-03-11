@@ -1,22 +1,10 @@
-from concurrent.futures import ThreadPoolExecutor
-from multiprocessing.dummy import Pool as ThreadPool
-
-def squareNumber(n):
-    return n ** 2
-
-# function to be mapped over
-def calculateParallel(numbers, threads=2):
-    pool = ThreadPool(threads)
-    results = pool.map(squareNumber, numbers)
-    pool.close()
-    pool.join()
-    return results
+import os
+import datetime
 
 if __name__ == "__main__":
-    numbers = [1, 2, 3, 4, 5]
-    squaredNumbers = calculateParallel(numbers, 4)
-    for n in squaredNumbers:
-        print(n)
-
-        executor = ThreadPoolExecutor(max_workers=10)
-        a = executor.submit(my_function)
+    dt1 = '2017-02-21 17:09:45'
+    dt2 = '2017-02-21 17:09:45'
+    if dt1 >= dt2:
+        print(datetime.datetime.strptime('2017-02-21 17:09:45', '%Y-%m-%d %H:%M:%S'))
+    else:
+        print('aaaa')

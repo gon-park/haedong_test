@@ -87,13 +87,13 @@ class DBManager(__manager.ManagerClass):
             subject_code = subject_code + '_tick_10'
             query = '''
             select t1.id
-                    , t1.date
+                    , date_format(t1.date, '%%Y-%%m-%%d %%H:%%i:%%s') as date
                     , t2.open as open
                     , t1.high
                     , t1.low
                     , t3.close as close
-                    , t1.volume
-                    , t1.working_day
+                    , cast(t1.volume as int) as volume
+                    , date_format(t1.working_day, '%%Y%%m%%d') as working_day
              from (
                    select Floor((result.row-1) / %s) + 1 as id
                         , date
@@ -113,7 +113,6 @@ class DBManager(__manager.ManagerClass):
                                            select @rownum:=1, @working_day:=Date('2000-01-01')
                                              from dual
                                            ) s2
-                                where working_day between Date('%s') and Date('%s')          
                           ) result
                     group by working_day, Floor((result.row-1) / %s)
                   ) t1
@@ -121,17 +120,17 @@ class DBManager(__manager.ManagerClass):
                on t1.min_id = t2.id
             inner join %s t3
                on t1.max_id = t3.id
-            ''' % (tick_unit, tick_unit, tick_unit, subject_code, start_date, end_date, tick_unit, subject_code, subject_code)
+            ''' % (tick_unit, tick_unit, tick_unit, subject_code, tick_unit, subject_code, subject_code)
         else:
             query = '''
             select t1.id
-                    , t1.date
+                    , date_format(t1.date, '%%Y-%%m-%%d %%H:%%i:%%s') as date
                     , t2.price as open
                     , t1.high
                     , t1.low
                     , t3.price as close
-                    , t1.volume
-                    , t1.working_day
+                    , cast(t1.volume as int) as volume
+                    , date_format(t1.working_day, '%%Y%%m%%d') as working_day
              from (
                    select Floor((result.row-1) / %s) + 1 as id
                         , date
@@ -151,7 +150,6 @@ class DBManager(__manager.ManagerClass):
                                            select @rownum:=1, @working_day:=Date('2000-01-01')
                                              from dual
                                            ) s2     
-                                where working_day between Date('%s') and Date('%s')             
                           ) result
                     group by working_day, Floor((result.row-1) / %s)
                   ) t1
@@ -160,7 +158,7 @@ class DBManager(__manager.ManagerClass):
             inner join %s t3
                on t1.max_id = t3.id
             ;
-            ''' % (tick_unit, tick_unit, tick_unit, subject_code, start_date, end_date, tick_unit, subject_code, subject_code)
+            ''' % (tick_unit, tick_unit, tick_unit, subject_code, tick_unit, subject_code, subject_code)
 
         #print(query)
         return self.exec_query(query, fetch_type=FETCH_ALL, cursor_type=CURSOR_DICT)

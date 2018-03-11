@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import itertools
+from datetime import datetime
 from random import random, randint
 
 from manager import db_manager, log_manager
@@ -87,6 +88,7 @@ if __name__ == '__main__':
 
     dbm = db_manager.DBManager()
     temp_tables = dbm.get_table_list(subject_symbol)
+
     tables = []
     for table_name in temp_tables:
         # print(table_name[0], start_date, end_date)
@@ -100,18 +102,29 @@ if __name__ == '__main__':
         if main_chart is None:
             main_chart = '%s_%s' % (chart[TYPE], chart[TIME_UNIT])
 
+        # cached list
+        cache_dir = os.listdir('%s/%s' % (os.path.curdir, '/cached_candles'))
         for subject_code in tables:
+            # 파일이 있는지 체크하고 파일이 있으면 파일로 없으면 디비에서 틱 캔들 정보 가져오기
             chart_id = '%s_%s_%s' % (subject_code, chart[TYPE], chart[TIME_UNIT])
-
-            if chart[TYPE] == TICK:
-                chart_candles[chart_id] = dbm.request_tick_candle(subject_code, chart[TIME_UNIT], start_date, end_date)
-                if TEST_MAIN_LOG:
-                    print('\t\t [%s] 로딩 된 캔들 : %s개' % (subject_code, len(chart_candles[chart_id])))
+            if chart_id in cache_dir:
+                chart_candles[chart_id] = json_reader.Reader.read_data(chart_id)
+                print('         LOAD 월물별 CANDLE DATA [%s]' % chart_id)
 
             else:
-                # TODO
-                print("TODO")
-                exit(-1)
+                if chart[TYPE] == TICK:
+                    chart_candles[chart_id] = dbm.request_tick_candle(subject_code, chart[TIME_UNIT], start_date, end_date)
+                    if TEST_MAIN_LOG:
+                        print('\t\t [%s] 로딩 된 캔들 : %s개' % (subject_code, len(chart_candles[chart_id])))
+
+                    # save cached dir
+                    json_reader.Reader.dump_data(chart_candles[chart_id], chart_id)
+                    print('         DUMP 월물별 CANDLE DATA [%s]' % chart_id)
+
+                else:
+                    # TODO
+                    print("TODO")
+                    exit(-1)
 
     '''차트 기본 데이터(캔들) 만들기'''
     if TEST_MAIN_LOG:
@@ -129,15 +142,18 @@ if __name__ == '__main__':
         tmp_candles[chart_id][거래량] = []
 
         for candle in chart_candles[chart_id]:
+            if not start_date <= candle[영업일] <= end_date:
+                print("out of date  " + candle[영업일])
+                continue
+
             tmp_candles[chart_id][시가].append(candle[시가])
             tmp_candles[chart_id][현재가].append(candle[현재가])
             tmp_candles[chart_id][고가].append(candle[고가])
             tmp_candles[chart_id][저가].append(candle[저가])
-            tmp_candles[chart_id][체결시간].append(candle[체결시간])
+            tmp_candles[chart_id][체결시간].append(datetime.strptime(candle[체결시간], '%Y-%m-%d %H:%M:%S'))
             tmp_candles[chart_id][거래량].append(candle[거래량])
 
     '''상단까지가 우리가 입력한 날짜에 맞는 테이블을 Tick_60 으로만 가져오는 코드'''
-
     start_time = time.time()
     with mp.Manager() as manager:
         common_candles = manager.dict(tmp_candles)
