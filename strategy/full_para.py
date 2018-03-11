@@ -131,6 +131,8 @@ class FullPara(__base_strategy.BaseStrategy):
     def is_it_ok(self, subject_code: str, current_price: float):
         log = self.log
 
+        self.param01 = self.strategy_var["param01"]
+
         # 변수 선언
         메인차트 = self.charts[self.main_chart_id]
         _매도수구분 = None
@@ -176,7 +178,7 @@ class FullPara(__base_strategy.BaseStrategy):
         #지지난플로우수익 = abs(파라.SARS[-1] - 파라.SARS[-2]) # 계산의 편의를 위해 절대값을 취함.
         #삼전플로우수익 = abs(파라.SARS[-2] - 파라.SARS[-3]) # 계산의 편의를 위해 절대값을 취함.
 
-        if 맞틀리스트[-2:] == [맞, 틀] and 수익리스트[-2] > 70:
+        if 맞틀리스트[-2:] == [맞, 틀] and 수익리스트[-2] > self.param01:
             log.debug("지지난 플로우가 70틱 이상 수익으로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
             return None
 
@@ -228,7 +230,7 @@ class FullPara(__base_strategy.BaseStrategy):
                 log.debug("맞틀틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
 
         elif 맞틀리스트[-3:] == [틀, 맞, 틀]:
-            if 수익리스트[-2] > 70:
+            if 수익리스트[-2] > self.param01:
                 log.debug("틀맞맞, 지지난플로우수익 70틱 초과로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
                 return None
             else:

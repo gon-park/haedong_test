@@ -42,6 +42,7 @@ def end_simulate(reports: Reports):
         else:
             if reports.총수익 > simulation_report[0].총수익:
                 print("\r새로운 수익 갱신 : %s" % reports.총수익)
+                print("reports : %s" % reports.전략변수)
                 fprint("새로운 수익 갱신 : %s" % reports.총수익)
                 fprint(reports.__dict__)
 
@@ -183,6 +184,7 @@ if __name__ == '__main__':
         if TEST_MAIN_LOG:
             print('#%d.\t\t 병렬 테스트 수행 (Core 수=%d, 횟수=%d)' % (step.__next__(), (mp.cpu_count() - 1), total_count))
 
+        #pool = mp.Pool(processes=mp.cpu_count() -1)
         pool = mp.Pool(processes=mp.cpu_count() * 2)
         # pool = mp.Pool(1)
 
