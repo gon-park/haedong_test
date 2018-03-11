@@ -62,14 +62,19 @@ def end_simulate(reports: Reports):
 
         remain_time = time.strftime('%H:%M:%S', time.gmtime(seconds))
         if days > 0: remain_time = '%s일 %s' % (days, remain_time)
-        print('\r', '[End] Simulate process(pid=%d) %s/%s (%s%%), 남은시간 : %s' % (reports.pid, current_count, total_count, round(float(current_count) * 100 / float(total_count)), remain_time), end='', flush=True)
+        print('\r', '[End] Simulate process(pid=%d) %s/%s (%s%%), 남은시간 : %s' % (
+            reports.pid, current_count, total_count, round(float(current_count) * 100 / float(total_count)),
+            remain_time),
+              end='', flush=True)
     except Exception as err:
         print(err)
+
 
 def fprint(params):
     output = open('output.txt', 'a+')
     print(params, file=output)
     output.close()
+
 
 if __name__ == '__main__':
     # log, res, err_log = log_manager.LogManager.__call__().get_logger()
@@ -121,7 +126,8 @@ if __name__ == '__main__':
 
             else:
                 if chart[TYPE] == TICK:
-                    chart_candles[chart_id] = dbm.request_tick_candle(subject_code, chart[TIME_UNIT], start_date, end_date)
+                    chart_candles[chart_id] = dbm.request_tick_candle(subject_code, chart[TIME_UNIT], start_date,
+                                                                      end_date)
                     if TEST_MAIN_LOG:
                         print('\t\t [%s] 로딩 된 캔들 : %s개' % (subject_code, len(chart_candles[chart_id])))
 
@@ -151,7 +157,6 @@ if __name__ == '__main__':
 
         for candle in chart_candles[chart_id]:
             if not start_date <= candle[영업일] <= end_date:
-                print("out of date  " + candle[영업일])
                 continue
 
             tmp_candles[chart_id][시가].append(candle[시가])
@@ -206,32 +211,23 @@ if __name__ == '__main__':
             for procs_result in procs_results:
                 if not procs_result.successful():
                     print(procs_result.get())
-        #
-        # # 정렬
-        # for i in range(0, len(simulation_report)):
-        #     for j in range(i + 1, len(simulation_report)):
-        #         if simulation_report[i].총수익 < simulation_report[j].총수익:
-        #             simulation_report[i], simulation_report[j] = simulation_report[j], simulation_report[i]
 
-        for i in range(0, min(len(simulation_report), 10)):
-            # TODO
-            # if TEST_MAIN_LOG:
+    for i in range(0, min(len(simulation_report), 5)):
+
+        if TEST_MAIN_LOG:
             print('\t\t #%d 테스트 결과 : %s' % (i, simulation_report[i].__dict__))  # 더 디테일하게 변경
             fprint('\t\t #%d 테스트 결과 : %s' % (i, simulation_report[i].__dict__))
-            for report in simulation_report[i].월물:
+
+        for report in simulation_report[i].월물:
+            if TEST_MAIN_LOG:
                 print('\t\t %s: %s' % (report.종목코드, report.수익))
                 fprint('\t\t %s: %s' % (report.종목코드, report.수익))
-            # log.info("해당 코드의 Git Hash : %s" % label)
-            # while True:
-            #     log.info("Database에 넣을 결과 Index를 입력해주세요.(종료 : -1)")
-            #     idx = input()
-            #     if idx == '-1': break
-            #     log.info("저장하신 결과에 대한 코드를 나중에 확인하시기 위해선, 코드를 변경하시기 전에 Commit을 해야 합니다.")
-            #
-            #     ''' 해당 index의 결과를 stv를 정렬해서, 결과 DB에 저장. '''
-            #
-            # log.info("Config를 변경하여 계속 테스트 하시려면 아무키나 눌러주세요.(종료 : exit)")
-            # cmd = input()
-            # if cmd == 'exit': break
-            #
-            # log.info('테스트 종료.')
+
+    print("DataBase에 최고 수익의 테스트 결과가 기록됩니다. \n기록을 원치 않을 때 'N'입력하세요.")
+    idx = input()
+    if idx == 'N' or idx == 'n':
+        exit(0)
+
+    print("DB에 저장!!!!!")
+    dbm.insert_test_result(simulation_report[0], start_date, end_date)
+
