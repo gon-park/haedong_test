@@ -100,7 +100,7 @@ class DBManager(__manager.ManagerClass):
                         , max(result.id) as max_id
                         , min(result.id) as min_id
                         , max(result.high) as high
-                        , min(result.close) as low
+                        , min(result.low) as low
                         , sum(result.volume) as volume
                         , working_day
                      from (

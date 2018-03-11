@@ -31,6 +31,7 @@ class FullPara(__base_strategy.BaseStrategy):
         para = main_chart.indicators[PARA][0]
         order_info = None
         if subject_code in self.contracts and FullPara.get_contract_count(subject_code, self.contracts, 풀파라) > 0:
+            보유계약 = FullPara.get_contracts(subject_code, self.contracts, 풀파라)
             # 계약이 있을 때
             if para.FLOW == 상향:
                 #현재캔들최고수익 = main_chart.candles.고가[main_chart.index + 1] - self.charts[self.main_chart_id].indicators[PARA][0].SARS[-1]
@@ -51,7 +52,7 @@ class FullPara(__base_strategy.BaseStrategy):
                 #     order_info = self.is_it_sell(subject_code, price)
                 #     if order_info != None:
                 #         self.profit_tick.pop(0)
-                elif len(self.profit_tick) > 0 and para.EP - math.ceil(para.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위] >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
+                elif len(self.profit_tick) > 0 and para.EP - 보유계약[0].체결표시가격 >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
                     para.EP - main_chart.candles.저가[main_chart.index + 1] >= self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]:
                     # 익절 수익 이후 익절드리블틱 이하로 가격이 떨어졌을 때
                     price = para.EP - self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]
@@ -88,7 +89,7 @@ class FullPara(__base_strategy.BaseStrategy):
                 #     order_info = self.is_it_sell(subject_code, price)
                 #     if order_info != None:
                 #         self.profit_tick.pop(0)
-                elif len(self.profit_tick) > 0 and math.floor(para.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위] - para.EP >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
+                elif len(self.profit_tick) > 0 and 보유계약[0].체결표시가격 - para.EP >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
                     main_chart.candles.고가[main_chart.index + 1] - para.EP >= self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]:
                     # 익절 수익 이후 익절드리블틱 이하로 가격이 떨어졌을 때
                     price = para.EP + self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]
@@ -296,7 +297,7 @@ class FullPara(__base_strategy.BaseStrategy):
                     self.sonjul_dribble_tick.pop(0)
                 return self.order_contents
 
-            if len(self.profit_tick) > 0 and 파라.EP - math.ceil(파라.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위] >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
+            if len(self.profit_tick) > 0 and 파라.EP - 보유계약[0].체결표시가격 >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
                                     파라.EP - 메인차트.candles.저가[메인차트.index + 1] >= self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]:
                 log.info("익절드리블 후(%s틱) 손절가가 되어 매수계약(%s계약) 청산 요청, 체결시간 : %s, 현재가 : %s(pid = %s)" % ((current_price - math.ceil(파라.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위]) / subject.info[subject_code[:2]][단위], int(len(보유계약) * self.profit_tick[0][1]), 메인차트.candles.체결시간[메인차트.index+1], current_price, self.pid))
 
@@ -350,7 +351,7 @@ class FullPara(__base_strategy.BaseStrategy):
                     self.sonjul_dribble_tick.pop(0)
                 return self.order_contents
 
-            if len(self.profit_tick) > 0 and math.floor(파라.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위] - 파라.EP >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
+            if len(self.profit_tick) > 0 and 보유계약[0].체결표시가격 - 파라.EP >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
                                     메인차트.candles.고가[메인차트.index + 1] - 파라.EP >= self.profit_dribble_tick[0] * \
                             subject.info[subject_code[:2]][단위]:
                 log.info("익절드리블 후(%s틱) 손절가가 되어 매도계약(%s계약) 청산 요청, 체결시간 : %s, 현재가 : %s(pid = %s)" % ((math.floor(파라.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위] - current_price) / subject.info[subject_code[:2]][단위], 메인차트.candles.체결시간[메인차트.index+1], int(len(보유계약) * self.profit_tick[0][1]),current_price, self.pid))
