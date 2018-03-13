@@ -132,6 +132,10 @@ class FullPara(__base_strategy.BaseStrategy):
         log = self.log
 
         self.param01 = self.strategy_var["param01"]
+        self.param02 = self.strategy_var["param02"]
+        self.param03 = self.strategy_var["param03"]
+        self.param04 = self.strategy_var["param04"]
+        self.param05 = self.strategy_var["param05"]
 
         # 변수 선언
         메인차트 = self.charts[self.main_chart_id]
@@ -183,7 +187,7 @@ class FullPara(__base_strategy.BaseStrategy):
             return None
 
         if 맞틀리스트[-4:] == [틀, 틀, 틀, 틀]:
-            if 수익리스트[-2] < 수익리스트[-1] and  수익리스트[-2] < -15:
+            if 수익리스트[-2] < 수익리스트[-1] and  수익리스트[-2] < self.param02: #-15
                 log.debug("틀틀틀틀 조건에 맞지 않아 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
                 return None
             else:
@@ -196,14 +200,14 @@ class FullPara(__base_strategy.BaseStrategy):
             log.debug("틀맞틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수',  self.pid))
 
         elif 맞틀리스트[-4:] == [맞, 틀, 틀, 맞]:
-            if 수익리스트[-1] > 10:
+            if 수익리스트[-1] > self.param03: #10
                 log.debug("맞틀틀맞, 직전플로우 수익이 10틱 초과로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
                 return None
             else:
                 log.debug("맞틀틀맞 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
 
         elif 맞틀리스트[-4:] == [틀, 틀, 틀, 맞]:
-            if 수익리스트[-3] < -10:
+            if 수익리스트[-3] < self.param04: #-10
                 log.debug("틀틀틀맞, 삼전플로우 수익이 10틱 이하로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
                 return None
             else:
@@ -223,7 +227,7 @@ class FullPara(__base_strategy.BaseStrategy):
                 log.debug("맞맞틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
 
         elif 맞틀리스트[-4:] == [맞, 틀, 틀, 틀]:
-            if 수익리스트[-2] < - 10:
+            if 수익리스트[-2] < self.param05: #-10
                 log.debug("맞틀틀틀, 지지난플로우수익 -10틱 미만으로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
                 return None
             else:
@@ -242,7 +246,7 @@ class FullPara(__base_strategy.BaseStrategy):
 
         # 매매시간 확인
         매매시간 = int(메인차트.candles.체결시간[메인차트.index + 1].strftime("%H%M"))
-        if subject_code == 'GCG18':
+        if subject_code == 'GCG18' or subject_code == 'GCJ18':
             if 2200 < 매매시간 < 2330:
                 log.debug("22:00 ~ 23:30 사이라 매매 포기.")
                 return None
