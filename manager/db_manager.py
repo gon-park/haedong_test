@@ -180,17 +180,22 @@ class DBManager(__manager.ManagerClass):
         ''' % (table_name, table_name)
 
         try:
-            result = self.exec_query(query, fetch_type=FETCH_ONE, cursor_type=CURSOR_DICT)
+            select_result = self.exec_query(query, fetch_type=FETCH_ONE, cursor_type=CURSOR_DICT)
 
             c = c[:4] + '-' + c[4:6] + '-' + c[6:]
             d = d[:4] + '-' + d[4:6] + '-' + d[6:]
-            a = str(result['s'])
-            b = str(result['e'])
+            a = str(select_result['s'])
+            b = str(select_result['e'])
 
         except Exception as err:
             print(err)
-        if c <= a <= d <= b or c <= a <= b <= d or a <= c <= d <= b or a <= c <= b <= d: return True
-        return False
+
+        if c <= a <= d <= b or c <= a <= b <= d or a <= c <= d <= b or a <= c <= b <= d:
+            select_result['IS_MATCH'] = True
+        else:
+            select_result['IS_MATCH'] = False
+
+        return select_result
 
     def insert_test_result(self, report_obj: Reports, start_date: str, end_date: str):
         print(type(report_obj))

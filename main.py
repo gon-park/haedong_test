@@ -104,10 +104,26 @@ if __name__ == '__main__':
     temp_tables = dbm.get_table_list(subject_symbol)
 
     tables = []
+
+    real_start_date = datetime.strptime('2099-1-1', '%Y-%m-%d')
+    real_end_date = datetime.strptime('2000-1-1', '%Y-%m-%d')
+
+    print('start_date=%s \t end_date=%s' % (start_date, end_date))
+
     for table_name in temp_tables:
         # print(table_name[0], start_date, end_date)
-        if '_' not in table_name[0] and dbm.is_matched_table(table_name[0], start_date, end_date):
+        match_result = dbm.is_matched_table(table_name[0], start_date, end_date)
+        if '_' not in table_name[0] and match_result['IS_MATCH']:
+            real_start_date = min(str(real_start_date), str(match_result['s']))
+            real_end_date = max(str(real_end_date), str(match_result['e']))
+            print('match_start_date=%s \t real_start_date=%s' % (match_result['s'], real_start_date))
+            print('match_end_date=%s \t real_end_date=%s' % (match_result['e'], real_end_date))
             tables.append(table_name[0])
+
+    real_start_date = max(str(real_start_date), str(datetime.strptime(start_date, '%Y%m%d')))
+    real_end_date = min(str(real_end_date), str(datetime.strptime(end_date, '%Y%m%d')))
+
+    print('real_start_date=%s \t real_end_date=%s' % (real_start_date, real_end_date))
 
     chart_candles = {}
     '''주거래 차트, charts 의 0번째 인덱스에 있는 차트로 선택'''
@@ -184,7 +200,7 @@ if __name__ == '__main__':
         if TEST_MAIN_LOG:
             print('#%d.\t\t 병렬 테스트 수행 (Core 수=%d, 횟수=%d)' % (step.__next__(), (mp.cpu_count() - 1), total_count))
 
-        pool = mp.Pool(processes=mp.cpu_count() -1)
+        pool = mp.Pool(processes=mp.cpu_count() - 1)
         #pool = mp.Pool(processes=mp.cpu_count() * 2)
         # pool = mp.Pool(1)
 
@@ -231,5 +247,5 @@ if __name__ == '__main__':
         exit(0)
 
     print("DB에 저장!!!!!")
-    dbm.insert_test_result(simulation_report[0], start_date, end_date)
+    dbm.insert_test_result(simulation_report[0], real_start_date, real_end_date)
 
