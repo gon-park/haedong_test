@@ -8,3 +8,4 @@ class CandleList():
         self.저가 = []
         self.체결시간 = []
         self.거래량 = []
+        self.영업일자 = []

@@ -255,6 +255,7 @@ class FullPara(__base_strategy.BaseStrategy):
                 log.debug("21:00 ~ 22:30 사이라 매매 포기.")
                 return None
 
+
         # 매매진입
         self.order_contents = {
             신규주문: True,
