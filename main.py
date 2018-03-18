@@ -4,6 +4,8 @@ import itertools
 from datetime import datetime
 from random import random, randint
 
+from pip.cmdoptions import cache_dir
+
 from manager import db_manager, log_manager
 from manager.strategy_var_manager import StrategyVarManager
 from config import json_reader
@@ -115,12 +117,26 @@ if __name__ == '__main__':
     chart_candles = {}
     '''주거래 차트, charts 의 0번째 인덱스에 있는 차트로 선택'''
     main_chart = None
+
+    ''' 캐시 디렉토리 셋업 '''
+    try :
+        cache_dir = os.listdir('%s/%s' % (os.path.curdir, '/cached_candles'))
+    except FileNotFoundError as err:
+        print("Not exist 'cached_candles directory', Create the directory")
+        os.makedirs('%s/%s' % (os.path.curdir, '/cached_candles'))
+
+    ''' 기간(하루)이 지난 캐시 데이터 삭제 '''
+    for file_name in cache_dir:
+        file_path = '%s/%s/%s' % (os.path.curdir, '/cached_candles', file_name)
+        file_datetime = datetime.strptime(time.ctime(os.path.getctime(file_path)), "%a %b %d %H:%M:%S %Y")
+        if file_datetime.day is not datetime.now().day:
+            os.remove(file_path)
+            print('Remove Cached File(%s)' % file_name)
+
     for chart in strategy_var[CHARTS]:
         if main_chart is None:
             main_chart = '%s_%s' % (chart[TYPE], chart[TIME_UNIT])
 
-        # cached list
-        cache_dir = os.listdir('%s/%s' % (os.path.curdir, '/cached_candles'))
         for subject_code in tables:
             # 파일이 있는지 체크하고 파일이 있으면 파일로 없으면 디비에서 틱 캔들 정보 가져오기
             chart_id = '%s_%s_%s' % (subject_code, chart[TYPE], chart[TIME_UNIT])
