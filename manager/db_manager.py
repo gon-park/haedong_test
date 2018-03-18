@@ -191,11 +191,8 @@ class DBManager(__manager.ManagerClass):
             print(err)
 
         if c <= a <= d <= b or c <= a <= b <= d or a <= c <= d <= b or a <= c <= b <= d:
-            select_result['IS_MATCH'] = True
-        else:
-            select_result['IS_MATCH'] = False
-
-        return select_result
+            return True
+        return False
 
     def insert_test_result(self, report_obj: Reports, start_date: str, end_date: str):
         print(type(report_obj))

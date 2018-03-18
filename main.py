@@ -87,6 +87,8 @@ if __name__ == '__main__':
 
     strategy_var = json_reader.Reader.read_strategy_config()
     start_date, end_date = json_reader.Reader.read_test_config()
+    real_start_date = "20990101"
+    real_end_date = "20000101"
 
     subject_symbol = strategy_var[SUBJECT_SYMBOL]
 
@@ -105,25 +107,10 @@ if __name__ == '__main__':
 
     tables = []
 
-    real_start_date = datetime.strptime('2099-1-1', '%Y-%m-%d')
-    real_end_date = datetime.strptime('2000-1-1', '%Y-%m-%d')
-
-    print('start_date=%s \t end_date=%s' % (start_date, end_date))
-
     for table_name in temp_tables:
         # print(table_name[0], start_date, end_date)
-        match_result = dbm.is_matched_table(table_name[0], start_date, end_date)
-        if '_' not in table_name[0] and match_result['IS_MATCH']:
-            real_start_date = min(str(real_start_date), str(match_result['s']))
-            real_end_date = max(str(real_end_date), str(match_result['e']))
-            print('match_start_date=%s \t real_start_date=%s' % (match_result['s'], real_start_date))
-            print('match_end_date=%s \t real_end_date=%s' % (match_result['e'], real_end_date))
+        if '_' not in table_name[0] and dbm.is_matched_table(table_name[0], start_date, end_date):
             tables.append(table_name[0])
-
-    real_start_date = max(str(real_start_date), str(datetime.strptime(start_date, '%Y%m%d')))
-    real_end_date = min(str(real_end_date), str(datetime.strptime(end_date, '%Y%m%d')))
-
-    print('real_start_date=%s \t real_end_date=%s' % (real_start_date, real_end_date))
 
     chart_candles = {}
     '''주거래 차트, charts 의 0번째 인덱스에 있는 차트로 선택'''
@@ -175,6 +162,9 @@ if __name__ == '__main__':
         for candle in chart_candles[chart_id]:
             if not start_date <= candle[영업일] <= end_date:
                 continue
+
+            real_start_date = min(real_start_date, candle[영업일])
+            real_end_date = max(real_end_date, candle[영업일])
 
             tmp_candles[chart_id][시가].append(candle[시가])
             tmp_candles[chart_id][현재가].append(candle[현재가])
@@ -247,5 +237,6 @@ if __name__ == '__main__':
         exit(0)
 
     print("DB에 저장!!!!!")
+    print('test_start_date=%s \t real_start_date=%s' % (start_date, real_start_date))
+    print('test_end_date=%s \t real_end_date=%s' % (end_date, real_end_date))
     dbm.insert_test_result(simulation_report[0], real_start_date, real_end_date)
-
