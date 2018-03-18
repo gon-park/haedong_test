@@ -17,6 +17,7 @@ class Chart():
         self.candles.저가 = candles_dict[저가]
         self.candles.체결시간 = candles_dict[체결시간]
         self.candles.거래량 = candles_dict[거래량]
+        self.candles.영업일 = candles_dict[영업일]
 
         for indicator_name in indicator_info:
             self.indicators[indicator_name] = {}

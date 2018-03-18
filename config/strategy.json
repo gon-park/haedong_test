@@ -9,10 +9,10 @@
       "reverse_tick" : 40,
       "update_sonjul_tick" : [65, 65, 0],
       "param01": [46, 46, 0],
-      "param02": [-30, 30, 1],
+      "param02": [-16, -16, 1],
       "param03": [10, 10, 0],
-      "param04": [-10, -10, 0],
-      "param05": [-10, -10, 0]
+      "param04": [-17, -17, 0],
+      "param05": [-11, -11, 0]
     }
   },
   "charts" : [
@@ -21,8 +21,8 @@
       "time_unit" : 60,
       "indicators" : {
         "ma" : [
-          {"length": [18, 40, 1]},
-          {"length" : [110, 130,  1]}
+          {"length": [30, 30, 1]},
+          {"length" : [122, 122,  1]}
         ],
         "para" : [
           {

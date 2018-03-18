@@ -107,6 +107,9 @@ class FullPara(__base_strategy.BaseStrategy):
                 #    if len(self.sonjul_tick) > 0:
                 #        self.sonjul_tick[0][0] = self.strategy_var[갱신손절틱]
         else:
+            if main_chart.candles.영업일[main_chart.index + 1] != main_chart.candles.영업일[main_chart.index]:
+                return order_info
+
             # 계약이 없을 때
             if para.FLOW is 상향:
                 if main_chart.candles.저가[main_chart.index + 1] < para.SAR:

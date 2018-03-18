@@ -174,6 +174,7 @@ if __name__ == '__main__':
         tmp_candles[chart_id][저가] = []
         tmp_candles[chart_id][체결시간] = []
         tmp_candles[chart_id][거래량] = []
+        tmp_candles[chart_id][영업일] = []
 
         for candle in chart_candles[chart_id]:
             if not start_date <= candle[영업일] <= end_date:
@@ -188,6 +189,7 @@ if __name__ == '__main__':
             tmp_candles[chart_id][저가].append(candle[저가])
             tmp_candles[chart_id][체결시간].append(datetime.strptime(candle[체결시간], '%Y-%m-%d %H:%M:%S'))
             tmp_candles[chart_id][거래량].append(candle[거래량])
+            tmp_candles[chart_id][영업일].append(candle[영업일])
 
     '''상단까지가 우리가 입력한 날짜에 맞는 테이블을 Tick_60 으로만 가져오는 코드'''
     start_time = time.time()
