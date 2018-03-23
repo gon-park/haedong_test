@@ -193,6 +193,8 @@ class FullPara(__base_strategy.BaseStrategy):
 
         if not 맞틀리스트체크: return None
 
+        if 맞틀리스트[-1] == 맞 and 수익리스트[-1] > 50: return None
+
         #지지난플로우수익 = abs(파라.SARS[-1] - 파라.SARS[-2]) # 계산의 편의를 위해 절대값을 취함.
         #삼전플로우수익 = abs(파라.SARS[-2] - 파라.SARS[-3]) # 계산의 편의를 위해 절대값을 취함.
         #

@@ -2,9 +2,9 @@
   "subject_symbol" : "GC",
   "strategy" : {
     "full_para" : {
-      "profit_tick" : [[[50, 100, 10], [1, 1, 0]]],
+      "profit_tick" : [[[70, 100, 10], [1, 1, 0]]],
       "profit_dribble_tick" : [[5, 15, 5]],
-      "sonjul_tick" : [[[40, 70, 5], [1, 1, 0]]],
+      "sonjul_tick" : [[[50, 70, 10], [1, 1, 0]]],
       "sonjul_dribble_tick" : [[0, 0, 0]],
       "reverse_tick" : 40,
       "param01": [46, 46, 0],
@@ -30,7 +30,7 @@
       "time_unit" : 60,
       "indicators" : {
         "ma" : [
-          {"length": [30, 30, 1]},
+          {"length": [30, 45, 5]},
           {"length" : [122, 122,  1]}
         ],
         "para" : [

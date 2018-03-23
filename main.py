@@ -36,17 +36,21 @@ def end_simulate(reports: Reports):
         # 총 수익 계산
         for report in reports.월물:
             reports.총수익 += report.수익
+            reports.승 += report.승
+            reports.패 += report.패
+
+        reports.승률 = float(reports.승) / float(reports.승 + reports.패)
 
         if len(simulation_report) == 0:
             simulation_report.append(reports)
-            print("\r새로운 수익 갱신 : %s" % reports.총수익)
-            fprint("새로운 수익 갱신 : %s" % reports.총수익)
+            print("\r새로운 수익 갱신 : %s, %s" % (reports.총수익, reports.승률))
+            fprint("새로운 수익 갱신 : %s, %s" % (reports.총수익, reports.승률))
             fprint(reports.__dict__)
         else:
             if reports.총수익 > simulation_report[0].총수익:
-                print("\r새로운 수익 갱신 : %s" % reports.총수익)
+                print("\r새로운 수익 갱신 : %s, %s" % (reports.총수익, reports.승률))
                 print("reports : %s" % reports.전략변수)
-                fprint("새로운 수익 갱신 : %s" % reports.총수익)
+                fprint("새로운 수익 갱신 : %s, %s" % (reports.총수익, reports.승률))
                 fprint(reports.__dict__)
 
             for i in range(0, 10):

@@ -31,6 +31,9 @@ class ContractManager(__manager.ManagerClass):
                 del self.contracts[info[종목코드]][idx]
 
                 self.trader.result.수익 += (profit - (수수료)) # 수익계산
+                if (profit - (수수료)) > 0: self.trader.result.승 += 1
+                else: self.trader.result.패 += 1
+
                 self.log.info("청산 체결 : %s" % 체결가)
                 self.log.info("누적수익[%s] : %s" % (info[종목코드], self.trader.result.수익))
             else: idx += 1
