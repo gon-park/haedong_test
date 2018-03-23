@@ -6,6 +6,7 @@ from random import random, randint
 
 from pip.cmdoptions import cache_dir
 
+import os
 from manager import db_manager, log_manager
 from manager.strategy_var_manager import StrategyVarManager
 from config import json_reader
@@ -126,6 +127,9 @@ if __name__ == '__main__':
         os.makedirs('%s/%s' % (os.path.curdir, '/cached_candles'))
 
     ''' 기간(하루)이 지난 캐시 데이터 삭제 '''
+    if not os.path.exists(os.path.join(os.path.curdir, 'cached_candles')):
+        os.mkdir(os.path.join(os.path.curdir, 'cached_candles'))
+
     for file_name in cache_dir:
         file_path = '%s/%s/%s' % (os.path.curdir, '/cached_candles', file_name)
         file_datetime = datetime.strptime(time.ctime(os.path.getctime(file_path)), "%a %b %d %H:%M:%S %Y")
@@ -214,7 +218,7 @@ if __name__ == '__main__':
 
         while True:
             config = StrategyVarManager.get_speific_startegy_var(cur_array)
-
+            #pprint(config)
             ''' 해당 부분에서 Multiprocessing 으로 테스트 시작 '''
             procs_results.append(pool.apply_async(func=simulator.simulate, args=(main_chart, config, common_candles,),
                                                   callback=end_simulate))

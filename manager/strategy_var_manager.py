@@ -24,7 +24,6 @@ class StrategyVarManager(__manager.ManagerClass):
         # 전략 변수 Config 불러오기
         config = Reader.read_strategy_config()
 
-        # pprint(config)
         for strategy_name in sorted(config[STRATEGY].keys()):
             for strategy_var in sorted(config[STRATEGY][strategy_name].keys()):
                 if type(config[STRATEGY][strategy_name][strategy_var]) is list:
@@ -38,6 +37,7 @@ class StrategyVarManager(__manager.ManagerClass):
                         # print(indicator_var)
                         if type(indicator_vars[indicator_var]) is list:
                             util.set_strategy_var(max_array, cur_array, indicator_vars[indicator_var])
+
         return max_array, cur_array
 
     @staticmethod
@@ -49,7 +49,8 @@ class StrategyVarManager(__manager.ManagerClass):
             for strategy_var in sorted(config[STRATEGY][strategy_name].keys()):
                 if type(config[STRATEGY][strategy_name][strategy_var]) is list:
                     cnt, value = util.get_strategy_var(cur_array, idx, config[STRATEGY][strategy_name][strategy_var])
-                    idx = idx + cnt
+                    if cnt is not None:
+                        idx = idx + cnt
                     if value is not None:
                         config[STRATEGY][strategy_name][strategy_var] = value
 
@@ -61,7 +62,8 @@ class StrategyVarManager(__manager.ManagerClass):
                         # print(indicator_var)
                         if type(indicator_vars[indicator_var]) is list:
                             cnt, value = util.get_strategy_var(cur_array, idx, indicator_vars[indicator_var])
-                            idx = idx + cnt
+                            if cnt is not None:
+                                idx = idx + cnt
                             if value is not None:
                                 indicator_vars[indicator_var] = value
 

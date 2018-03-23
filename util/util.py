@@ -32,7 +32,10 @@ def set_strategy_var(max_array, cur_array, params):
         for var in params:
             set_strategy_var(max_array, cur_array, var)
 
-    else:
+    elif len(params) == 3 and \
+            (type(params[0]) is int or type(params[0]) is float) and \
+            (type(params[1]) is int or type(params[1]) is float) and \
+            (type(params[2]) is int or type(params[2]) is float):
         max_array.append(calc_divide_count(params[0], params[1], params[2]))
         cur_array.append(0)
 
@@ -43,14 +46,24 @@ def get_strategy_var(cur_array, idx, params):
         res = []
         for i in range(0, len(params)):
             cnt, value = get_strategy_var(cur_array, idx, params[i])
-            idx = idx + cnt
-            sum = sum + cnt
-            res.append(value)
+            if cnt is not None:
+                idx = idx + cnt
+                sum = sum + cnt
 
+            if value is not None:
+                res.append(value)
+
+        if res == []:
+            return None, params
         return sum, res
 
-    else:
+    elif len(params) == 3 and \
+            (type(params[0]) is int or type(params[0]) is float) and \
+            (type(params[1]) is int or type(params[1]) is float) and \
+            (type(params[2]) is int or type(params[2]) is float):
         return 1, get_divide_value(params, cur_array[idx])
+
+    return None, params
 
 
 def print_proc_time(method):
