@@ -2,8 +2,8 @@
   "subject_symbol" : "GC",
   "strategy" : {
     "full_para" : {
-      "profit_tick" : [[[50, 100, 10], [5, 15, 5]]],
-      "profit_dribble_tick" : [[1, 1, 0]],
+      "profit_tick" : [[[50, 100, 10], [1, 1, 0]]],
+      "profit_dribble_tick" : [[5, 15, 5]],
       "sonjul_tick" : [[[40, 70, 5], [1, 1, 0]]],
       "sonjul_dribble_tick" : [[0, 0, 0]],
       "reverse_tick" : 40,

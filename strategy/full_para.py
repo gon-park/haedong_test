@@ -153,21 +153,21 @@ class FullPara(__base_strategy.BaseStrategy):
             직전플로우수익 = (current_price-파라.SARS[-1]) / subject.info[subject_code[:2]][단위]
             log.debug("하향 반전, 현재가 : %s, 직전플로우수익 : %s(pid = %s) 시간:%s" % (current_price, 직전플로우수익, self.pid, 메인차트.candles.체결시간[메인차트.index+1]))
 
-            _매도수구분 = 신규매도
-            # if ma.Calc.is_sorted(메인차트.indicators[MA]) == 하락세:
-            #     _매도수구분 = 신규매도
-            # else:
-            #     log.debug("이동평균선이 맞지 않아 매도 포기.(pid = %s)" % self.pid)
+            #_매도수구분 = 신규매도
+            if ma.Calc.is_sorted(메인차트.indicators[MA]) == 하락세:
+                _매도수구분 = 신규매도
+            else:
+                log.debug("이동평균선이 맞지 않아 매도 포기.(pid = %s)" % self.pid)
         elif 현재플로우 == 하향 and current_price > 파라.SAR:
             # 상향 반전
             직전플로우수익 = (파라.SARS[-1] - current_price) / subject.info[subject_code[:2]][단위]
             log.debug("상향 반전, 현재가 : %s, 직전플로우수익 : %s(pid = %s) 시간:%s" % (current_price, 직전플로우수익, self.pid, 메인차트.candles.체결시간[메인차트.index+1]))
 
-            _매도수구분 = 신규매수
-            # if ma.Calc.is_sorted(메인차트.indicators[MA]) == 상승세:
-            #     _매도수구분 = 신규매수
-            # else:
-            #     log.debug("이동평균선이 맞지 않아 매도 포기.(pid = %s)" % self.pid)
+            #_매도수구분 = 신규매수
+            if ma.Calc.is_sorted(메인차트.indicators[MA]) == 상승세:
+                _매도수구분 = 신규매수
+            else:
+                log.debug("이동평균선이 맞지 않아 매도 포기.(pid = %s)" % self.pid)
 
         if _매도수구분 is None:
             return None
