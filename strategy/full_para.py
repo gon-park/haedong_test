@@ -34,78 +34,64 @@ class FullPara(__base_strategy.BaseStrategy):
             보유계약 = FullPara.get_contracts(subject_code, self.contracts, 풀파라)
             # 계약이 있을 때
             if para.FLOW == 상향:
-                #현재캔들최고수익 = main_chart.candles.고가[main_chart.index + 1] - self.charts[self.main_chart_id].indicators[PARA][0].SARS[-1]
-                최고가대비손절틱 = para.EP - main_chart.candles.저가[main_chart.index + 1]
-                최고가대비손절틱 = math.floor(최고가대비손절틱 / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위]
+                if para.SAR > main_chart.candles.저가[main_chart.index + 1] or \
+                    (len(self.profit_tick) > 0 and max(para.EP, main_chart.candles.고가[main_chart.index + 1]) - 보유계약[0].체결표시가격 >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
+                    max(para.EP, main_chart.candles.고가[main_chart.index + 1]) - main_chart.candles.저가[main_chart.index + 1] >= self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]) or \
+                    (len(self.sonjul_tick) > 0 and round((para.EP - main_chart.candles.저가[main_chart.index + 1]) / subject.info[subject_code[:2]][단위]) >= self.sonjul_tick[0][0]):
 
-                if main_chart.candles.저가[main_chart.index + 1] < para.SAR:
-                    # 반전시
-                    price = math.floor(para.SAR * (1 / subject.info[subject_code[:2]][단위])) / (1 / subject.info[subject_code[:2]][단위])
-                    #price = price - subject.info[subject_code[:2]][단위]
-                    self.log.debug('하향 반전으로 is_it_sell() 콜, SAR : %s, current_price : %s' % (para.SAR, price))
-                    order_info = self.is_it_sell(subject_code, price)
+                    for 가격 in main_chart.candles.가격들[main_chart.index + 1]:
+                        if para.EP < 가격: para.EP = 가격
 
-                # elif len(self.profit_tick) > 0 and 현재캔들최고수익 >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위]:
-                #     # 익절틱
-                #     price = self.charts[self.main_chart_id].indicators[PARA][0].SARS[-1] + self.profit_tick[0][0] * \
-                #                                                                           subject.info[subject_code[:2]][단위]
-                #     order_info = self.is_it_sell(subject_code, price)
-                #     if order_info != None:
-                #         self.profit_tick.pop(0)
-                elif len(self.profit_tick) > 0 and para.EP - 보유계약[0].체결표시가격 >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
-                    para.EP - main_chart.candles.저가[main_chart.index + 1] >= self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]:
-                    # 익절 수익 이후 익절드리블틱 이하로 가격이 떨어졌을 때
-                    price = para.EP - self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]
-                    #price = price - subject.info[subject_code[:2]][단위]
-                    self.log.debug("익절수익 이후 익절드리블 틱(%s) 이하로 가격이 떨어져 is_it_sell() 콜, %s, 직전SAR: %s, 최고가 : %s, 현재가 : %s" % (self.profit_dribble_tick[0],메인차트.candles.체결시간[메인차트.index+1], para.SARS[-1], para.EP, price))
-                    order_info = self.is_it_sell(subject_code, price)
+                        최고가대비손절틱 = para.EP - 가격
+                        최고가대비손절틱 = round(최고가대비손절틱 / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위]
 
-                elif len(self.sonjul_tick) > 0 and 최고가대비손절틱 >= self.sonjul_tick[0][0] * subject.info[subject_code[:2]][단위]:
-                    # 손절틱
-                    price = para.EP - self.sonjul_tick[0][0] * subject.info[subject_code[:2]][단위]
-                    #price = price - subject.info[subject_code[:2]][단위]
-                    self.log.debug("손절틱(%s) 이상 떨어져 is_it_sell() 콜, 시간:%s" % (self.sonjul_tick[0][0],메인차트.candles.체결시간[메인차트.index+1]))
-                    order_info = self.is_it_sell(subject_code, price)
+                        if 가격 < para.SAR:
+                            # 반전시
+                            self.log.debug('하향 반전으로 is_it_sell() 콜, SAR : %s, current_price : %s' % (para.SAR, 가격))
+                            order_info = self.is_it_sell(subject_code, 가격)
 
-                #if main_chart.candles.고가[main_chart.index + 1] >= math.ceil(para.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위] + self.strategy_var[갱신손절틱] * subject.info[subject_code[:2]][단위]:
-                #    if len(self.sonjul_tick) > 0:
-                #        self.sonjul_tick[0][0] = self.strategy_var[갱신손절틱]
+                        elif len(self.profit_tick) > 0 and para.EP - 보유계약[0].체결표시가격 >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
+                            para.EP - 가격 >= self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]:
+                            # 익절 수익 이후 익절드리블틱 이하로 가격이 떨어졌을 때
+                            self.log.debug("익절수익 이후 익절드리블 틱(%s) 이하로 가격이 떨어져 is_it_sell() 콜, %s, 직전SAR: %s, 최고가 : %s, 현재가 : %s" % (self.profit_dribble_tick[0],메인차트.candles.체결시간[메인차트.index+1], para.SARS[-1], para.EP, 가격))
+                            order_info = self.is_it_sell(subject_code, 가격)
+
+                        elif len(self.sonjul_tick) > 0 and 최고가대비손절틱 >= self.sonjul_tick[0][0] * subject.info[subject_code[:2]][단위]:
+                            # 손절틱
+                            self.log.debug("손절틱(%s) 이상 떨어져 is_it_sell() 콜, 시간:%s" % (self.sonjul_tick[0][0],메인차트.candles.체결시간[메인차트.index+1]))
+                            order_info = self.is_it_sell(subject_code, 가격)
+
+                        if order_info is not None: break
 
             elif para.FLOW == 하향:
-                최고가대비손절틱 = main_chart.candles.저가[main_chart.index + 1] - para.EP
-                최고가대비손절틱 = math.floor(최고가대비손절틱 / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위]
+                if para.SAR < main_chart.candles.고가[main_chart.index + 1] or \
+                    (len(self.profit_tick) > 0 and 보유계약[0].체결표시가격 - min(para.EP, main_chart.candles.저가[main_chart.index + 1]) >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
+                    main_chart.candles.고가[main_chart.index + 1] - min(para.EP, main_chart.candles.저가[main_chart.index + 1]) >= self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]) or \
+                    (len(self.sonjul_tick) > 0 and round((main_chart.candles.고가[main_chart.index + 1] - para.EP) / subject.info[subject_code[:2]][단위]) >= self.sonjul_tick[0][0]):
 
-                if main_chart.candles.고가[main_chart.index + 1] > para.SAR:
-                    # 반전시
-                    price = math.ceil(para.SAR * (1 / subject.info[subject_code[:2]][단위])) / (1 / subject.info[subject_code[:2]][단위])
-                    #price = price + subject.info[subject_code[:2]][단위]
-                    self.log.debug('상향 반전으로 is_it_sell() 콜, SAR : %s, current_price : %s' % (para.SAR, price))
-                    order_info = self.is_it_sell(subject_code, price)
+                    for 가격 in main_chart.candles.가격들[main_chart.index + 1]:
+                        if para.EP > 가격: para.EP = 가격
 
-                # elif len(self.profit_tick) > 0 and 현재캔들최고수익 >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위]:
-                #     # 익절틱
-                #     price = self.charts[self.main_chart_id].indicators[PARA][0].SARS[-1] + self.profit_tick[0][0] * \
-                #                                                                           subject.info[subject_code[:2]][단위]
-                #     order_info = self.is_it_sell(subject_code, price)
-                #     if order_info != None:
-                #         self.profit_tick.pop(0)
-                elif len(self.profit_tick) > 0 and 보유계약[0].체결표시가격 - para.EP >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
-                    main_chart.candles.고가[main_chart.index + 1] - para.EP >= self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]:
-                    # 익절 수익 이후 익절드리블틱 이하로 가격이 떨어졌을 때
-                    price = para.EP + self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]
-                    #price = price + subject.info[subject_code[:2]][단위]
-                    self.log.debug("익절수익 이후 익절드리블 틱(%s) 이하로 가격이 떨어져 is_it_sell() 콜. %s, 직전SAR: %s, 최저가 : %s, 현재가 : %s" % (self.profit_dribble_tick[0],메인차트.candles.체결시간[메인차트.index+1], para.SARS[-1], para.EP, price))
-                    order_info = self.is_it_sell(subject_code, price)
-                elif len(self.sonjul_tick) > 0 and 최고가대비손절틱 >= self.sonjul_tick[0][0] * subject.info[subject_code[:2]][단위]:
-                    # 손절틱
-                    price = para.EP + self.sonjul_tick[0][0] * subject.info[subject_code[:2]][단위]
-                    #price = price + subject.info[subject_code[:2]][단위]
-                    self.log.debug("손절틱(%s) 이상 떨어져 is_it_sell() 콜, 시간:%s" % (self.sonjul_tick[0][0],메인차트.candles.체결시간[메인차트.index+1]))
-                    order_info = self.is_it_sell(subject_code, price)
+                        최고가대비손절틱 = 가격 - para.EP
+                        최고가대비손절틱 = round(최고가대비손절틱 / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위]
 
-                #if main_chart.candles.저가[main_chart.index + 1] <= math.ceil(para.SARS[-1] / subject.info[subject_code[:2]][단위]) * subject.info[subject_code[:2]][단위] - self.strategy_var[갱신손절틱] * subject.info[subject_code[:2]][단위]:
-                #    if len(self.sonjul_tick) > 0:
-                #        self.sonjul_tick[0][0] = self.strategy_var[갱신손절틱]
+                        if 가격 > para.SAR:
+                            # 반전시
+                            self.log.debug('상향 반전으로 is_it_sell() 콜, SAR : %s, current_price : %s' % (para.SAR, 가격))
+                            order_info = self.is_it_sell(subject_code, 가격)
+
+                        elif len(self.profit_tick) > 0 and 보유계약[0].체결표시가격 - para.EP >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
+                            가격 - para.EP >= self.profit_dribble_tick[0] * subject.info[subject_code[:2]][단위]:
+                            # 익절 수익 이후 익절드리블틱 이하로 가격이 떨어졌을 때
+                            self.log.debug("익절수익 이후 익절드리블 틱(%s) 이하로 가격이 떨어져 is_it_sell() 콜. %s, 직전SAR: %s, 최저가 : %s, 현재가 : %s" % (self.profit_dribble_tick[0],메인차트.candles.체결시간[메인차트.index+1], para.SARS[-1], para.EP, 가격))
+                            order_info = self.is_it_sell(subject_code, 가격)
+                        elif len(self.sonjul_tick) > 0 and 최고가대비손절틱 >= self.sonjul_tick[0][0] * subject.info[subject_code[:2]][단위]:
+                            # 손절틱
+                            self.log.debug("손절틱(%s) 이상 떨어져 is_it_sell() 콜, 시간:%s" % (self.sonjul_tick[0][0],메인차트.candles.체결시간[메인차트.index+1]))
+                            order_info = self.is_it_sell(subject_code, 가격)
+
+                        if order_info is not None: break
+
         else:
             if main_chart.candles.영업일[main_chart.index + 1] != main_chart.candles.영업일[main_chart.index]:
                 return order_info
@@ -113,18 +99,25 @@ class FullPara(__base_strategy.BaseStrategy):
             # 계약이 없을 때
             if para.FLOW is 상향:
                 if main_chart.candles.저가[main_chart.index + 1] < para.SAR:
-                    # 하향 반전
-                    current_price = math.floor(para.SAR * (1 / subject.info[subject_code[:2]][단위])) / ( 1 / subject.info[subject_code[:2]][단위])
-                    self.log.debug('하향 반전, SAR : %s, current_price : %s' % (para.SAR, current_price))
-                    #current_price = current_price - subject.info[subject_code[:2]][단위]
-                    order_info = self.is_it_ok(subject_code, current_price)
+                    for 가격 in main_chart.candles.가격들[main_chart.index + 1]:
+                        if 가격 < para.SAR:
+                            # 하향 반전
+                            current_price = math.floor(para.SAR * (1 / subject.info[subject_code[:2]][단위])) / ( 1 / subject.info[subject_code[:2]][단위])
+                            self.log.debug('하향 반전, SAR : %s, current_price : %s' % (para.SAR, current_price))
+                            #current_price = current_price - subject.info[subject_code[:2]][단위]
+                            order_info = self.is_it_ok(subject_code, current_price)
+                            break
+
             elif para.FLOW is 하향:
                 if para.SAR < main_chart.candles.고가[main_chart.index + 1]:
-                    # 상향 반전
-                    current_price = math.ceil(para.SAR * (1 / subject.info[subject_code[:2]][단위])) / (1 / subject.info[subject_code[:2]][단위])
-                    self.log.debug('상향 반전, SAR : %s, current_price : %s' % (para.SAR, current_price))
-                    #current_price = current_price + subject.info[subject_code[:2]][단위]
-                    order_info = self.is_it_ok(subject_code, current_price)
+                    for 가격 in main_chart.candles.가격들[main_chart.index + 1]:
+                        if para.SAR < 가격:
+                            # 상향 반전
+                            current_price = math.ceil(para.SAR * (1 / subject.info[subject_code[:2]][단위])) / (1 / subject.info[subject_code[:2]][단위])
+                            self.log.debug('상향 반전, SAR : %s, current_price : %s' % (para.SAR, current_price))
+                            #current_price = current_price + subject.info[subject_code[:2]][단위]
+                            order_info = self.is_it_ok(subject_code, current_price)
+                            break
 
         return order_info
 

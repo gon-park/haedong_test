@@ -156,6 +156,7 @@ if __name__ == '__main__':
                 if chart[TYPE] == TICK:
                     chart_candles[chart_id] = dbm.request_tick_candle(subject_code, chart[TIME_UNIT], start_date,
                                                                       end_date)
+                    #pprint(chart_candles[chart_id])
                     if TEST_MAIN_LOG:
                         print('\t\t [%s] 로딩 된 캔들 : %s개' % (subject_code, len(chart_candles[chart_id])))
 
@@ -183,6 +184,7 @@ if __name__ == '__main__':
         tmp_candles[chart_id][체결시간] = []
         tmp_candles[chart_id][거래량] = []
         tmp_candles[chart_id][영업일] = []
+        tmp_candles[chart_id][가격들] = []
 
         for candle in chart_candles[chart_id]:
             if not start_date <= candle[영업일] <= end_date:
@@ -198,6 +200,7 @@ if __name__ == '__main__':
             tmp_candles[chart_id][체결시간].append(datetime.strptime(candle[체결시간], '%Y-%m-%d %H:%M:%S'))
             tmp_candles[chart_id][거래량].append(candle[거래량])
             tmp_candles[chart_id][영업일].append(candle[영업일])
+            tmp_candles[chart_id][가격들].append([float(price) for price in candle[가격들].split(',')])
 
     '''상단까지가 우리가 입력한 날짜에 맞는 테이블을 Tick_60 으로만 가져오는 코드'''
     start_time = time.time()

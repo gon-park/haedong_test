@@ -51,6 +51,7 @@ END_DATE = "end_date"
 체결시간 = "date"
 거래량 = "volume"
 영업일 = "working_day"
+가격들 = "price_list"
 
 # 숫자
 INFINITY = 99999999
