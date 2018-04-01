@@ -2,7 +2,9 @@
 
 import itertools
 from datetime import datetime
+from idlelib import paragraph
 from random import random, randint
+from strategy import full_para_
 
 from pip.cmdoptions import cache_dir
 
@@ -260,6 +262,9 @@ if __name__ == '__main__':
                 print('\t\t %s: %s' % (report.종목코드, report.수익))
                 fprint('\t\t %s: %s' % (report.종목코드, report.수익))
 
+    full_para_.FullPara.calc_reports(simulation_report)
+
+
     print("DataBase에 최고 수익의 테스트 결과가 기록됩니다. \n기록을 원치 않을 때 'N'입력하세요.")
     idx = input()
     if idx == 'N' or idx == 'n':
@@ -269,3 +274,5 @@ if __name__ == '__main__':
     print('test_start_date=%s \t real_start_date=%s' % (start_date, real_start_date))
     print('test_end_date=%s \t real_end_date=%s' % (end_date, real_end_date))
     dbm.insert_test_result(simulation_report[0], real_start_date, real_end_date)
+
+

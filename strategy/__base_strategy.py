@@ -4,6 +4,7 @@ import abc
 import inspect
 
 from manager import log_manager
+from variable.report import Report
 
 
 class BaseStrategy(metaclass=abc.ABCMeta):
@@ -15,19 +16,23 @@ class BaseStrategy(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def is_it_ok(self, subject_code, current_price):
-        raise NotImplementedError(inspect.stack()[0][3] + ' is not impplemented.')
+        raise NotImplementedError(inspect.stack()[0][3] + ' is not implemented.')
 
     @abc.abstractmethod
     def is_it_sell(self, subject_code, current_price):
-        raise NotImplementedError(inspect.stack()[0][3] + ' is not impplemented.')
+        raise NotImplementedError(inspect.stack()[0][3] + ' is not implemented.')
 
     @abc.abstractmethod
     def check_contract_in_candle(self, subject_code):
-        raise NotImplementedError(inspect.stack()[0][3] + ' is not impplemented.')
+        raise NotImplementedError(inspect.stack()[0][3] + ' is not implemented.')
 
     @abc.abstractmethod
     def check_contract_in_tick(self, subject_code, current_price):
-        raise NotImplementedError(inspect.stack()[0][3] + ' is not impplemented.')
+        raise NotImplementedError(inspect.stack()[0][3] + ' is not implemented.')
+
+    @abc.abstractmethod
+    def post_trade(self, report: Report):
+        raise NotImplementedError(inspect.stack()[0][3] + ' is not implemented.')
 
     @staticmethod
     def get_contract_count(subject_code, contracts, strategy):
@@ -49,3 +54,4 @@ class BaseStrategy(metaclass=abc.ABCMeta):
 
     def init_logger(self):
         self.log, self.res, self.err_log = log_manager.LogManager().get_logger()
+

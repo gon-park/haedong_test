@@ -5,6 +5,8 @@ from indicator import ma
 import math
 import os
 from variable import subject
+from variable.report import Report
+
 
 class FullPara(__base_strategy.BaseStrategy):
 
@@ -30,9 +32,10 @@ class FullPara(__base_strategy.BaseStrategy):
         main_chart = self.charts[self.main_chart_id]
         para = main_chart.indicators[PARA][0]
         order_info = None
+
+        # 계약이 있을 때
         if subject_code in self.contracts and FullPara.get_contract_count(subject_code, self.contracts, 풀파라) > 0:
             보유계약 = FullPara.get_contracts(subject_code, self.contracts, 풀파라)
-            # 계약이 있을 때
             if para.FLOW == 상향:
                 if para.SAR > main_chart.candles.저가[main_chart.index + 1] or \
                     (len(self.profit_tick) > 0 and max(para.EP, main_chart.candles.고가[main_chart.index + 1]) - 보유계약[0].체결표시가격 >= self.profit_tick[0][0] * subject.info[subject_code[:2]][단위] and \
@@ -92,11 +95,11 @@ class FullPara(__base_strategy.BaseStrategy):
 
                         if order_info is not None: break
 
+        # 계약이 없을 때
         else:
             if main_chart.candles.영업일[main_chart.index + 1] != main_chart.candles.영업일[main_chart.index]:
                 return order_info
 
-            # 계약이 없을 때
             if para.FLOW is 상향:
                 if main_chart.candles.저가[main_chart.index + 1] < para.SAR:
                     for 가격 in main_chart.candles.가격들[main_chart.index + 1]:
@@ -177,16 +180,16 @@ class FullPara(__base_strategy.BaseStrategy):
         log.debug("맞틀리스트 : %s" % 맞틀리스트)
         log.debug("수익리스트 : %s" % 수익리스트)
 
-        맞틀리스트체크 = False
-        for ox in self.strategy_var["ox"]:
-            if ox == 맞틀리스트[-len(ox):]:
-                맞틀리스트체크 = True
-                log.info('%s 다음으로 진입.' % ox)
-                break
-
-        if not 맞틀리스트체크: return None
-
-        if 맞틀리스트[-1] == 맞 and 수익리스트[-1] > 50: return None
+        # 맞틀리스트체크 = False
+        # for ox in self.strategy_var["ox"]:
+        #     if ox == 맞틀리스트[-len(ox):]:
+        #         맞틀리스트체크 = True
+        #         log.info('%s 다음으로 진입.' % ox)
+        #         break
+        #
+        # if not 맞틀리스트체크: return None
+        #
+        # if 맞틀리스트[-1] == 맞 and 수익리스트[-1] > 50: return None
 
         #지지난플로우수익 = abs(파라.SARS[-1] - 파라.SARS[-2]) # 계산의 편의를 위해 절대값을 취함.
         #삼전플로우수익 = abs(파라.SARS[-2] - 파라.SARS[-3]) # 계산의 편의를 위해 절대값을 취함.
@@ -400,3 +403,5 @@ class FullPara(__base_strategy.BaseStrategy):
 
         return None
 
+    def post_trade(self, report: Report):
+        pass
