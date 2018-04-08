@@ -132,6 +132,9 @@ class FullPara(__base_strategy.BaseStrategy):
         self.param03 = self.strategy_var["param03"]
         self.param04 = self.strategy_var["param04"]
         self.param05 = self.strategy_var["param05"]
+        self.param06 = self.strategy_var["param06"]
+        self.param07 = self.strategy_var["param07"]
+        self.param08 = self.strategy_var["param08"]
 
         # 변수 선언
         메인차트 = self.charts[self.main_chart_id]
@@ -176,86 +179,111 @@ class FullPara(__base_strategy.BaseStrategy):
         수익리스트.append(직전플로우수익)
         log.debug("맞틀리스트 : %s" % 맞틀리스트)
         log.debug("수익리스트 : %s" % 수익리스트)
+        # #
+        # 맞틀리스트체크 = False
+        # for ox in self.strategy_var["ox"]:
+        #     if ox == 맞틀리스트[-len(ox):]:
+        #         맞틀리스트체크 = True
+        #         log.info('%s 다음으로 진입.' % ox)
+        #         break
+        #
+        # if not 맞틀리스트체크: return None
 
-        맞틀리스트체크 = False
-        for ox in self.strategy_var["ox"]:
-            if ox == 맞틀리스트[-len(ox):]:
-                맞틀리스트체크 = True
-                log.info('%s 다음으로 진입.' % ox)
-                break
+        지지난플로우수익 = abs(파라.SARS[-1] - 파라.SARS[-2]) # 계산의 편의를 위해 절대값을 취함.
+        삼전플로우수익 = abs(파라.SARS[-2] - 파라.SARS[-3]) # 계산의 편의를 위해 절대값을 취함.
 
-        if not 맞틀리스트체크: return None
+        if 맞틀리스트[-1] == 틀 and 수익리스트[-1] < self.param08:
+            # 매매진입
+            self.order_contents = {
+                신규주문: True,
+                종목코드: subject_code,
+                매도수구분: _매도수구분,
+                매매전략: 풀파라,
+                수량: 2,
+                가격: current_price
+            }
+            log.info("FullPara.is_it_ok(): %s, %s 진입.(pid = %s)" % (
+            메인차트.candles.체결시간[메인차트.index + 1], self.order_contents, self.pid))
+            # 익절, 손절틱 복사
+            self.profit_tick = self.strategy_var[익절틱][:]
+            self.sonjul_tick = self.strategy_var[손절틱][:]
+            self.profit_dribble_tick = self.strategy_var[수익드리블틱][:]
+            self.sonjul_dribble_tick = self.strategy_var[손절드리블틱][:]
 
-        if 맞틀리스트[-1] == 맞 and 수익리스트[-1] > 50: return None
+            return self.order_contents
 
-        #지지난플로우수익 = abs(파라.SARS[-1] - 파라.SARS[-2]) # 계산의 편의를 위해 절대값을 취함.
-        #삼전플로우수익 = abs(파라.SARS[-2] - 파라.SARS[-3]) # 계산의 편의를 위해 절대값을 취함.
-        #
-        # if 맞틀리스트[-2:] == [맞, 틀] and 수익리스트[-2] > self.param01:
-        #     log.debug("지지난 플로우가 70틱 이상 수익으로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-        #     return None
-        #
-        # if 맞틀리스트[-4:] == [틀, 틀, 틀, 틀]:
-        #     if 수익리스트[-2] < 수익리스트[-1] and  수익리스트[-2] < self.param02: #-15
-        #         log.debug("틀틀틀틀 조건에 맞지 않아 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-        #         return None
-        #     else:
-        #         log.debug("틀틀틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-        #
-        # elif 맞틀리스트[-4:] == [틀, 맞, 맞, 틀]:
-        #     log.debug("틀맞맞틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수',  self.pid))
-        #
-        # elif 맞틀리스트[-4:] == [틀, 맞, 틀, 틀]:
-        #     log.debug("틀맞틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수',  self.pid))
-        #
-        # elif 맞틀리스트[-4:] == [맞, 틀, 틀, 맞]:
-        #     if 수익리스트[-1] > self.param03: #10
-        #         log.debug("맞틀틀맞, 직전플로우 수익이 10틱 초과로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-        #         return None
-        #     else:
-        #         log.debug("맞틀틀맞 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-        #
-        # elif 맞틀리스트[-4:] == [틀, 틀, 틀, 맞]:
-        #     if 수익리스트[-3] < self.param04: #-10
-        #         log.debug("틀틀틀맞, 삼전플로우 수익이 10틱 이하로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-        #         return None
-        #     else:
-        #         log.debug("틀틀틀맞 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-        #
-        # elif 맞틀리스트[-4:] == [맞, 맞, 맞, 틀]:
-        #     log.debug("맞맞맞틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-        #
-        # elif 맞틀리스트[-4:] == [틀, 틀, 맞, 맞]:
-        #     log.debug("틀틀맞맞 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-        #
-        # elif 맞틀리스트[-4:] == [맞, 맞, 틀, 틀]:
-        #     if 수익리스트[-4] < 수익리스트[-3]:
-        #         log.debug("맞맞틀틀, 처음 맞 수익이 다음 맞 수익보다 적어서 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-        #         return None
-        #     else:
-        #         log.debug("맞맞틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-        #
-        # elif 맞틀리스트[-4:] == [맞, 틀, 틀, 틀]:
-        #     if 수익리스트[-2] < self.param05: #-10
-        #         log.debug("맞틀틀틀, 지지난플로우수익 -10틱 미만으로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-        #         return None
-        #     else:
-        #         log.debug("맞틀틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-        #
-        # elif 맞틀리스트[-3:] == [틀, 맞, 틀]:
-        #     if 수익리스트[-2] > self.param01:
-        #         log.debug("틀맞맞, 지지난플로우수익 70틱 초과로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-        #         return None
-        #     else:
-        #         log.debug("틀맞맞 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-        #
-        # else:
-        #     log.debug("맞틀 조건에 맞지 않아 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-        #     return None
+        if 맞틀리스트[-1] == 틀 and 수익리스트[-1] > self.param07:
+            return None
+
+        if 맞틀리스트[-1] == 맞 and 수익리스트[-1] > self.param06: return None
+
+        if 맞틀리스트[-2:] == [맞, 틀] and 수익리스트[-2] > self.param01:
+            log.debug("지지난 플로우가 70틱 이상 수익으로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+            return None
+
+
+        if 맞틀리스트[-5:] == [틀, 틀, 틀, 틀, 틀]:
+            #if 수익리스트[-2] < 수익리스트[-1] and  수익리스트[-2] > self.param02: #-15
+            #   log.debug("틀틀틀틀 조건에 맞지 않아 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+            #   return None
+            #else:
+            #   log.debug("틀틀틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+            pass
+
+        elif 맞틀리스트[-4:] == [틀, 맞, 맞, 틀]:
+            log.debug("틀맞맞틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수',  self.pid))
+
+        elif 맞틀리스트[-4:] == [틀, 맞, 틀, 틀]:
+            log.debug("틀맞틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수',  self.pid))
+
+        elif 맞틀리스트[-4:] == [맞, 틀, 틀, 맞]:
+            if 수익리스트[-1] > self.param03: #10
+                log.debug("맞틀틀맞, 직전플로우 수익이 10틱 초과로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+                return None
+            else:
+                log.debug("맞틀틀맞 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+
+        elif 맞틀리스트[-4:] == [틀, 틀, 틀, 맞]:
+            if 수익리스트[-3] < self.param04: #-10
+                log.debug("틀틀틀맞, 삼전플로우 수익이 10틱 이하로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+                return None
+            else:
+                log.debug("틀틀틀맞 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+
+        elif 맞틀리스트[-4:] == [맞, 맞, 맞, 틀]:
+            log.debug("맞맞맞틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+
+        elif 맞틀리스트[-4:] == [틀, 틀, 맞, 맞]:
+            log.debug("틀틀맞맞 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+
+        elif 맞틀리스트[-4:] == [맞, 맞, 틀, 틀]:
+            if 수익리스트[-4] < 수익리스트[-3]:
+                log.debug("맞맞틀틀, 처음 맞 수익이 다음 맞 수익보다 적어서 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+                return None
+            else:
+                log.debug("맞맞틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+
+        elif 맞틀리스트[-4:] == [맞, 틀, 틀, 틀]:
+           if 수익리스트[-2] < self.param05: #-10
+               log.debug("맞틀틀틀, 지지난플로우수익 -10틱 미만으로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+               return None
+           else:
+               log.debug("맞틀틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+
+        elif 맞틀리스트[-3:] == [틀, 맞, 틀]:
+            if 수익리스트[-2] > self.param01:
+                log.debug("틀맞맞, 지지난플로우수익 70틱 초과로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+                return None
+            else:
+                log.debug("틀맞맞 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+
+        else:
+             log.debug("맞틀 조건에 맞지 않아 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+             return None
 
         # 매매시간 확인
         매매시간 = int(메인차트.candles.체결시간[메인차트.index + 1].strftime("%H%M"))
-        if subject_code == 'GCG18' or subject_code == 'GCJ18':
+        if subject_code[:3] == 'GCG' or subject_code[:3] == 'GCJ': # 겨울
             if 2200 < 매매시간 < 2330:
                 log.debug("22:00 ~ 23:30 사이라 매매 포기.")
                 return None
