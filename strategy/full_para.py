@@ -5,6 +5,8 @@ from indicator import ma
 import math
 import os
 from variable import subject
+from variable.report import Report
+
 
 class FullPara(__base_strategy.BaseStrategy):
 
@@ -30,6 +32,8 @@ class FullPara(__base_strategy.BaseStrategy):
         main_chart = self.charts[self.main_chart_id]
         para = main_chart.indicators[PARA][0]
         order_info = None
+
+        # 계약이 있을 때
         if subject_code in self.contracts and FullPara.get_contract_count(subject_code, self.contracts, 풀파라) > 0:
             보유계약 = FullPara.get_contracts(subject_code, self.contracts, 풀파라)
             # 계약이 있을 때
@@ -92,11 +96,11 @@ class FullPara(__base_strategy.BaseStrategy):
 
                         if order_info is not None: break
 
+        # 계약이 없을 때
         else:
             if main_chart.candles.영업일[main_chart.index + 1] != main_chart.candles.영업일[main_chart.index]:
                 return order_info
 
-            # 계약이 없을 때
             if para.FLOW is 상향:
                 if main_chart.candles.저가[main_chart.index + 1] < para.SAR:
                     for 가격 in main_chart.candles.가격들[main_chart.index + 1]:
@@ -132,9 +136,6 @@ class FullPara(__base_strategy.BaseStrategy):
         self.param03 = self.strategy_var["param03"]
         self.param04 = self.strategy_var["param04"]
         self.param05 = self.strategy_var["param05"]
-        self.param06 = self.strategy_var["param06"]
-        self.param07 = self.strategy_var["param07"]
-        self.param08 = self.strategy_var["param08"]
 
         # 변수 선언
         메인차트 = self.charts[self.main_chart_id]

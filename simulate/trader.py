@@ -3,15 +3,14 @@
 from manager.chart_manager import ChartManger
 from manager.contract_manager import ContractManager
 from variable.constant import *
-from strategy import full_para
+from strategy import full_para_, full_para
 from datetime import datetime
 from pprint import pprint
 from strategy.full_para import FullPara
 from variable.report import Report
 
 
-class Trader():
-
+class Trader:
     def __init__(self, main_chart: str, subject_code: str, strategy_var: dict, common_candles: dict):
         self.charts = {}  # key 값은 chart_id(GCZ17_tick_60)로 되어있음
         self.strategy = []
@@ -27,7 +26,11 @@ class Trader():
         # 매매 전략 설정
         for strategy_name in strategy_var[STRATEGY]:
             if strategy_name == 풀파라:
-                self.strategy.append(full_para.FullPara(self.charts, self.subject_code, self.main_chart, strategy_var[STRATEGY][strategy_name], self.contracts))
+                self.strategy.append(full_para.FullPara(self.charts, self.subject_code, self.main_chart,
+                                                        strategy_var[STRATEGY][strategy_name], self.contracts))
+            elif strategy_name == 익손절별수익계산:
+                self.strategy.append(full_para_.FullPara(self.charts, self.subject_code, self.main_chart,
+                                                         strategy_var[STRATEGY][strategy_name], self.contracts))
             else:
                 raise NotImplementedError
 
@@ -47,7 +50,7 @@ class Trader():
                 candles = chart.candles
 
                 if (chart.index + 1) < len(candles.현재가) and \
-                    (chart.candles.체결시간[chart.index + 1] < _체결시간):
+                        (chart.candles.체결시간[chart.index + 1] < _체결시간):
                     _체결시간 = chart.candles.체결시간[chart.index + 1]
                     # 체결시간은 차트 다음캔들의 체결시간으로 비교해야함. 체결시간은 끝시간이 아니고 시작시간이기 때문에
                     체결차트 = chart
@@ -67,5 +70,9 @@ class Trader():
 
             ChartManger.candle_push(체결차트, 체결차트.index + 1)
 
+        # simulation 종료 후 결과 종합
+        for strategy in self.strategy:
+            strategy.post_trade(self.result)
+            
     def get_result(self):
         return self.result

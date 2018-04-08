@@ -218,6 +218,45 @@ class DBManager(__manager.ManagerClass):
 
         return self.exec_query(query, fetch_type=FETCH_ALL, cursor_type=CURSOR_DICT)
 
+    def request_hour_candle(self, subject_code, time_unit, start_date='20170101', end_date='20201231'):
+        return self.request_min_candle(subject_code, int(time_unit) * 60, start_date='20170101', end_date='20201231')
+
+    def request_min_candle(self, subject_code, time_unit, start_date='20170101', end_date='20201231'):
+        sec = int(time_unit) * 60
+        query = '''
+        SELECT 
+            T1.date,
+            T2.price as open,
+            T1.high,
+            T1.low,
+            T3.price as close,
+            T1.volume,
+            T1.working_day
+        FROM
+            (
+            SELECT
+                from_unixtime(FLOOR(UNIX_TIMESTAMP(date) / %s) * %s) AS date,
+                MIN(id) as open_id,
+                MAX(price) AS high,
+                MIN(price) AS low,
+                MAX(id) as close_id,
+                SUM(volume) AS volume,
+                working_day
+            FROM %s
+            WHERE working_day between '%s' and '%s'
+            GROUP BY FLOOR(UNIX_TIMESTAMP(date)/%s)
+            ORDER BY date
+            ) T1
+            INNER JOIN
+            %s T2
+            ON T1.open_id = T2.id
+            INNER JOIN
+            %s T3
+            ON T1.close_id = T3.id            
+        ''' % (sec, sec, subject_code, start_date, end_date, sec, subject_code, subject_code)
+
+        return self.exec_query(query, fetch_type=FETCH_ALL, cursor_type=CURSOR_DICT)
+
     def print_status(self):
         print(self.__getattribute__())
 
