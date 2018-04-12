@@ -136,6 +136,7 @@ class FullPara(__base_strategy.BaseStrategy):
         self.param03 = self.strategy_var["param03"]
         self.param04 = self.strategy_var["param04"]
         self.param05 = self.strategy_var["param05"]
+        self.param08 = self.strategy_var["param08"]
 
         # 변수 선언
         메인차트 = self.charts[self.main_chart_id]
@@ -213,10 +214,10 @@ class FullPara(__base_strategy.BaseStrategy):
 
             return self.order_contents
 
-        if 맞틀리스트[-1] == 틀 and 수익리스트[-1] > self.param07:
-            return None
-
-        if 맞틀리스트[-1] == 맞 and 수익리스트[-1] > self.param06: return None
+        # if 맞틀리스트[-1] == 틀 and 수익리스트[-1] > self.param07:
+        #     return None
+        #
+        # if 맞틀리스트[-1] == 맞 and 수익리스트[-1] > self.param06: return None
 
         if 맞틀리스트[-2:] == [맞, 틀] and 수익리스트[-2] > self.param01:
             log.debug("지지난 플로우가 70틱 이상 수익으로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
@@ -428,4 +429,8 @@ class FullPara(__base_strategy.BaseStrategy):
                 return self.order_contents
 
         return None
+
+
+    def post_trade(self, report: Report):
+        pass
 
