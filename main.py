@@ -262,7 +262,7 @@ if __name__ == '__main__':
                 print('\t\t %s: %s' % (report.종목코드, report.수익))
                 fprint('\t\t %s: %s' % (report.종목코드, report.수익))
 
-    full_para_.FullPara.calc_reports(simulation_report)
+    #full_para_.FullPara.calc_reports(simulation_report)
 
 
     print("DataBase에 최고 수익의 테스트 결과가 기록됩니다. \n기록을 원치 않을 때 'N'입력하세요.")
