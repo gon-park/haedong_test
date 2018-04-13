@@ -16,7 +16,8 @@ class DBManager(__manager.ManagerClass):
         super(DBManager, self).__init__()
 
     def connect(self):
-        self.conn = pymysql.connect(host=DB_SERVER_ADDR, user=DB_USER_ID, password=DB_USER_PWD, db=DB_NAME, charset=DB_CHARSET)
+        self.conn = pymysql.connect(host=DB_SERVER_ADDR, user=DB_USER_ID, password=DB_USER_PWD, db=DB_NAME,
+                                    charset=DB_CHARSET)
         self.curs = self.conn.cursor()
         self.is_connected = True
 
@@ -63,8 +64,11 @@ class DBManager(__manager.ManagerClass):
         return self.exec_query(query)
 
     def get_table(self, table_name, start_date=None, end_date=None):
-        if start_date is not None: query = 'select date, price, working_day from %s' % table_name
-        else: query = "select date, price, working_day from %s where date >= timestamp('%s') and date = timestamp('%s')" % (table_name, start_date, end_date)
+        if start_date is not None:
+            query = 'select date, price, working_day from %s' % table_name
+        else:
+            query = "select date, price, working_day from %s where date >= timestamp('%s') and date = timestamp('%s')" % (
+            table_name, start_date, end_date)
 
         return self.exec_query(query, FETCH_ALL)
 
@@ -78,7 +82,7 @@ class DBManager(__manager.ManagerClass):
          table_schema = DATABASE()
          and
          substr(table_name, 1, %s) = '%s'
-        ''' %  (len(subject_symbol), subject_symbol)
+        ''' % (len(subject_symbol), subject_symbol)
         return list(self.exec_query(query, FETCH_ALL))
 
     def get_name(self):
@@ -163,7 +167,7 @@ class DBManager(__manager.ManagerClass):
         #     ;
         #     ''' % (tick_unit, tick_unit, tick_unit, subject_code, tick_unit, subject_code, subject_code)
 
-        #print(query)
+        # print(query)
         query = '''
         select t1.id
                 , date_format(t1.date, '%%Y-%%m-%%d %%H:%%i:%%s') as date
@@ -198,7 +202,7 @@ class DBManager(__manager.ManagerClass):
                                         if( @lastPrice = s1.price, 0, 1 ) as NotEqual,                            
                                         @lastPrice := s1.price,
                                           s1.*
-                                         
+
                                      from %s s1
                                     inner join (
                                                select @rownum:=1, @working_day:=Date('2000-01-01'), @lastPrice := 0
@@ -225,13 +229,13 @@ class DBManager(__manager.ManagerClass):
         sec = int(time_unit) * 60
         query = '''
         SELECT 
-            T1.date,
+            date_format(T1.date, '%%Y-%%m-%%d %%H:%%i:%%s') as date,
             T2.price as open,
             T1.high,
             T1.low,
             T3.price as close,
-            T1.volume,
-            T1.working_day
+            cast(T1.volume as int) as volume,
+            date_format(T1.working_day, '%%Y-%%m-%%d') as working_day
         FROM
             (
             SELECT
@@ -254,6 +258,35 @@ class DBManager(__manager.ManagerClass):
             %s T3
             ON T1.close_id = T3.id            
         ''' % (sec, sec, subject_code, start_date, end_date, sec, subject_code, subject_code)
+
+        return self.exec_query(query, fetch_type=FETCH_ALL, cursor_type=CURSOR_DICT)
+
+    def request_day_candle(self, subject_symbol, start_date='20000101', end_date='21000101'):
+        query = '''
+        SELECT  
+            date_format(date, '%%Y-%%m-%%d 07:%%i:%%s') as date,
+            open,
+            high,
+            low,
+            close,
+            volume
+        FROM    %s_day
+        ''' % (subject_symbol)
+
+        print(query)
+        return self.exec_query(query, fetch_type=FETCH_ALL, cursor_type=CURSOR_DICT)
+
+    def request_week_candle(self, subject_symbol, start_date='20000101', end_date='21000101'):
+        query = '''
+        SELECT  
+            date_format(date, '%%Y-%%m-%%d 07:%%i:%%s') as date,
+            open,
+            high,
+            low,
+            close,
+            volume
+        FROM    %s_week
+        ''' % (subject_symbol)
 
         return self.exec_query(query, fetch_type=FETCH_ALL, cursor_type=CURSOR_DICT)
 
@@ -289,7 +322,7 @@ class DBManager(__manager.ManagerClass):
         print(type(report_obj))
         print(report_obj.__dict__)
 
-        label = subprocess.check_output(["git", "describe", "--always"]) # current git hash
+        label = subprocess.check_output(["git", "describe", "--always"])  # current git hash
         print('git Hash tag : %s' % (label))
 
         query = '''
@@ -298,13 +331,15 @@ class DBManager(__manager.ManagerClass):
         TEST_RESULT (subject_symbol, total_profit, start_date, end_date, git_hash, strategy, result)
         values ('%s', %d, date('%s'), date('%s'), "%s", "%s", "%s")
         ;
-        ''' % (report_obj.전략변수[SUBJECT_SYMBOL], report_obj.총수익, start_date, end_date, label, str(report_obj.전략변수), str(report_obj.__dict__))
+        ''' % (report_obj.전략변수[SUBJECT_SYMBOL], report_obj.총수익, start_date, end_date, label, str(report_obj.전략변수),
+               str(report_obj.__dict__))
 
         try:
             result = self.exec_query(query, cursor_type=CURSOR_DICT)
             print(result)
         except Exception as err:
             print(err)
+
 
 if __name__ == '__main__':
     dbm = DBManager()
