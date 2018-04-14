@@ -136,6 +136,8 @@ class FullPara(__base_strategy.BaseStrategy):
         self.param03 = self.strategy_var["param03"]
         self.param04 = self.strategy_var["param04"]
         self.param05 = self.strategy_var["param05"]
+        self.param06 = self.strategy_var["param06"]
+        #self.param07 = self.strategy_var["param07"]
         self.param08 = self.strategy_var["param08"]
 
         # 변수 선언
@@ -195,6 +197,7 @@ class FullPara(__base_strategy.BaseStrategy):
         삼전플로우수익 = abs(파라.SARS[-2] - 파라.SARS[-3]) # 계산의 편의를 위해 절대값을 취함.
 
         if 맞틀리스트[-1] == 틀 and 수익리스트[-1] < self.param08:
+            log.debug("큰 틀 다음으로 매매 진입합니다.")
             # 매매진입
             self.order_contents = {
                 신규주문: True,
@@ -214,22 +217,24 @@ class FullPara(__base_strategy.BaseStrategy):
 
             return self.order_contents
 
-        # if 맞틀리스트[-1] == 틀 and 수익리스트[-1] > self.param07:
-        #     return None
-        #
-        # if 맞틀리스트[-1] == 맞 and 수익리스트[-1] > self.param06: return None
-
-        if 맞틀리스트[-2:] == [맞, 틀] and 수익리스트[-2] > self.param01:
-            log.debug("지지난 플로우가 70틱 이상 수익으로 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+        elif 맞틀리스트[-2:] == [맞, 틀] and 수익리스트[-2] > self.param01:
+            log.debug("지지난 플로우가 %s틱 이상 수익으로 %s 포기.(pid = %s)" % (self.param01 ,'신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
             return None
 
+        elif 수익리스트[-1] > self.param06:
+            log.debug("지난 플로우 수익이 %s틱 이상으로 진입 포기" % self.param06)
+            return None
 
-        if 맞틀리스트[-5:] == [틀, 틀, 틀, 틀, 틀]:
+        # elif 맞틀리스트[-1] == 틀 and 수익리스트[-1] > self.param07:
+        #     log.debug("이전 틀 플로우 수익이 -10틱 이상으로 매매 진입 안합니다.")
+        #     return None
+
+        elif 맞틀리스트[-5:] == [틀, 틀, 틀, 틀, 틀]:
             #if 수익리스트[-2] < 수익리스트[-1] and  수익리스트[-2] > self.param02: #-15
             #   log.debug("틀틀틀틀 조건에 맞지 않아 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
             #   return None
             #else:
-            #   log.debug("틀틀틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+            log.debug("틀틀틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
             pass
 
         elif 맞틀리스트[-4:] == [틀, 맞, 맞, 틀]:
