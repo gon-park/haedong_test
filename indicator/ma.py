@@ -33,6 +33,12 @@ class Calc():
     #         var.MA.append(float(var.tmp_sum) / float(var.LENGTH))
 
     @staticmethod
+    def get_signal(var:Variable, index:int):
+        if index == 0: return 알수없음
+        return 신규매수 if var[index] > var[index-1] else 신규매도 if var[index] < var[index-1] else 알수없음
+
+
+    @staticmethod
     def is_sorted(ma_list: list):
         if len(ma_list) < 2:
             return 알수없음
