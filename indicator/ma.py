@@ -34,8 +34,8 @@ class Calc():
 
     @staticmethod
     def get_signal(var:Variable, index:int):
-        if index == 0: return 알수없음
-        return 신규매수 if var[index] > var[index-1] else 신규매도 if var[index] < var[index-1] else 알수없음
+        if index <= 0: return 0
+        return 1 if var.MA.iloc[index] > var.MA.iloc[index-1] else -1 if var.MA.iloc[index] < var.MA.iloc[index-1] else 0
 
 
     @staticmethod

@@ -25,30 +25,82 @@ class MSO(__base_strategy.BaseStrategy):
         for chart in self.charts:
             pprint(self.charts[chart].indicators[RSI][0].RSI)
 
-    def check_contract_in_candle(self, subject_code: str):
+    def check_contract_in_candle(self, subject_code: str, current_price: float):
         order_info = None
 
         res = []
         for chart_key in self.charts:
-            res.append({});
+            res.append({})
+            res[-1]['cnt'] = 0
+            res[-1]['sum'] = 0
+
             for indicator_name in self.charts[chart_key].indicators:
                 for indicator in self.charts[chart_key].indicators[indicator_name]:
                     indicator_calc = None
                     if indicator_name == RSI: indicator_calc = rsi.Calc
                     elif indicator_name == MA: indicator_calc = ma.Calc
 
-                    res[chart_key][indicator_calc.get_signal(indicator, self.charts[chart_key].index)] += 1
+                    signal = indicator_calc.get_signal(indicator, self.charts[chart_key].index)
+
+                    res[-1]['cnt'] += 1
+                    res[-1]['sum'] += signal
+
+            score = float(res[-1]['sum']) / res[-1]['cnt']
+            res[-1]['score'] = score
+        # print(current_price)
+        # print(res)
+
 
         if subject_code in self.contracts and MSO.get_contract_count(subject_code, self.contracts, MSO) > 0:
-            contracts = self.get_contracts(subject_code, self.contracts, 풀파라)
+            # print(MSO.get_contract_count(subject_code, self.contracts, MSO))
+            # print()
+
+            # 계약 있을 때
+            contracts = self.get_contracts(subject_code, self.contracts, MSO)
 
             if contracts[0].매도수구분 == 신규매수:
-                pass
-            else:
-                pass
-        else:
-            pass
+                if all(obj['score'] < 0 for obj in res):
+                    order_info = {
+                        신규주문: True,
+                        종목코드: subject_code,
+                        매도수구분: 신규매도,
+                        매매전략: MSO,
+                        수량: 1,
+                        가격: current_price
+                    }
 
+            else:
+                if all(obj['score'] > 0 for obj in res):
+                    order_info = {
+                        신규주문: True,
+                        종목코드: subject_code,
+                        매도수구분: 신규매수,
+                        매매전략: MSO,
+                        수량: 1,
+                        가격: current_price
+                    }
+        else:
+            if all(obj['score'] > 0.5 for obj in res):
+                print(res)
+                order_info = {
+                    신규주문: True,
+                    종목코드: subject_code,
+                    매도수구분: 신규매수,
+                    매매전략: MSO,
+                    수량: 1,
+                    가격: current_price
+                }
+
+            elif all(obj['score'] < -0.5 for obj in res):
+
+                order_info = {
+                    신규주문: True,
+                    종목코드: subject_code,
+                    매도수구분: 신규매도,
+                    매매전략: MSO,
+                    수량: 1,
+                    가격: current_price
+                }
 
         return order_info
 

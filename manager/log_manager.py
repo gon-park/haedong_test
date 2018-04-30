@@ -12,7 +12,7 @@ from util.singleton import Singleton
 
 class LogManager(metaclass=Singleton):
     res_logger, info_logger, err_logger = None, None, None
-    
+
     def __init__(self):
         path = MAIN_DIR
         path = path + '/logs/'
@@ -56,8 +56,8 @@ class LogManager(metaclass=Singleton):
         self.res_logger.addHandler(all_file_handler)
         self.res_logger.addHandler(res_stream_handler)
 
-        #self.info_logger.setLevel(logging.DEBUG)
-        self.info_logger.setLevel(logging.ERROR)
+        self.info_logger.setLevel(logging.DEBUG)
+        # self.info_logger.setLevel(logging.ERROR)
         self.res_logger.setLevel(logging.INFO)
         self.info_logger.info('Initialize Log Manager Instance(pid = % d)' % os.getpid())
 

@@ -1,0 +1,5 @@
+__pycache__
+logs/
+output.txt
+cached_candles
+.idea

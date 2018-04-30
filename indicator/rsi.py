@@ -20,4 +20,4 @@ class Calc():
 
     @staticmethod
     def get_signal(var: Variable, index: int):
-        return 신규매수 if var.RSI[index] < 30 else 신규매도 if var.RSI[index] > 70 else 알수없음
+        return 1 if var.RSI.iloc[index] < 30 else -1 if var.RSI.iloc[index] > 70 else 0

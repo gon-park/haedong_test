@@ -133,16 +133,16 @@ if __name__ == '__main__':
         print("Not exist 'cached_candles directory', Create the directory")
         os.makedirs('%s/%s' % (os.path.curdir, '/cached_candles'))
 
-    ''' 기간(하루)이 지난 캐시 데이터 삭제 '''
-    if not os.path.exists(os.path.join(os.path.curdir, 'cached_candles')):
-        os.mkdir(os.path.join(os.path.curdir, 'cached_candles'))
+    # ''' 기간(하루)이 지난 캐시 데이터 삭제 '''
+    # if not os.path.exists(os.path.join(os.path.curdir, 'cached_candles')):
+    #     os.mkdir(os.path.join(os.path.curdir, 'cached_candles'))
 
-    for file_name in cache_dir:
-        file_path = '%s/%s/%s' % (os.path.curdir, '/cached_candles', file_name)
-        file_datetime = datetime.strptime(time.ctime(os.path.getctime(file_path)), "%a %b %d %H:%M:%S %Y")
-        if file_datetime.day is not datetime.now().day:
-            os.remove(file_path)
-            print('Remove Cached File(%s)' % file_name)
+    # for file_name in cache_dir:
+    #     file_path = '%s/%s/%s' % (os.path.curdir, '/cached_candles', file_name)
+    #     file_datetime = datetime.strptime(time.ctime(os.path.getctime(file_path)), "%a %b %d %H:%M:%S %Y")
+    #     if file_datetime.day is not datetime.now().day:
+    #         os.remove(file_path)
+    #         print('Remove Cached File(%s)' % file_name)
 
     for chart in strategy_var[CHARTS]:
         if main_chart is None:

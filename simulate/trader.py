@@ -63,11 +63,12 @@ class Trader:
                 break
 
             for strategy in self.strategy:
-                order = strategy.check_contract_in_candle(subject_code)
+                order = strategy.check_contract_in_candle(subject_code, 체결차트.candles.close[체결차트.index + 1])
                 if order is not None:
                     self.contract_manager.send_order(order)
+                    print(_체결시간)
                     if FullPara.get_contract_count(subject_code, self.contracts, 풀파라) == 0:
-                        order = strategy.check_contract_in_candle(subject_code)
+                        order = strategy.check_contract_in_candle(subject_code, 체결차트.candles.close[체결차트.index + 1])
                         if order is not None:
                             self.contract_manager.send_order(order)
 
@@ -76,6 +77,6 @@ class Trader:
         # simulation 종료 후 결과 종합
         for strategy in self.strategy:
             strategy.post_trade(self.result)
-            
+
     def get_result(self):
         return self.result
