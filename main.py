@@ -21,6 +21,7 @@ import time
 
 # TEST_MAIN_LOG = False
 from variable.reports import Reports
+import pandas as pd
 
 TEST_MAIN_LOG = True
 
@@ -158,56 +159,67 @@ if __name__ == '__main__':
                 if chart[TYPE] == TICK:
                     chart_candles[chart_id] = dbm.request_tick_candle(subject_code, chart[TIME_UNIT], start_date,
                                                                       end_date)
-                    #pprint(chart_candles[chart_id])
-                    if TEST_MAIN_LOG:
-                        print('\t\t [%s] 로딩 된 캔들 : %s개' % (subject_code, len(chart_candles[chart_id])))
 
-                    # save cached dir
-                    json_reader.Reader.dump_data(chart_candles[chart_id], chart_id)
-                    print('         DUMP 월물별 CANDLE DATA [%s] : %s개' % (chart_id, len(chart_candles[chart_id])))
+                elif chart[TYPE] == MIN:
+                    chart_candles[chart_id] = dbm.request_min_candle(subject_code, chart[TIME_UNIT], start_date,
+                                                                      end_date)
 
-                else:
-                    # TODO
-                    print("TODO")
-                    exit(-1)
+                elif chart[TYPE] == HOUR:
+                    chart_candles[chart_id] = dbm.request_hour_candle(subject_code, chart[TIME_UNIT], start_date,
+                                                                      end_date)
+                elif chart[TYPE] == DAY:
+                    chart_candles[chart_id] = dbm.request_day_candle(subject_code[:2], start_date, end_date)
+
+                # pprint(chart_candles[chart_id])
+                if TEST_MAIN_LOG:
+                    print('\t\t [%s] 로딩 된 캔들 : %s개' % (subject_code, len(chart_candles[chart_id])))
+
+                # save cached dir
+                json_reader.Reader.dump_data(chart_candles[chart_id], chart_id)
+                print('         DUMP 월물별 CANDLE DATA [%s] : %s개' % (chart_id, len(chart_candles[chart_id])))
 
     '''차트 기본 데이터(캔들) 만들기'''
     if TEST_MAIN_LOG:
         print('#%d.\t\t 데이터 캔들 형식 변환...' % step.__next__())
 
     tmp_candles = {}
-    # chart_candles 변환
-    for chart_id in chart_candles.keys():
-        tmp_candles[chart_id] = {}
-        tmp_candles[chart_id][시가] = []
-        tmp_candles[chart_id][현재가] = []
-        tmp_candles[chart_id][고가] = []
-        tmp_candles[chart_id][저가] = []
-        tmp_candles[chart_id][체결시간] = []
-        tmp_candles[chart_id][거래량] = []
-        tmp_candles[chart_id][영업일] = []
-        tmp_candles[chart_id][가격들] = []
+    # # chart_candles 변환
+    # for chart_id in chart_candles.keys():
+    #     tmp_candles[chart_id] = {}
+    #     tmp_candles[chart_id][시가] = []
+    #     tmp_candles[chart_id][현재가] = []
+    #     tmp_candles[chart_id][고가] = []
+    #     tmp_candles[chart_id][저가] = []
+    #     tmp_candles[chart_id][체결시간] = []
+    #     tmp_candles[chart_id][거래량] = []
+    #     tmp_candles[chart_id][영업일] = []
+    #     tmp_candles[chart_id][가격들] = []
+    #
+    #     for candle in chart_candles[chart_id]:
+    #         if not start_date <= candle[영업일] <= end_date:
+    #             continue
+    #
+    #         real_start_date = min(real_start_date, candle[영업일])
+    #         real_end_date = max(real_end_date, candle[영업일])
+    #
+    #         tmp_candles[chart_id][시가].append(candle[시가])
+    #         tmp_candles[chart_id][현재가].append(candle[현재가])
+    #         tmp_candles[chart_id][고가].append(candle[고가])
+    #         tmp_candles[chart_id][저가].append(candle[저가])
+    #         tmp_candles[chart_id][체결시간].append(datetime.strptime(candle[체결시간], '%Y-%m-%d %H:%M:%S'))
+    #         tmp_candles[chart_id][거래량].append(candle[거래량])
+    #         tmp_candles[chart_id][영업일].append(candle[영업일])
+    #         tmp_candles[chart_id][가격들].append([float(price) for price in candle[가격들].split(',')])
 
-        for candle in chart_candles[chart_id]:
-            if not start_date <= candle[영업일] <= end_date:
-                continue
-
-            real_start_date = min(real_start_date, candle[영업일])
-            real_end_date = max(real_end_date, candle[영업일])
-
-            tmp_candles[chart_id][시가].append(candle[시가])
-            tmp_candles[chart_id][현재가].append(candle[현재가])
-            tmp_candles[chart_id][고가].append(candle[고가])
-            tmp_candles[chart_id][저가].append(candle[저가])
-            tmp_candles[chart_id][체결시간].append(datetime.strptime(candle[체결시간], '%Y-%m-%d %H:%M:%S'))
-            tmp_candles[chart_id][거래량].append(candle[거래량])
-            tmp_candles[chart_id][영업일].append(candle[영업일])
-            tmp_candles[chart_id][가격들].append([float(price) for price in candle[가격들].split(',')])
+    dps = {}
+    for chart_id in chart_candles:
+        dps[chart_id] = pd.DataFrame(chart_candles[chart_id])
+        dps[chart_id].date = pd.to_datetime(dps[chart_id].date)
 
     '''상단까지가 우리가 입력한 날짜에 맞는 테이블을 Tick_60 으로만 가져오는 코드'''
     start_time = time.time()
     with mp.Manager() as manager:
-        common_candles = manager.dict(tmp_candles)
+        common_candles = manager.dict(dps)
         # result = manager.list()
 
         max_array, cur_array = StrategyVarManager.get_strategy_var_array()  # 전략변수 횟수 테이블 계산

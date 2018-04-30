@@ -259,6 +259,7 @@ class DBManager(__manager.ManagerClass):
             ON T1.close_id = T3.id            
         ''' % (sec, sec, subject_code, start_date, end_date, sec, subject_code, subject_code)
 
+        print(query)
         return self.exec_query(query, fetch_type=FETCH_ALL, cursor_type=CURSOR_DICT)
 
     def request_day_candle(self, subject_symbol, start_date='20000101', end_date='21000101'):

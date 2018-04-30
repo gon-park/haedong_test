@@ -3,7 +3,7 @@
 from manager.chart_manager import ChartManger
 from manager.contract_manager import ContractManager
 from variable.constant import *
-from strategy import full_para_, full_para
+from strategy import full_para_, full_para, multi_scale_osciliator
 from datetime import datetime
 from pprint import pprint
 from strategy.full_para import FullPara
@@ -31,6 +31,9 @@ class Trader:
             elif strategy_name == 익손절별수익계산:
                 self.strategy.append(full_para_.FullPara(self.charts, self.subject_code, self.main_chart,
                                                          strategy_var[STRATEGY][strategy_name], self.contracts))
+            elif strategy_name == MSO:
+                self.strategy.append(multi_scale_osciliator.MSO(self.charts, self.subject_code, self.main_chart,
+                                                         strategy_var[STRATEGY][strategy_name], self.contracts))
             else:
                 raise NotImplementedError
 
@@ -49,9 +52,9 @@ class Trader:
                 chart = self.charts[chart_id]
                 candles = chart.candles
 
-                if (chart.index + 1) < len(candles.현재가) and \
-                        (chart.candles.체결시간[chart.index + 1] < _체결시간):
-                    _체결시간 = chart.candles.체결시간[chart.index + 1]
+                if (chart.index + 1) < candles.shape[0] and \
+                        (candles.date[chart.index + 1] < _체결시간):
+                    _체결시간 = chart.candles.date[chart.index + 1]
                     # 체결시간은 차트 다음캔들의 체결시간으로 비교해야함. 체결시간은 끝시간이 아니고 시작시간이기 때문에
                     체결차트 = chart
 
