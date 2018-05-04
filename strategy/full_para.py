@@ -225,11 +225,11 @@ class FullPara(__base_strategy.BaseStrategy):
         if flow_candle_list[-1] <= self.param09:
             #print("flow_candle_list:%s" % flow_candle_list[-1])
             _이동평균선 = True
-            #_매매시간확인 = True
-            pass
+
 
         elif 맞틀리스트[-1] == 틀 and 수익리스트[-1] < self.param08:
             log.debug("큰 틀 다음으로 매매 진입합니다.")
+            _매매시간확인 = True
 
         elif 수익리스트[-1] > self.param06:
             log.debug("지난 플로우 수익이 %s틱 이상으로 진입 포기" % self.param06)
