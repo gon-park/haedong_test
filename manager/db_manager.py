@@ -180,7 +180,7 @@ class DBManager(__manager.ManagerClass):
                 , t1.price_list
          from (
                select Floor((result.row-1) / %s) + 1 as id
-                    , date
+                    , min(result.date) as date
                     , max(result.id) as max_id
                     , min(result.id) as min_id
                     , max(result.price) as high
@@ -209,7 +209,7 @@ class DBManager(__manager.ManagerClass):
                                                  from dual
                                                ) s2     
                               ) result
-                            where	 NotEqual = 1
+                            where	 NotEqual = 1 or mod((row-1), %s) = 0 or mod(row, %s) = 0
                       )	result                   
                 group by working_day, Floor((result.row-1) / %s)
               ) t1
@@ -218,7 +218,7 @@ class DBManager(__manager.ManagerClass):
         inner join %s t3
            on t1.max_id = t3.id
         ;
-        ''' % (tick_unit, tick_unit, tick_unit, subject_code, tick_unit, subject_code, subject_code)
+        ''' % (tick_unit, tick_unit, tick_unit, subject_code, tick_unit, tick_unit, tick_unit, subject_code, subject_code)
 
         return self.exec_query(query, fetch_type=FETCH_ALL, cursor_type=CURSOR_DICT)
 
