@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from variable.constant import *
-from manager import __manager
-from variable import subject
-from variable.contract import Contract
+from ..variable.constant import *
+from ..manager import __manager
+from ..variable import subject
+from ..variable.contract import Contract
 
 
 class ContractManager(__manager.ManagerClass):

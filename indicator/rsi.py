@@ -2,7 +2,7 @@
 
 from pickle import OBJ
 
-from variable.constant import *
+from ..variable.constant import *
 from pprint import pprint
 from talib.abstract import RSI
 

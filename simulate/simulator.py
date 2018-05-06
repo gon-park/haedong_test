@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from variable.constant import *
+from ..variable.constant import *
 from pprint import pprint
-from simulate.trader import Trader
+from ..simulate.trader import Trader
 import time
 
-from variable.reports import Reports
+from ..variable.reports import Reports
 
 TEST_SIM_LOG = True
 # TEST_SIM_LOG = False

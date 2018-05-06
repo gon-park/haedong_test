@@ -4,8 +4,8 @@ import logging
 import os
 import time
 
-from variable.constant import *
-from util.singleton import Singleton
+from ..variable.constant import *
+from ..util.singleton import Singleton
 
 
 # Singleton class --> there is only one log manager

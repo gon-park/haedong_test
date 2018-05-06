@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import pymysql
-from variable.constant import *
-from manager import __manager
-from variable.report import Report
-from variable.reports import Reports
+from ..variable.constant import *
+from ..manager import __manager
+from ..variable.report import Report
+from ..variable.reports import Reports
 import subprocess
 
 
@@ -74,11 +74,11 @@ class DBManager(__manager.ManagerClass):
 
     def get_table_list(self, subject_symbol):
         query = '''
-        SELECT 
+        SELECT
          table_name
-        FROM 
+        FROM
          information_schema.tables
-        WHERE 
+        WHERE
          table_schema = DATABASE()
          and
          substr(table_name, 1, %s) = '%s'
@@ -189,17 +189,17 @@ class DBManager(__manager.ManagerClass):
                     , working_day
                     , group_concat(result.price order by row) as price_list
                  from (
-                            select	
+                            select
                                 row,
                                 id,
                                 date,
                                 price,
                                 volume,
-                                working_day							
+                                working_day
                             from		(
                                    select @rownum:=if(@working_day = s1.working_day, @rownum+1, if(@rownum=1, 1, ((truncate((@rownum-1) / %s, 0) + 1) * %s + 1))) as row,
-                                        @working_day:= s1.working_day,        
-                                        if( @lastPrice = s1.price, 0, 1 ) as NotEqual,                            
+                                        @working_day:= s1.working_day,
+                                        if( @lastPrice = s1.price, 0, 1 ) as NotEqual,
                                         @lastPrice := s1.price,
                                           s1.*
 
@@ -207,10 +207,10 @@ class DBManager(__manager.ManagerClass):
                                     inner join (
                                                select @rownum:=1, @working_day:=Date('2000-01-01'), @lastPrice := 0
                                                  from dual
-                                               ) s2     
+                                               ) s2
                               ) result
                             where	 NotEqual = 1 or mod((row-1), %s) = 0 or mod(row, %s) = 0
-                      )	result                   
+                      )	result
                 group by working_day, Floor((result.row-1) / %s)
               ) t1
         inner join %s t2
@@ -228,7 +228,7 @@ class DBManager(__manager.ManagerClass):
     def request_min_candle(self, subject_code, time_unit, start_date='20170101', end_date='20201231'):
         sec = int(time_unit) * 60
         query = '''
-        SELECT 
+        SELECT
             date_format(T1.date, '%%Y-%%m-%%d %%H:%%i:%%s') as date,
             T2.price as open,
             T1.high,
@@ -256,7 +256,7 @@ class DBManager(__manager.ManagerClass):
             ON T1.open_id = T2.id
             INNER JOIN
             %s T3
-            ON T1.close_id = T3.id            
+            ON T1.close_id = T3.id
         ''' % (sec, sec, subject_code, start_date, end_date, sec, subject_code, subject_code)
 
         print(query)
@@ -264,7 +264,7 @@ class DBManager(__manager.ManagerClass):
 
     def request_day_candle(self, subject_symbol, start_date='20000101', end_date='21000101'):
         query = '''
-        SELECT  
+        SELECT
             date_format(date, '%%Y-%%m-%%d 07:%%i:%%s') as date,
             open,
             high,
@@ -279,7 +279,7 @@ class DBManager(__manager.ManagerClass):
 
     def request_week_candle(self, subject_symbol, start_date='20000101', end_date='21000101'):
         query = '''
-        SELECT  
+        SELECT
             date_format(date, '%%Y-%%m-%%d 07:%%i:%%s') as date,
             open,
             high,
@@ -328,7 +328,7 @@ class DBManager(__manager.ManagerClass):
 
         query = '''
         insert
-            into 
+            into
         TEST_RESULT (subject_symbol, total_profit, start_date, end_date, git_hash, strategy, result)
         values ('%s', %d, date('%s'), date('%s'), "%s", "%s", "%s")
         ;

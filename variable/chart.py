@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from variable.candles import CandleList
-from variable.constant import *
-from indicator import ma, para, rsi
+from ..variable.candles import CandleList
+from ..variable.constant import *
+from ..indicator import ma, para, rsi
 
 
 class Chart():

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from manager.chart_manager import ChartManger
-from manager.contract_manager import ContractManager
-from variable.constant import *
-from strategy import full_para_, full_para, multi_scale_osciliator
+from ..manager.chart_manager import ChartManger
+from ..manager.contract_manager import ContractManager
+from ..variable.constant import *
+from ..strategy import full_para_, full_para, multi_scale_osciliator
 from datetime import datetime
 from pprint import pprint
-from strategy.full_para import FullPara
-from variable.report import Report
+from ..strategy.full_para import FullPara
+from ..variable.report import Report
 
 
 class Trader:

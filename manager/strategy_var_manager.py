@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from variable.constant import *
-from manager import __manager
-from config.json_reader import Reader
+from ..variable.constant import *
+from ..manager import __manager
+from ..config.json_reader import Reader
 from pprint import pprint
-from util import util
+from ..util import util
 
 
 class StrategyVarManager(__manager.ManagerClass):

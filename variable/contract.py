@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from variable.constant import *
+from ..variable.constant import *
 from datetime import datetime
 
 

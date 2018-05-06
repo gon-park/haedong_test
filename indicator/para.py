@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from variable.candles import CandleList
-from variable.constant import *
-from variable import subject
+from ..variable.candles import CandleList
+from ..variable.constant import *
+from ..variable import subject
 
 
 class Variable():
@@ -131,7 +131,7 @@ class Calc():
                     var.flow_candle_count = 0
                     #print(var.flow_candle_count_list)
                 # print("하향 반전, 수익 = %s, %s" % ((var.SARS[-1] - var.SARS[-2]), var.candles.체결시간[index]))
-                    
+
         elif temp_flow == 하향:
             var.flow_candle_count = var.flow_candle_count + 1
             if var.candles.고가[index] <= next_sar:  # 하락추세에서 고가가 내일의 SAR보다 낮으면 하락이 유효

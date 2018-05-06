@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from variable.constant import *
-from strategy import __base_strategy
-from indicator import ma, rsi
+from ..variable.constant import *
+from ..strategy import __base_strategy
+from ..indicator import ma, rsi
 import math
 import os
-from variable import subject
-from variable.report import Report
+from ..variable import subject
+from ..variable.report import Report
 
 
 class MSO(__base_strategy.BaseStrategy):

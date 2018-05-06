@@ -2,10 +2,10 @@
 
 import json
 
-from manager import log_manager
-from variable.constant import *
+from ..manager import log_manager
+from ..variable.constant import *
 from pprint import pprint
-from util import util
+from ..util import util
 import collections
 
 

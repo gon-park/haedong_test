@@ -2,8 +2,8 @@
 
 from pickle import OBJ
 
-from variable.candles import CandleList
-from variable.constant import *
+from ..variable.candles import CandleList
+from ..variable.constant import *
 from pprint import pprint
 from talib.abstract import SMA
 

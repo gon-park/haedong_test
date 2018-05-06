@@ -3,8 +3,8 @@
 import abc
 import inspect
 
-from manager import log_manager
-from variable.report import Report
+from ..manager import log_manager
+from ..variable.report import Report
 
 
 class BaseStrategy(metaclass=abc.ABCMeta):

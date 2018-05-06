@@ -4,23 +4,23 @@ import itertools
 from datetime import datetime
 from idlelib import paragraph
 from random import random, randint
-from strategy import full_para_
+from .strategy import full_para_
 
 from pip.cmdoptions import cache_dir
 
 import os
-from manager import db_manager, log_manager
-from manager.strategy_var_manager import StrategyVarManager
-from config import json_reader
-from util.util import print_proc_time
-from variable.constant import *
+from .manager import db_manager, log_manager
+from .manager.strategy_var_manager import StrategyVarManager
+from .config import json_reader
+from .util.util import print_proc_time
+from .variable.constant import *
 import multiprocessing as mp
 from pprint import *
-from simulate import simulator
+from .simulate import simulator
 import time
 
 # TEST_MAIN_LOG = False
-from variable.reports import Reports
+from .variable.reports import Reports
 import pandas as pd
 
 TEST_MAIN_LOG = True
