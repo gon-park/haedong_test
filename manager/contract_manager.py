@@ -11,7 +11,7 @@ class ContractManager(__manager.ManagerClass):
         self.trader = trader
         self.contracts = trader.contracts
 
-    def send_order(self, info: dict):
+    def send_order(self, info: dict, 체결시간: str):
         if info[종목코드] not in self.contracts:
             self.contracts[info[종목코드]] = []
 
@@ -34,7 +34,7 @@ class ContractManager(__manager.ManagerClass):
                 if (profit - (수수료)) > 0: self.trader.result.승 += 1
                 else: self.trader.result.패 += 1
 
-                self.log.info("청산 체결 : %s" % 체결가)
+                self.log.info("[%s] 청산 체결 : %s" % (체결시간, 체결가))
                 self.log.info("누적수익[%s] : %s" % (info[종목코드], self.trader.result.수익))
             else: idx += 1
 
@@ -48,7 +48,7 @@ class ContractManager(__manager.ManagerClass):
             contract.체결표시가격 = round(contract.체결표시가격, subject.info[contract.종목코드[:2]][자릿수])
             contract.매매전략 = info[매매전략]
             self.contracts[info[종목코드]].append(contract)
-            self.log.info("신규 체결 : %s" % contract.__dict__)
+            self.log.info("[%s] 신규 체결 : %s" % (체결시간, contract.__dict__))
 
 
     def get_name(self):

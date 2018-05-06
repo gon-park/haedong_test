@@ -65,7 +65,7 @@ class MSO(__base_strategy.BaseStrategy):
                         종목코드: subject_code,
                         매도수구분: 신규매도,
                         매매전략: MSO,
-                        수량: 2,
+                        수량: 1,
                         가격: current_price
                     }
 
@@ -76,7 +76,7 @@ class MSO(__base_strategy.BaseStrategy):
                         종목코드: subject_code,
                         매도수구분: 신규매수,
                         매매전략: MSO,
-                        수량: 2,
+                        수량: 1,
                         가격: current_price
                     }
         else:
@@ -87,7 +87,7 @@ class MSO(__base_strategy.BaseStrategy):
                     종목코드: subject_code,
                     매도수구분: 신규매수,
                     매매전략: MSO,
-                    수량: 2,
+                    수량: 1,
                     가격: current_price
                 }
 
@@ -98,7 +98,7 @@ class MSO(__base_strategy.BaseStrategy):
                     종목코드: subject_code,
                     매도수구분: 신규매도,
                     매매전략: MSO,
-                    수량: 2,
+                    수량: 1,
                     가격: current_price
                 }
 

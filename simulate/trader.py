@@ -63,14 +63,13 @@ class Trader:
                 break
 
             for strategy in self.strategy:
-                order = strategy.check_contract_in_candle(subject_code, 체결차트.candles.close[체결차트.index + 1])
+                order = strategy.check_contract_in_candle(subject_code, 체결차트.candles.open[체결차트.index + 1])
                 if order is not None:
-                    self.contract_manager.send_order(order)
-                    print(_체결시간)
+                    self.contract_manager.send_order(order, _체결시간)
                     if FullPara.get_contract_count(subject_code, self.contracts, 풀파라) == 0:
-                        order = strategy.check_contract_in_candle(subject_code, 체결차트.candles.close[체결차트.index + 1])
+                        order = strategy.check_contract_in_candle(subject_code, 체결차트.candles.open[체결차트.index + 1])
                         if order is not None:
-                            self.contract_manager.send_order(order)
+                            self.contract_manager.send_order(order, _체결시간)
 
             ChartManger.candle_push(체결차트, 체결차트.index + 1)
 
