@@ -133,16 +133,16 @@ if __name__ == '__main__':
         print("Not exist 'cached_candles directory', Create the directory")
         os.makedirs('%s/%s' % (os.path.curdir, '/cached_candles'))
 
-    # ''' 기간(하루)이 지난 캐시 데이터 삭제 '''
-    # if not os.path.exists(os.path.join(os.path.curdir, 'cached_candles')):
-    #     os.mkdir(os.path.join(os.path.curdir, 'cached_candles'))
+    ''' 기간(하루)이 지난 캐시 데이터 삭제 '''
+    if not os.path.exists(os.path.join(os.path.curdir, 'cached_candles')):
+        os.mkdir(os.path.join(os.path.curdir, 'cached_candles'))
 
-    # for file_name in cache_dir:
-    #     file_path = '%s/%s/%s' % (os.path.curdir, '/cached_candles', file_name)
-    #     file_datetime = datetime.strptime(time.ctime(os.path.getctime(file_path)), "%a %b %d %H:%M:%S %Y")
-    #     if file_datetime.day is not datetime.now().day:
-    #         os.remove(file_path)
-    #         print('Remove Cached File(%s)' % file_name)
+    for file_name in cache_dir:
+        file_path = '%s/%s/%s' % (os.path.curdir, '/cached_candles', file_name)
+        file_datetime = datetime.strptime(time.ctime(os.path.getctime(file_path)), "%a %b %d %H:%M:%S %Y")
+        if file_datetime.day is not datetime.now().day:
+            os.remove(file_path)
+            print('Remove Cached File(%s)' % file_name)
 
     for chart in strategy_var[CHARTS]:
         if main_chart is None:
@@ -181,35 +181,6 @@ if __name__ == '__main__':
     '''차트 기본 데이터(캔들) 만들기'''
     if TEST_MAIN_LOG:
         print('#%d.\t\t 데이터 캔들 형식 변환...' % step.__next__())
-
-    tmp_candles = {}
-    # # chart_candles 변환
-    # for chart_id in chart_candles.keys():
-    #     tmp_candles[chart_id] = {}
-    #     tmp_candles[chart_id][시가] = []
-    #     tmp_candles[chart_id][현재가] = []
-    #     tmp_candles[chart_id][고가] = []
-    #     tmp_candles[chart_id][저가] = []
-    #     tmp_candles[chart_id][체결시간] = []
-    #     tmp_candles[chart_id][거래량] = []
-    #     tmp_candles[chart_id][영업일] = []
-    #     tmp_candles[chart_id][가격들] = []
-    #
-    #     for candle in chart_candles[chart_id]:
-    #         if not start_date <= candle[영업일] <= end_date:
-    #             continue
-    #
-    #         real_start_date = min(real_start_date, candle[영업일])
-    #         real_end_date = max(real_end_date, candle[영업일])
-    #
-    #         tmp_candles[chart_id][시가].append(candle[시가])
-    #         tmp_candles[chart_id][현재가].append(candle[현재가])
-    #         tmp_candles[chart_id][고가].append(candle[고가])
-    #         tmp_candles[chart_id][저가].append(candle[저가])
-    #         tmp_candles[chart_id][체결시간].append(datetime.strptime(candle[체결시간], '%Y-%m-%d %H:%M:%S'))
-    #         tmp_candles[chart_id][거래량].append(candle[거래량])
-    #         tmp_candles[chart_id][영업일].append(candle[영업일])
-    #         tmp_candles[chart_id][가격들].append([float(price) for price in candle[가격들].split(',')])
 
     dps = {}
     for chart_id in chart_candles:

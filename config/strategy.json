@@ -14,25 +14,12 @@
           {"length" : 20}
         ],
         "rsi" : [
-          {"length" : 14 }
+          {"length" : [14, 14, 0] }
         ]
       }
     },
     {
       "type" : "hour",
-      "time_unit" : 1,
-      "indicators" : {
-        "ma" : [
-          {"length": 10},
-          {"length" : 20}
-        ],
-        "rsi" : [
-          {"length" : 14 }
-        ]
-      }
-    },
-    {
-      "type" : "day",
       "time_unit" : 1,
       "indicators" : {
         "ma" : [
