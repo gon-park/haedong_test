@@ -3,7 +3,7 @@
 import abc
 import inspect
 
-from manager.log_manager import LogManager
+from ..manager.log_manager import LogManager
 
 
 class ManagerClass(metaclass=abc.ABCMeta):

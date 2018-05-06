@@ -1,45 +1,33 @@
 {
   "subject_symbol" : "GC",
   "strategy" : {
-    "full_para" : {
-      "profit_tick" : [[[70, 70, 0], [1, 1, 0]]],
-      "profit_dribble_tick" : [[1, 1, 0]],
-      "sonjul_tick" : [[[60, 60, 0], [1, 1, 0]]],
-      "sonjul_dribble_tick" : [[0, 0, 0]],
-      "reverse_tick" : 40,
-      "param01": [42, 42, 0],
-      "param02": [-16, -16, 1],
-      "param03": [10, 10, 0],
-      "param04": [-16, -16, 0],
-      "param05": [-11, -11, 0],
-      "param06": [40, 40, 0],
-      "param08": [-40, -40, 0],
-      "ox": [
-        [false, true, false, true, true],
-        [true, true, true, true, false],
-        [true, true, true, false],
-        [true, false, true, true],
-        [true, false, false],
-        [true, false, false, true, false],
-        [true, true, false],
-        [false, false, false, false]
-      ]
+    "multi_scale_osciliator" : {
     }
   },
   "charts" : [
     {
       "type" : "tick",
-      "time_unit" : 60,
+      "time_unit" : 120,
       "indicators" : {
         "ma" : [
-          {"length": [30, 30, 5]},
-          {"length" : [122, 122,  1]}
+          {"length": 10},
+          {"length" : 20},
+          {"length" : 30}
         ],
-        "para" : [
-          {
-            "init_af" : [0.0007, 0.0007, 0],
-            "max_af": [0.002, 0.002, 0]
-          }
+        "rsi" : [
+          {"length" : [14, 14, 0] }
+        ]
+      }
+    },
+    {
+      "type" : "hour",
+      "time_unit" : 1,
+      "indicators" : {
+        "ma" : [
+          {"length": 10}
+        ],
+        "rsi" : [
+          {"length" : [14, 14, 0] }
         ]
       }
     }

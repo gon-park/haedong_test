@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 import pprint
 
-from variable.constant import *
-from strategy import __base_strategy
-from indicator import ma, para as indicator_para
+from ..variable.constant import *
+from ..strategy import __base_strategy
+from ..indicator import ma, para as indicator_para
 import math
 import os
-from variable import subject
-from variable.report import Report
-from variable.reports import Reports
+from ..variable import subject
+from ..variable.report import Report
+from ..variable.reports import Reports
 
 
 class FullPara(__base_strategy.BaseStrategy):

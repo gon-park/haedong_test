@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from manager.chart_manager import ChartManger
-from manager.contract_manager import ContractManager
-from variable.constant import *
-from strategy import full_para_, full_para
+from ..manager.chart_manager import ChartManger
+from ..manager.contract_manager import ContractManager
+from ..variable.constant import *
+from ..strategy import full_para_, full_para, multi_scale_osciliator
 from datetime import datetime
 from pprint import pprint
-from strategy.full_para import FullPara
-from variable.report import Report
+from ..strategy.full_para import FullPara
+from ..variable.report import Report
 
 
 class Trader:
@@ -31,6 +31,9 @@ class Trader:
             elif strategy_name == 익손절별수익계산:
                 self.strategy.append(full_para_.FullPara(self.charts, self.subject_code, self.main_chart,
                                                          strategy_var[STRATEGY][strategy_name], self.contracts))
+            elif strategy_name == MSO:
+                self.strategy.append(multi_scale_osciliator.MSO(self.charts, self.subject_code, self.main_chart,
+                                                         strategy_var[STRATEGY][strategy_name], self.contracts))
             else:
                 raise NotImplementedError
 
@@ -49,9 +52,9 @@ class Trader:
                 chart = self.charts[chart_id]
                 candles = chart.candles
 
-                if (chart.index + 1) < len(candles.현재가) and \
-                        (chart.candles.체결시간[chart.index + 1] < _체결시간):
-                    _체결시간 = chart.candles.체결시간[chart.index + 1]
+                if (chart.index + 2) < candles.shape[0] and \
+                        (candles.date[chart.index + 2] < _체결시간):
+                    _체결시간 = chart.candles.date[chart.index + 1]
                     # 체결시간은 차트 다음캔들의 체결시간으로 비교해야함. 체결시간은 끝시간이 아니고 시작시간이기 때문에
                     체결차트 = chart
 
@@ -60,19 +63,29 @@ class Trader:
                 break
 
             for strategy in self.strategy:
-                order = strategy.check_contract_in_candle(subject_code)
+                order = strategy.check_contract_in_candle(subject_code, 체결차트.candles.open[체결차트.index + 1])
                 if order is not None:
-                    self.contract_manager.send_order(order)
+                    self.contract_manager.send_order(order, _체결시간)
+                    # for chart_id in self.charts:
+                    #     print(chart_id)
+                    #     print(self.charts[chart_id].candles.iloc[self.charts[chart_id].index])
+                    #     for indicator_name in self.charts[chart_id].indicators:
+                    #         for indicator in self.charts[chart_id].indicators[indicator_name]:
+                    #             if indicator_name == MA:
+                    #                 print('MA %s : %s, index: %s' % (indicator.LENGTH, indicator.MA[self.charts[chart_id].index], self.charts[chart_id].index))
+                    #             elif indicator_name == RSI:
+                    #                 print('RSI %s : %s, index: %s' % (indicator.LENGTH, indicator.RSI[self.charts[chart_id].index], self.charts[chart_id].index))
+
                     if FullPara.get_contract_count(subject_code, self.contracts, 풀파라) == 0:
-                        order = strategy.check_contract_in_candle(subject_code)
+                        order = strategy.check_contract_in_candle(subject_code, 체결차트.candles.open[체결차트.index + 1])
                         if order is not None:
-                            self.contract_manager.send_order(order)
+                            self.contract_manager.send_order(order, _체결시간)
 
             ChartManger.candle_push(체결차트, 체결차트.index + 1)
 
         # simulation 종료 후 결과 종합
         for strategy in self.strategy:
             strategy.post_trade(self.result)
-            
+
     def get_result(self):
         return self.result

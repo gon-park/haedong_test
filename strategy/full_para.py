@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from variable.constant import *
-from strategy import __base_strategy
-from indicator import ma
+from ..variable.constant import *
+from ..strategy import __base_strategy
+from ..indicator import ma
 import math
 import os
-from variable import subject
-from variable.report import Report
+from ..variable import subject
+from ..variable.report import Report
 
 
 class FullPara(__base_strategy.BaseStrategy):
