@@ -3,10 +3,11 @@
 from manager.chart_manager import ChartManger
 from manager.contract_manager import ContractManager
 from variable.constant import *
-from strategy import full_para_, full_para
+from strategy import full_para_, full_para, short_cut
 from datetime import datetime
 from pprint import pprint
 from strategy.full_para import FullPara
+from strategy.short_cut import ShortCut
 from variable.report import Report
 
 
@@ -26,11 +27,11 @@ class Trader:
         # 매매 전략 설정
         for strategy_name in strategy_var[STRATEGY]:
             if strategy_name == 풀파라:
-                self.strategy.append(full_para.FullPara(self.charts, self.subject_code, self.main_chart,
-                                                        strategy_var[STRATEGY][strategy_name], self.contracts))
+                self.strategy.append(full_para.FullPara(self.charts, self.subject_code, self.main_chart, strategy_var[STRATEGY][strategy_name], self.contracts))
             elif strategy_name == 익손절별수익계산:
-                self.strategy.append(full_para_.FullPara(self.charts, self.subject_code, self.main_chart,
-                                                         strategy_var[STRATEGY][strategy_name], self.contracts))
+                self.strategy.append(full_para_.FullPara(self.charts, self.subject_code, self.main_chart, strategy_var[STRATEGY][strategy_name], self.contracts))
+            elif strategy_name == 숏컷:
+                self.strategy.append(short_cut.ShortCut(self.charts, self.subject_code, self.main_chart, strategy_var[STRATEGY][strategy_name], self.contracts))
             else:
                 raise NotImplementedError
 
@@ -60,13 +61,17 @@ class Trader:
                 break
 
             for strategy in self.strategy:
-                order = strategy.check_contract_in_candle(subject_code)
-                if order is not None:
-                    self.contract_manager.send_order(order)
-                    if FullPara.get_contract_count(subject_code, self.contracts, 풀파라) == 0:
-                        order = strategy.check_contract_in_candle(subject_code)
-                        if order is not None:
-                            self.contract_manager.send_order(order)
+                if strategy.strategy_name == 풀파라:
+                    order = strategy.check_contract_in_candle(subject_code)
+                    if order is not None:
+                        self.contract_manager.send_order(order)
+                        if FullPara.get_contract_count(subject_code, self.contracts, 풀파라) == 0:
+                            order = strategy.check_contract_in_candle(subject_code)
+                            if order is not None:
+                                self.contract_manager.send_order(order)
+                else:
+                    continue
+
 
             ChartManger.candle_push(체결차트, 체결차트.index + 1)
 

@@ -125,6 +125,9 @@ if __name__ == '__main__':
     '''주거래 차트, charts 의 0번째 인덱스에 있는 차트로 선택'''
     main_chart = None
 
+    if not os.path.exists(os.path.join(os.path.curdir, 'cached_candles')):
+        os.mkdir(os.path.join(os.path.curdir, 'cached_candles'))
+
     ''' 캐시 디렉토리 셋업 '''
     try :
         cache_dir = os.listdir('%s/%s' % (os.path.curdir, '/cached_candles'))
@@ -133,8 +136,7 @@ if __name__ == '__main__':
         os.makedirs('%s/%s' % (os.path.curdir, '/cached_candles'))
 
     ''' 기간(하루)이 지난 캐시 데이터 삭제 '''
-    if not os.path.exists(os.path.join(os.path.curdir, 'cached_candles')):
-        os.mkdir(os.path.join(os.path.curdir, 'cached_candles'))
+
 
     for file_name in cache_dir:
         file_path = '%s/%s/%s' % (os.path.curdir, '/cached_candles', file_name)

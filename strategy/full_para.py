@@ -12,6 +12,7 @@ class FullPara(__base_strategy.BaseStrategy):
 
     def __init__(self, charts: dict, subject_code: str, main_chart: str, strategy_var: dict, contracts: dict):
         super(FullPara, self).__init__()
+        self.strategy_name = "full_para"
         self.charts = charts
         self.main_chart_id = subject_code + '_' + main_chart
         self.strategy_var = strategy_var
