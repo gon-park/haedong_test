@@ -3,7 +3,7 @@
 from manager.chart_manager import ChartManger
 from manager.contract_manager import ContractManager
 from variable.constant import *
-from strategy import full_para_, full_para, multi_scale_osciliator
+from strategy import full_para_, full_para, multi_scale_osciliator, short_cut
 from datetime import datetime
 from pprint import pprint
 from strategy.full_para import FullPara
@@ -33,6 +33,9 @@ class Trader:
                                                          strategy_var[STRATEGY][strategy_name], self.contracts))
             elif strategy_name == MSO:
                 self.strategy.append(multi_scale_osciliator.MSO(self.charts, self.subject_code, self.main_chart,
+                                                         strategy_var[STRATEGY][strategy_name], self.contracts))
+            elif strategy_name == 숏컷:
+                self.strategy.append(short_cut.ShortCut(self.charts, self.subject_code, self.main_chart,
                                                          strategy_var[STRATEGY][strategy_name], self.contracts))
             else:
                 raise NotImplementedError

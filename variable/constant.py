@@ -27,6 +27,7 @@ DAY = "day"
 SUBJECT_SYMBOL = "subject_symbol"
 CHARTS = "charts"
 풀파라 = "full_para"
+숏컷 = "short_cut"
 익손절별수익계산 = "full_para_"
 MSO = "multi_scale_osciliator"
 수익드리블틱 = "profit_dribble_tick"
@@ -100,6 +101,14 @@ ZERO = 0
 # 파라
 반대매매틱 = "reverse_tick"
 갱신손절틱 = "update_sonjul_tick"
+
+# 숏컷
+기준거래량 = "standard_volume"
+기준캔들길이 = "standard_candle_length"
+기준캔들몸통길이 = "standard_candle_tail_length"
+보조캔들몸통길이 = "sub_candle_length"
+거래량비 = "volume_ratio"
+최극가 = "ep_price"
 
 # 결과
 TOTAL = "TOTAL"

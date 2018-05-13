@@ -47,6 +47,7 @@ class ContractManager(__manager.ManagerClass):
             contract.체결표시가격 = info[가격] - subject.info[contract.종목코드[:2]][단위] if contract.매도수구분 is 신규매도 else info[가격] + subject.info[contract.종목코드[:2]][단위]
             contract.체결표시가격 = round(contract.체결표시가격, subject.info[contract.종목코드[:2]][자릿수])
             contract.매매전략 = info[매매전략]
+            contract.체결시간 = 체결시간
             self.contracts[info[종목코드]].append(contract)
             self.log.info("[%s] 신규 체결 : %s" % (체결시간, contract.__dict__))
 

@@ -1,34 +1,23 @@
 {
   "subject_symbol" : "GC",
   "strategy" : {
-    "multi_scale_osciliator" : {
+    "short_cut" : {
+      "standard_volume": 440,
+      "standard_candle_length": 15,
+      "standard_candle_tail_length": 8,
+      "sub_candle_length": 8,
+      "volume_ratio": 0.5,
+      "profit_tick" : [[[8, 8, 0], [1, 1, 0]], [[20, 30, 2], [1, 1, 0]]],
+      "profit_dribble_tick" : [[8, 8, 0]],
+      "sonjul_tick" : [[[8, 12, 2], [1, 1, 0]]],
+      "sonjul_dribble_tick" : [[0, 0, 0]]
     }
   },
   "charts" : [
     {
       "type" : "tick",
-      "time_unit" : 120,
+      "time_unit" : 60,
       "indicators" : {
-        "ma" : [
-          {"length": 10},
-          {"length" : 20},
-          {"length" : 30}
-        ],
-        "rsi" : [
-          {"length" : [14, 14, 0] }
-        ]
-      }
-    },
-    {
-      "type" : "hour",
-      "time_unit" : 1,
-      "indicators" : {
-        "ma" : [
-          {"length": 10}
-        ],
-        "rsi" : [
-          {"length" : [14, 14, 0] }
-        ]
       }
     }
   ]

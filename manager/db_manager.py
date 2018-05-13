@@ -209,7 +209,6 @@ class DBManager(__manager.ManagerClass):
                                                  from dual
                                                ) s2     
                               ) result
-                            where	 NotEqual = 1 or mod((row-1), %s) = 0 or mod(row, %s) = 0
                       )	result                   
                 group by working_day, Floor((result.row-1) / %s)
               ) t1
@@ -218,8 +217,9 @@ class DBManager(__manager.ManagerClass):
         inner join %s t3
            on t1.max_id = t3.id
         ;
-        ''' % (tick_unit, tick_unit, tick_unit, subject_code, tick_unit, tick_unit, tick_unit, subject_code, subject_code)
+        ''' % (tick_unit, tick_unit, tick_unit, subject_code, tick_unit, subject_code, subject_code)
 
+        print(query)
         return self.exec_query(query, fetch_type=FETCH_ALL, cursor_type=CURSOR_DICT)
 
     def request_hour_candle(self, subject_code, time_unit, start_date='20170101', end_date='20201231'):
