@@ -141,12 +141,14 @@ class FullPara(__base_strategy.BaseStrategy):
         self.param07 = self.strategy_var["param07"]
         self.param08 = self.strategy_var["param08"]
         self.param09 = self.strategy_var["param09"]
+        self.param10 = self.strategy_var["param10"]
 
 
         # 변수 선언
         메인차트 = self.charts[self.main_chart_id]
         _매도수구분 = None
         _이동평균선 = True
+        _매매시간확인 = True
         직전플로우수익 = 0
         파라 = 메인차트.indicators[PARA][0]
         현재플로우 = 파라.FLOW
@@ -165,7 +167,7 @@ class FullPara(__base_strategy.BaseStrategy):
             if ma.Calc.is_sorted(메인차트.indicators[MA]) == 하락세:
                 _매도수구분 = 신규매도
             else:
-                log.debug("이동평균선이 맞지 않아 매도 포기.(pid = %s)" % self.pid)
+                #log.debug("이동평균선이 맞지 않아 매도 포기.(pid = %s)" % self.pid)
                 _매도수구분 = 신규매도
                 _이동평균선 = False
         elif 현재플로우 == 하향 and current_price > 파라.SAR:
@@ -177,21 +179,19 @@ class FullPara(__base_strategy.BaseStrategy):
             if ma.Calc.is_sorted(메인차트.indicators[MA]) == 상승세:
                 _매도수구분 = 신규매수
             else:
-                log.debug("이동평균선이 맞지 않아 매도 포기.(pid = %s)" % self.pid)
+                #log.debug("이동평균선이 맞지 않아 매도 포기.(pid = %s)" % self.pid)
                 _매도수구분 = 신규매수
                 _이동평균선 = False
 
         # # 매매시간 확인
-        _매매시간확인 = True
+
         매매시간 = int(메인차트.candles.체결시간[메인차트.index + 1].strftime("%H%M"))
         if subject_code[:3] == 'GCZ':  # 겨울
             if 2100 < 매매시간 < 2230:
-                log.debug("22:00 ~ 23:30 사이라 매매 포기.")
                 _매매시간확인 = False
 
         else:
-            if 2200 < 매매시간 < 2330:
-                log.debug("21:00 ~ 22:30 사이라 매매 포기.")
+            if 2230 < 매매시간 < 2330:
                 _매매시간확인 = False
 
         if _매도수구분 is None:
@@ -224,9 +224,8 @@ class FullPara(__base_strategy.BaseStrategy):
         #삼전플로우수익 = abs(파라.SARS[-2] - 파라.SARS[-3]) # 계산의 편의를 위해 절대값을 취함.
 
         if flow_candle_list[-1] <= self.param09:
-            #print("flow_candle_list:%s" % flow_candle_list[-1])
+            log.debug("지난 캔들 140개 이하로 진입")
             _이동평균선 = True
-
 
         elif 맞틀리스트[-1] == 틀 and 수익리스트[-1] < self.param08:
             log.debug("큰 틀 다음으로 매매 진입합니다.")
@@ -242,13 +241,24 @@ class FullPara(__base_strategy.BaseStrategy):
 
         elif 맞틀리스트[-5:] == [틀, 틀, 틀, 틀, 틀]:
             log.debug("틀틀틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-            pass
+            #_이동평균선 = True
+
+        elif 맞틀리스트[-5:] == [맞, 틀, 틀, 틀, 틀]:
+            if 수익리스트[-2] < self.param05: #-10
+                log.debug("맞틀틀틀틀, 지지난플로우수익 %s틱 미만으로 %s 포기.(pid = %s)" % (self.param05, '신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+                return None
+            else:
+                log.debug("맞틀틀틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
 
         elif 맞틀리스트[-4:] == [틀, 맞, 맞, 틀]:
             log.debug("틀맞맞틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수',  self.pid))
 
         elif 맞틀리스트[-4:] == [틀, 맞, 틀, 틀]:
-            log.debug("틀맞틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수',  self.pid))
+            if 수익리스트[-2] < self.param05: #-10
+                log.debug("틀맞틀틀, 지지난플로우수익 %s 미만으로 %s 포기.(pid = %s)" % (self.param05, '신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+                return None
+            else:
+                log.debug("틀맞틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
 
         elif 맞틀리스트[-4:] == [맞, 틀, 틀, 맞]:
             if 수익리스트[-1] > self.param03: #10
@@ -289,9 +299,11 @@ class FullPara(__base_strategy.BaseStrategy):
 
 
         if _매매시간확인 == False:
+            log.debug("22:00 ~ 23:30 사이라 매매 포기.")
             return None
 
         if _이동평균선 == False:
+            log.debug("이동평균선이 맞지 않아 매도 포기.(pid = %s)" % self.pid)
             return None
 
         # 매매진입
