@@ -191,7 +191,7 @@ class FullPara(__base_strategy.BaseStrategy):
                 _매매시간확인 = False
 
         else:
-            if 2230 < 매매시간 < 2330:
+            if 2200 < 매매시간 < 2330:
                 _매매시간확인 = False
 
         if _매도수구분 is None:
@@ -235,12 +235,19 @@ class FullPara(__base_strategy.BaseStrategy):
             log.debug("지난 플로우 수익이 %s틱 이상으로 진입 포기" % self.param06)
             return None
 
-        elif 맞틀리스트[-2:] == [맞, 틀] and 수익리스트[-2] > self.param01:
-            log.debug("지지난 플로우가 %s틱 이상 수익으로 %s 포기.(pid = %s)" % (self.param01 ,'신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
-            return None
+        elif 맞틀리스트[-3:] == [틀, 맞, 틀]:
+            if flow_candle_list[-1] <= self.param01:
+                log.debug("틀맞틀 로 매매 진입합니다.")
+            else:
+                log.info("틀맞틀일때 지난 플로우 캔들 수가 %s(현재 %s) 이상으로 매매 안합니다" % (self.param01, flow_candle_list[-1]))
+                return None
+
+        elif 맞틀리스트[-2:] == [맞, 틀]:
+             log.debug("맞틀 로 매매 포기")
+             return None
 
         elif 맞틀리스트[-5:] == [틀, 틀, 틀, 틀, 틀]:
-            log.debug("틀틀틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+            log.debug("틀틀틀틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
             #_이동평균선 = True
 
         elif 맞틀리스트[-5:] == [맞, 틀, 틀, 틀, 틀]:
@@ -250,8 +257,8 @@ class FullPara(__base_strategy.BaseStrategy):
             else:
                 log.debug("맞틀틀틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
 
-        elif 맞틀리스트[-4:] == [틀, 맞, 맞, 틀]:
-            log.debug("틀맞맞틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수',  self.pid))
+        # elif 맞틀리스트[-4:] == [틀, 맞, 맞, 틀]:
+        #     log.debug("틀맞맞틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수',  self.pid))
 
         elif 맞틀리스트[-4:] == [틀, 맞, 틀, 틀]:
             if 수익리스트[-2] < self.param05: #-10
@@ -270,8 +277,8 @@ class FullPara(__base_strategy.BaseStrategy):
         elif 맞틀리스트[-4:] == [틀, 틀, 틀, 맞]:
             log.debug("틀틀틀맞 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
 
-        elif 맞틀리스트[-4:] == [맞, 맞, 맞, 틀]:
-            log.debug("맞맞맞틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
+        # elif 맞틀리스트[-4:] == [맞, 맞, 맞, 틀]:
+        #     log.debug("맞맞맞틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
 
         elif 맞틀리스트[-4:] == [틀, 틀, 맞, 맞]:
             log.debug("틀틀맞맞 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
@@ -290,8 +297,6 @@ class FullPara(__base_strategy.BaseStrategy):
             else:
                 log.debug("맞틀틀틀 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
 
-        elif 맞틀리스트[-3:] == [틀, 맞, 틀]:
-            log.debug("틀맞맞 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
 
         else:
              log.debug("맞틀 조건에 맞지 않아 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
