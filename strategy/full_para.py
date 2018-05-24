@@ -284,7 +284,8 @@ class FullPara(__base_strategy.BaseStrategy):
             log.debug("틀틀맞맞 다음으로 %s 진입.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
 
         elif 맞틀리스트[-4:] == [맞, 맞, 틀, 틀]:
-            if 수익리스트[-4] < 수익리스트[-3]:
+            #if 수익리스트[-4] < 수익리스트[-3]:
+            if flow_candle_list[-2] > self.param10:
                 log.debug("맞맞틀틀, 처음 맞 수익이 다음 맞 수익보다 적어서 %s 포기.(pid = %s)" % ('신규매도' if _매도수구분 == 1 else '신규매수', self.pid))
                 return None
             else:
