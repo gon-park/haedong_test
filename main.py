@@ -49,11 +49,11 @@ def end_simulate(reports: Reports):
             fprint("새로운 수익 갱신 : %s, %s" % (reports.총수익, reports.승률))
             fprint(reports.__dict__)
         else:
-            if reports.총수익 > simulation_report[0].총수익:
-                print("\r새로운 수익 갱신 : %s, %s" % (reports.총수익, reports.승률))
-                print("reports : %s" % reports.전략변수)
-                fprint("새로운 수익 갱신 : %s, %s" % (reports.총수익, reports.승률))
-                fprint(reports.__dict__)
+            #if reports.총수익 > simulation_report[0].총수익:
+            print("\r새로운 수익 갱신 : %s, %s" % (reports.총수익, reports.승률))
+            print("reports : %s" % reports.전략변수)
+            fprint("새로운 수익 갱신 : %s, %s" % (reports.총수익, reports.승률))
+            fprint(reports.__dict__)
 
             for i in range(0, 10):
                 if i > len(simulation_report) - 1:
@@ -261,8 +261,11 @@ if __name__ == '__main__':
 
         for report in simulation_report[i].월물:
             if TEST_MAIN_LOG:
-                print('\t\t %s: %s' % (report.종목코드, report.수익))
-                fprint('\t\t %s: %s' % (report.종목코드, report.수익))
+                win = report.승
+                lose = report.패
+                win_lose = round((win / (win + lose) * 100),3)
+                print('\t\t %s: %s   승률:%s,   승:%s, 패:%s' % (report.종목코드, report.수익, win_lose, report.승, report.패 ))
+                fprint('\t\t %s: %s   승률:%s,   승:%s, 패:%s' % (report.종목코드, report.수익, win_lose, report.승, report.패))
 
     #full_para_.FullPara.calc_reports(simulation_report)
 
