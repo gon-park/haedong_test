@@ -263,7 +263,11 @@ if __name__ == '__main__':
             if TEST_MAIN_LOG:
                 win = report.승
                 lose = report.패
-                win_lose = round((win / (win + lose) * 100),3)
+                try:
+                    win_lose = round((win / (win + lose) * 100),3)
+                except ZeroDivisionError:
+                    win_lose = 0
+
                 print('\t\t %s: %s   승률:%s,   승:%s, 패:%s' % (report.종목코드, report.수익, win_lose, report.승, report.패 ))
                 fprint('\t\t %s: %s   승률:%s,   승:%s, 패:%s' % (report.종목코드, report.수익, win_lose, report.승, report.패))
 
