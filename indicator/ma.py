@@ -4,6 +4,7 @@ from pickle import OBJ
 
 from variable.candles import CandleList
 from variable.constant import *
+import time, datetime
 from pprint import pprint
 
 
@@ -21,7 +22,10 @@ class Variable():
 class Calc():
 
     @staticmethod
-    def calc(var: Variable, index: int):
+    def calc(var: Variable, index: int, viewer_data: dict):
+        if viewer_data != None and var.LENGTH not in viewer_data[MA]:
+            viewer_data[MA][var.LENGTH] = {}
+
         if index < var.LENGTH - 1:
             var.MA.append(None)
         elif index == var.LENGTH - 1:
@@ -30,6 +34,24 @@ class Calc():
         else:
             var.tmp_sum += (var.candles.현재가[index] - var.candles.현재가[index - var.LENGTH])
             var.MA.append(float(var.tmp_sum) / float(var.LENGTH))
+
+        if viewer_data != None and index == var.LENGTH - 1:
+            viewer_data[MA][var.LENGTH] = {}
+            viewer_data[MA][var.LENGTH][ADDED] = []
+            print(var.candles.체결시간[index])
+            viewer_data[MA][var.LENGTH][ADDED].append({
+                체결시간: int(time.mktime(var.candles.체결시간[index].timetuple()) * 1000),
+                VALUE: var.MA[-1]
+            })
+        elif viewer_data != None and index > var.LENGTH - 1:
+            viewer_data[MA][var.LENGTH][ADDED].append({
+                체결시간: int(time.mktime(var.candles.체결시간[index].timetuple()) * 1000),
+                VALUE: var.MA[-1]
+            })
+        if index == 130:
+            print("A")
+
+
 
     @staticmethod
     def is_sorted(ma_list: list):

@@ -4,3 +4,5 @@ class Report:
         self.종목코드 = subject_code
         self.승 = 0
         self.패 = 0
+        self.최대수익 = 0
+        self.최대손실 = 0

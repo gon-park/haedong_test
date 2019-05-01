@@ -36,6 +36,14 @@ class ContractManager(__manager.ManagerClass):
 
                 self.log.info("청산 체결 : %s" % 체결가)
                 self.log.info("누적수익[%s] : %s" % (info[종목코드], self.trader.result.수익))
+
+                if self.trader.result.최대수익 < self.trader.result.수익:
+                    self.trader.result.최대수익 = self.trader.result.수익
+
+                temp = self.trader.result.최대수익 - self.trader.result.수익
+                if temp > self.trader.result.최대손실:
+                    self.trader.result.최대손실 = temp
+
             else: idx += 1
 
         # 신규

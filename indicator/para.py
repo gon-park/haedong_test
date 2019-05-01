@@ -23,11 +23,16 @@ class Variable():
         self.flow_candle_count = 0
         self.flow_candle_count_list = []
 
+        self.flow_ep_candle_count = 0
+        self.flow_ep = 0
+        self.flow_ep_candle_count_list = []
+        #self.flow_ep_candle_count_list['candle_count'] = 0
+        #self.flow_ep_candle_count_list['ep'] = 0
 
 class Calc():
 
     @staticmethod
-    def calc(var: Variable, index: int):
+    def calc(var: Variable, index: int, viewer_data: dict):
         if index < 5:
             var.FLOWS.append(None)
         elif index == 5:
@@ -108,6 +113,9 @@ class Calc():
                     if af > max_af:
                         af = max_af
 
+                    var.flow_ep = the_highest_price
+                    var.flow_ep_candle_count = var.flow_candle_count
+
             elif var.candles.저가[index] < next_sar:  # 상승추세에서 저가가 내일의 SAR보다 낮으면 하향 반전
                 temp_flow = 하향
                 af = init_af
@@ -130,7 +138,14 @@ class Calc():
                     var.flow_candle_count_list.append(var.flow_candle_count)
                     var.flow_candle_count = 0
                     #print(var.flow_candle_count_list)
+
+                var.flow_ep_candle_count_list.append({'flow_ep':var.flow_ep, 'flow_ep_candle_count':var.flow_ep_candle_count+1})
+                var.flow_ep = 0
+                var.flow_ep_candle_count = 0
+                #print(var.flow_ep_candle_count_list)
                 # print("하향 반전, 수익 = %s, %s" % ((var.SARS[-1] - var.SARS[-2]), var.candles.체결시간[index]))
+
+
                     
         elif temp_flow == 하향:
             var.flow_candle_count = var.flow_candle_count + 1
@@ -144,6 +159,9 @@ class Calc():
                     af = af + init_af
                     if af > max_af:
                         af = max_af
+
+                    var.flow_ep = the_lowest_price
+                    var.flow_ep_candle_count = var.flow_candle_count
 
             elif var.candles.고가[index] > next_sar:  # 하락추세에서 고가가 내일의 SAR보다 높으면 상향 반전
                 temp_flow = 상향
@@ -167,6 +185,11 @@ class Calc():
                     var.flow_candle_count_list.append(var.flow_candle_count)
                     var.flow_candle_count = 0
                     #print(var.flow_candle_count_list)
+
+                var.flow_ep_candle_count_list.append({'flow_ep': var.flow_ep, 'flow_ep_candle_count': var.flow_ep_candle_count+1})
+                var.flow_ep = 0
+                var.flow_ep_candle_count = 0
+                #print(var.flow_ep_candle_count_list)
                 #print("상향 반전, 수익 = %s, %s" % ((var.SARS[-2] - var.SARS[-1]), var.candles.체결시간[index]))
 
         next_sar = today_sar + af * (max(the_highest_price, the_lowest_price) - today_sar)

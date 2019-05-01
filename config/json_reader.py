@@ -22,7 +22,7 @@ class Reader():
     @staticmethod
     def read_test_config():
         data = json.load(open(os.path.join('config', 'test.json')))
-        return data[START_DATE], data[END_DATE]
+        return data[START_DATE], data[END_DATE], data[VIEWER]
 
     @staticmethod
     def read_data(chart_id: str):

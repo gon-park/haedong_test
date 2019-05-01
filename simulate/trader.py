@@ -2,6 +2,7 @@
 
 from manager.chart_manager import ChartManger
 from manager.contract_manager import ContractManager
+from manager.backend_chartmanager import BackendChartManger
 from variable.constant import *
 from strategy import full_para_, full_para, short_cut
 from datetime import datetime
@@ -12,7 +13,7 @@ from variable.report import Report
 
 
 class Trader:
-    def __init__(self, main_chart: str, subject_code: str, strategy_var: dict, common_candles: dict):
+    def __init__(self, main_chart: str, subject_code: str, strategy_var: dict, common_candles: dict, viewer_data: dict):
         self.charts = {}  # key 값은 chart_id(GCZ17_tick_60)로 되어있음
         self.strategy = []
         self.contracts = {}
@@ -23,6 +24,8 @@ class Trader:
         self.contract_manager = ContractManager(self)
         # 차트 생성
         self.charts = ChartManger.create_charts(subject_code, strategy_var, common_candles)
+        self.viewer_data = viewer_data
+
 
         # 매매 전략 설정
         for strategy_name in strategy_var[STRATEGY]:
@@ -38,6 +41,7 @@ class Trader:
     def run(self):
         # print('trader : %s run()' % 종목코드)
         self.result.수익 = 0  # 수익
+
 
         # 한개 월물씩 테스트
         while True:
@@ -72,8 +76,17 @@ class Trader:
                 else:
                     continue
 
+            if self.viewer_data != None:
+                ChartManger.candle_push(체결차트, 체결차트.index + 1, self.viewer_data[체결차트.subject_code][type+'_'+time_unit])
+            else:
+                ChartManger.candle_push(체결차트, 체결차트.index + 1, None)
 
-            ChartManger.candle_push(체결차트, 체결차트.index + 1)
+
+
+        print("a")
+
+        import sys
+        sys.exit()
 
         # simulation 종료 후 결과 종합
         for strategy in self.strategy:

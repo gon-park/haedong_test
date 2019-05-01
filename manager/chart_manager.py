@@ -20,16 +20,23 @@ class ChartManger(__manager.ManagerClass):
         return charts
 
     @staticmethod
-    def candle_push(chart: Chart, index: int):
+    def candle_push(chart: Chart, index: int, viewer_data: dict):
         chart.index += 1
-
+        #MA 추가, PARA 추가 등
         for indicator_name in chart.indicators:
             if indicator_name == MA:
                 for indicator in chart.indicators[indicator_name]:
-                    ma.Calc.calc(indicator, chart.index)
+                    if viewer_data != None:
+                        if MA not in viewer_data:
+                            viewer_data[MA] = {}
+                        ma.Calc.calc(indicator, chart.index, viewer_data)
+                        #ma.Calc.calc(indicator, chart.index, viewer_data)
+                    else:
+                        ma.Calc.calc(indicator, chart.index, None)
+
             elif indicator_name == PARA:
                 for indicator in chart.indicators[indicator_name]:
-                    para.Calc.calc(indicator, chart.index)
+                    para.Calc.calc(indicator, chart.index, None)
 
     def get_name(self):
         return str(self.__class__.__name__)

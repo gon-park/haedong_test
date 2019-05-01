@@ -32,7 +32,7 @@ class FullPara(__base_strategy.BaseStrategy):
 
     def check_contract_in_candle(self, subject_code: str):
         # 메인차트 Index가 부족 할 때 거래 안함
-        if self.charts[self.main_chart_id].index < 3000:
+        if self.charts[self.main_chart_id].index < 10000:
             return None
 
         para = self.para
@@ -214,7 +214,7 @@ class FullPara(__base_strategy.BaseStrategy):
             종목코드: subject_code,
             매도수구분: _매도수구분,
             매매전략: 풀파라,
-            수량: 2,
+            수량: 1,
             가격: current_price
         }
         log.info("FullPara.is_it_ok(): %s, %s 진입.(pid = %s)" % (메인차트.candles.체결시간[메인차트.index+1], self.order_contents, self.pid))

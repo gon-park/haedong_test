@@ -6,7 +6,7 @@ MAIN_DIR = os.path.dirname(os.path.abspath(__file__))[:-9]
 CONFIG_PATH = MAIN_DIR + '/config'
 
 # DB
-DB_SERVER_ADDR = "211.253.10.91"
+DB_SERVER_ADDR = "211.253.8.64"
 DB_USER_ID = "root"
 DB_USER_PWD = "goehddl"
 DB_NAME = "haedong4"
@@ -44,6 +44,15 @@ STRATEGY = "strategy"
 # TEST CONFIG
 START_DATE = "start_date"
 END_DATE = "end_date"
+
+# VIEWER
+VIEWER = "viewer"
+SUMMARY = "summary"
+TRADING_POINT = 'trading_point'
+ADDED = 'added'
+MODIFIED = 'modified'
+REMOVED = 'removed'
+VALUE = "value"
 
 # CANDLE KEY
 시가 = "open"
